@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
+  "scripts": {
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier --write ."
+  },
   "devDependencies": {
+    "prettier": "^2.8.7",
     "typescript": "^5.0.4"
   },
   "packageManager": "pnpm@8.2.0",
