@@ -13,6 +13,12 @@ devDependencies:
   commander:
     specifier: ^10.0.1
     version: 10.0.1
+  dotenv:
+    specifier: ^16.0.3
+    version: 16.0.3
+  dotenv-expand:
+    specifier: ^10.0.0
+    version: 10.0.0
   eslint:
     specifier: ^8.38.0
     version: 8.38.0
@@ -377,6 +383,16 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: true
+
+  /dotenv-expand@10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: true
+
+  /dotenv@16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /escape-string-regexp@4.0.0:

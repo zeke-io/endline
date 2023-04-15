@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { Command, Option } from 'commander'
 import { createServer } from '../server/http-server'
+import { loadEnvFiles } from '../server/config/env-loader'
 
 const command = new Command('dev')
   .description('Starts a development server')
@@ -13,14 +14,17 @@ const command = new Command('dev')
   .option('-H, --hostname <host>', 'set hostname', 'localhost')
   .action(run)
 
-function run(options: { port: number; hostname: string }) {
+async function run(options: { port: number; hostname: string }) {
   let { port, hostname } = options
-  const dir = fs.realpathSync.native(path.resolve('.'))
-  console.log('CWD:', dir)
+  const projectDir = fs.realpathSync.native(path.resolve('.'))
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
 
+  await loadEnvFiles({
+    projectDir,
+    environment: 'development',
+  })
   createServer(port, hostname)
 }
 
