@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "commander": "^10.0.1",
     "prettier": "^2.8.7",
     "typescript": "^5.0.4"
   },
