@@ -1,9 +1,13 @@
 {
   "name": "endline.js",
-  "version": "0.0.0",
+  "version": "0.0.0-alpha.0",
   "private": true,
   "license": "MIT",
+  "bin": {
+    "endline": "dist/bin/endline.js"
+  },
   "scripts": {
+    "build": "tsc",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write ."
   },
