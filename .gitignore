@@ -2,6 +2,9 @@
 # Dependencies
 node_modules/
 
+# Build
+dist/
+
 # Logs
 logs
 *.log
@@ -22,7 +25,6 @@ pids
 *.tsbuildinfo
 
 ### Development
-
 # IDEA
 .idea
 *.iml
