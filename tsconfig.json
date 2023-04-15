@@ -5,7 +5,6 @@
     /* Modules */
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "baseUrl": ".",
     "outDir": "dist/",
     /* JavaScript Support */
     "allowJs": true,
