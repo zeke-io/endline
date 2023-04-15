@@ -18,6 +18,7 @@ function run(options: { port: number; hostname: string }) {
   const dir = fs.realpathSync.native(path.resolve('.'))
   console.log('CWD:', dir)
 
+  if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
 
   createServer(port, hostname)
