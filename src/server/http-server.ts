@@ -9,7 +9,15 @@ let requestListener: (
   throw new Error('Request listener not implemented!')
 }
 
-export function createServer(port: number, hostname: string) {
+export async function createServer({
+  port,
+  hostname,
+  projectDir,
+}: {
+  port: number
+  hostname: string
+  projectDir: string
+}) {
   const server = http.createServer(
     async (req: IncomingMessage, res: ServerResponse) =>
       await requestListener(req, res),
@@ -42,6 +50,7 @@ export function createServer(port: number, hostname: string) {
   server.listen(port, hostname)
   const app = new EndlineServer({
     httpServer: server,
+    projectDir,
   })
   requestListener = app.requestListener
 }
