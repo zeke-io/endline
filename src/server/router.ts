@@ -2,16 +2,24 @@ import { IncomingMessage, ServerResponse } from 'http'
 
 type RouteHandler = () => Promise<object>
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+interface RouteNodeOptions {
+  name: string
+  handler?: RouteHandler
+}
 
 class RouteNode {
-  protected handler: RouteHandler
+  private name: string
+  public isParam: boolean
+  protected handler: RouteHandler | undefined
   public children: Map<string, RouteNode> = new Map()
 
-  constructor(handler: RouteHandler) {
-    this.handler = handler
+  constructor(opts?: RouteNodeOptions) {
+    this.name = opts?.name || ''
+    this.handler = opts?.handler
+    this.isParam = this.name.startsWith(':')
   }
 
-  getHandler(): RouteHandler {
+  getHandler() {
     return this.handler
   }
 }
@@ -20,8 +28,7 @@ export class Router {
   protected root: RouteNode
 
   constructor() {
-    // TODO: Avoid passing handler to the root node
-    this.root = new RouteNode(async () => ({}))
+    this.root = new RouteNode()
   }
 
   // TODO: This should only be accessible for the request listener
@@ -56,6 +63,13 @@ export class Router {
       if (child) {
         node = child
       } else {
+        const paramChild = [...node.children].find(
+          ([_key, value]: [string, RouteNode]) => value.isParam,
+        )
+        if (paramChild) {
+          node = paramChild[1]
+          continue
+        }
         return undefined
       }
     }
@@ -72,7 +86,13 @@ export class Router {
 
       const child = node.children.get(segment)
       if (!child) {
-        node.children.set(segment, new RouteNode(handler))
+        node.children.set(
+          segment,
+          new RouteNode({
+            name: segment,
+            handler,
+          }),
+        )
       } else {
         node = child
       }
