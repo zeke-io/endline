@@ -1,8 +1,12 @@
-import http from 'http'
+import http, { IncomingMessage, ServerResponse } from 'http'
 import process from 'process'
+import { Router } from './router'
 
 export function createServer(port: number, hostname: string) {
-  const server = http.createServer()
+  const router = new Router()
+  const server = http.createServer(
+    (req: IncomingMessage, res: ServerResponse) => router.run(req, res),
+  )
 
   server.on('error', (err: NodeJS.ErrnoException) => {
     let message
