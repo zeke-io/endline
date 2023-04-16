@@ -3,6 +3,9 @@
   "version": "0.0.0-alpha.0",
   "private": true,
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "bin": {
     "endline": "dist/bin/endline.js"
   },
