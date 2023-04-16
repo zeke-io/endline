@@ -9,7 +9,7 @@
       "preserveAllComments": true
     },
     "target": "es2016",
-    "externalHelpers": false,
+    "externalHelpers": false
   },
   "module": {
     "type": "commonjs",
