@@ -1,11 +1,18 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
 import process from 'process'
-import { Router } from './router'
+import { EndlineServer } from './endline'
+
+let requestListener: (
+  req: IncomingMessage,
+  res: ServerResponse,
+) => Promise<void> = async (_req: IncomingMessage, _res: ServerResponse) => {
+  throw new Error('Request listener not implemented!')
+}
 
 export function createServer(port: number, hostname: string) {
-  const router = new Router()
   const server = http.createServer(
-    (req: IncomingMessage, res: ServerResponse) => router.run(req, res),
+    async (req: IncomingMessage, res: ServerResponse) =>
+      await requestListener(req, res),
   )
 
   server.on('error', (err: NodeJS.ErrnoException) => {
@@ -33,4 +40,8 @@ export function createServer(port: number, hostname: string) {
   })
 
   server.listen(port, hostname)
+  const app = new EndlineServer({
+    httpServer: server,
+  })
+  requestListener = app.requestListener
 }
