@@ -1,0 +1,24 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "jsx": false,
+      "dynamicImport": true,
+      "importAssertions": true,
+      "topLevelAwait": true,
+      "preserveAllComments": true
+    },
+    "target": "es2016",
+    "externalHelpers": false,
+  },
+  "module": {
+    "type": "commonjs",
+    "ignoreDynamic": true
+  },
+  "env": {
+    "targets": {
+      "node": "14.17.3"
+    }
+  },
+  "sourceMaps": true
+}
