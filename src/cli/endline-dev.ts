@@ -1,6 +1,7 @@
 import { Command, Option } from 'commander'
 import { createServer } from '../server/http-server'
 import { getProjectDirectory } from '../server/directory-resolver'
+import { loadEnvFiles } from '../server/config/env-loader'
 
 const command = new Command('dev')
   .description('Starts a development server')
@@ -12,13 +13,17 @@ const command = new Command('dev')
   .option('-H, --hostname <host>', 'set hostname', 'localhost')
   .action(run)
 
-function run(options: { port: number; hostname: string }) {
+async function run(options: { port: number; hostname: string }) {
   let { port, hostname } = options
   const projectDir = getProjectDirectory()
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
 
+  await loadEnvFiles({
+    projectDir,
+    environment: 'development',
+  })
   createServer({ port, hostname, projectDir })
 }
 
