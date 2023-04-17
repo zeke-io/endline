@@ -131,10 +131,20 @@ export class AppRouter {
   }
 
   public addFromRouter(router: Router) {
-    const { endpoints } = router
+    const { name, endpoints } = router
 
     for (const { route, method, handler } of endpoints) {
-      this.addRouteHandler(route, method, handler)
+      /**
+       * There is most likely a better approach to combine the name and the route into a valid url
+       * But for now I am using the URL class
+       * TODO: Find better approach
+       */
+      const urlRoute = new URL(
+        /** If the name of the router is index, map it at the root node */
+        name === 'index' ? route : path.join(name, route),
+        'https://example.com',
+      ).pathname
+      this.addRouteHandler(urlRoute, method, handler)
     }
   }
 }
@@ -173,17 +183,9 @@ export class Router {
     method: HTTPMethod,
     handler: RouteHandler,
   ) {
-    /**
-     * There is most likely a better approach to combine the name and the route into a valid url
-     * But for now I am using the URL class
-     * TODO: Find better approach
-     */
-    const urlRoute = new URL(path.join(this.name, route), 'https://example.com')
-      .pathname
-
     this.endpoints.push({
       method,
-      route: urlRoute,
+      route,
       handler,
     })
   }
