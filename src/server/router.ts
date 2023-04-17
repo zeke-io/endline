@@ -84,7 +84,7 @@ export class AppRouter {
     }
   }
 
-  private getHandler(url: string, method: string) {
+  public getHandler(url: string, method: string) {
     const segments = url.split('/').filter((u) => u != '')
     let currentNode = this.rootNode
     const params: { [param in string]: string } = {}
