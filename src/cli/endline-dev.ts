@@ -1,7 +1,6 @@
-import fs from 'fs'
-import path from 'path'
 import { Command, Option } from 'commander'
 import { createServer } from '../server/http-server'
+import { getProjectDirectory } from '../server/directory-resolver'
 
 const command = new Command('dev')
   .description('Starts a development server')
@@ -15,13 +14,12 @@ const command = new Command('dev')
 
 function run(options: { port: number; hostname: string }) {
   let { port, hostname } = options
-  const dir = fs.realpathSync.native(path.resolve('.'))
-  console.log('CWD:', dir)
+  const projectDir = getProjectDirectory()
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
 
-  createServer(port, hostname)
+  createServer({ port, hostname, projectDir })
 }
 
 export default { command }
