@@ -1,7 +1,6 @@
-import fs from 'fs'
-import path from 'path'
 import { Command, Option } from 'commander'
 import { createServer } from '../server/http-server'
+import { getProjectDirectory } from '../server/directory-resolver'
 import { loadEnvFiles } from '../server/config/env-loader'
 
 const command = new Command('dev')
@@ -16,7 +15,7 @@ const command = new Command('dev')
 
 async function run(options: { port: number; hostname: string }) {
   let { port, hostname } = options
-  const projectDir = fs.realpathSync.native(path.resolve('.'))
+  const projectDir = getProjectDirectory()
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
@@ -25,7 +24,7 @@ async function run(options: { port: number; hostname: string }) {
     projectDir,
     environment: 'development',
   })
-  createServer(port, hostname)
+  createServer({ port, hostname, projectDir })
 }
 
 export default { command }

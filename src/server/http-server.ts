@@ -1,8 +1,27 @@
-import http from 'http'
+import http, { IncomingMessage, ServerResponse } from 'http'
 import process from 'process'
+import { EndlineServer } from './endline'
 
-export function createServer(port: number, hostname: string) {
-  const server = http.createServer()
+let requestListener: (
+  req: IncomingMessage,
+  res: ServerResponse,
+) => Promise<void> = async (_req: IncomingMessage, _res: ServerResponse) => {
+  throw new Error('Request listener not implemented!')
+}
+
+export async function createServer({
+  port,
+  hostname,
+  projectDir,
+}: {
+  port: number
+  hostname: string
+  projectDir: string
+}) {
+  const server = http.createServer(
+    async (req: IncomingMessage, res: ServerResponse) =>
+      await requestListener(req, res),
+  )
 
   server.on('error', (err: NodeJS.ErrnoException) => {
     let message
@@ -29,4 +48,10 @@ export function createServer(port: number, hostname: string) {
   })
 
   server.listen(port, hostname)
+  const app = new EndlineServer({
+    httpServer: server,
+    projectDir,
+  })
+  requestListener = app.requestListener
+  await app.initialize()
 }
