@@ -53,4 +53,5 @@ export async function createServer({
     projectDir,
   })
   requestListener = app.requestListener
+  await app.initialize()
 }

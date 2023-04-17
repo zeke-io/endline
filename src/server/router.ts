@@ -1,6 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http'
+import path from 'path'
 
-type RouteHandler = () => Promise<object>
+// TODO: Add more options, and make a custom response class
+type RouteHandlerOptions = {
+  res: ServerResponse
+}
+type RouteHandler = (options?: RouteHandlerOptions) => Promise<object>
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 class RouteNode {
@@ -39,7 +44,7 @@ class RouteNode {
   */
 }
 
-export class Router {
+export class AppRouter {
   public rootNode: RouteNode
   private name?: string
 
@@ -55,7 +60,9 @@ export class Router {
 
     const handler = this.getHandler(url, method)
     if (handler) {
-      const response = await handler()
+      const response = await handler({
+        res,
+      })
 
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify(response))
@@ -121,5 +128,63 @@ export class Router {
     } else {
       currentNode.addHandler(method, handler)
     }
+  }
+
+  public addFromRouter(router: Router) {
+    const { endpoints } = router
+
+    for (const { route, method, handler } of endpoints) {
+      this.addRouteHandler(route, method, handler)
+    }
+  }
+}
+
+export class Router {
+  public readonly name: string
+  public readonly endpoints: {
+    route: string
+    method: HTTPMethod
+    handler: RouteHandler
+  }[]
+
+  constructor(name: string) {
+    this.name = name
+    this.endpoints = []
+  }
+
+  public GET(route: string, handler: RouteHandler): void {
+    this.addEndpoint(route, 'GET', handler)
+  }
+
+  public POST(route: string, handler: RouteHandler): void {
+    this.addEndpoint(route, 'POST', handler)
+  }
+
+  public PUT(route: string, handler: RouteHandler): void {
+    this.addEndpoint(route, 'PUT', handler)
+  }
+
+  public DELETE(route: string, handler: RouteHandler): void {
+    this.addEndpoint(route, 'DELETE', handler)
+  }
+
+  private addEndpoint(
+    route: string,
+    method: HTTPMethod,
+    handler: RouteHandler,
+  ) {
+    /**
+     * There is most likely a better approach to combine the name and the route into a valid url
+     * But for now I am using the URL class
+     * TODO: Find better approach
+     */
+    const urlRoute = new URL(path.join(this.name, route), 'https://example.com')
+      .pathname
+
+    this.endpoints.push({
+      method,
+      route: urlRoute,
+      handler,
+    })
   }
 }
