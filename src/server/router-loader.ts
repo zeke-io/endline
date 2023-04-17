@@ -4,6 +4,7 @@ import process from 'process'
 import { pathToFileURL } from 'url'
 import { AppRouter, Router } from './router'
 import { findDirectory } from './directory-resolver'
+import { error, info, warn } from '../lib/logger'
 
 // TODO: Add ES6 and typescript support
 async function findRouters(routesDir: string) {
@@ -32,7 +33,7 @@ async function findRouters(routesDir: string) {
       const module = file.default || file
 
       if (!module) {
-        console.warn(`The file ${fileName} does not export a router`)
+        warn(`The file ${fileName} does not export a function`)
         continue
       }
 
@@ -42,13 +43,13 @@ async function findRouters(routesDir: string) {
         module,
       })
     } catch (e) {
-      console.error(`Failed to load file ${fileName}`)
+      error(`Failed to load file ${fileName}`)
       throw e
     }
   }
 
   if (!foundFiles.length) {
-    console.warn(`Could not find any files that export a router.`)
+    warn(`Could not find any files that export a function.`)
   }
 
   return foundFiles
@@ -61,7 +62,7 @@ export async function loadApiRoutes(
 ) {
   const routesDir = findDirectory(projectDir, routesFolderName)
   if (routesDir == null) {
-    console.error(
+    error(
       `Could not find folder '${routesFolderName}' in directory '${path.join(
         projectDir,
         'src',
@@ -85,13 +86,13 @@ export async function loadApiRoutes(
       /** Add endpoints to app router */
       appRouter.addFromRouter(router)
     } else {
-      console.warn(
-        `File ${routeFile.fileName} does not export a default function, ignoring...`,
+      warn(
+        `The file '${routeFile.fileName}' does not export a default function, ignoring...`,
       )
       continue
     }
 
-    console.info(`Router ${routeFile.fileName} has been loaded!`)
+    info(`Router '${router.name}' has been loaded`)
   }
 
   return routers
