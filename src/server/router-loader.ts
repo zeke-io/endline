@@ -3,7 +3,7 @@ import path from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
 import { AppRouter, Router } from './router'
-import { findDirectory } from './directory-resolver'
+import { findDirectory } from '../lib/directory-resolver'
 import { error, info, warn } from '../lib/logger'
 
 // TODO: Add ES6 and typescript support

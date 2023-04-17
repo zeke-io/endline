@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
-import { parseUrl } from './url-utils'
+import { parseUrl } from '../lib/url-utils'
 import { warn } from '../lib/logger'
 
 // TODO: Add more options, and make a custom response class

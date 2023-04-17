@@ -1,6 +1,6 @@
 import { Command, Option } from 'commander'
 import { createServer } from '../server/http-server'
-import { getProjectDirectory } from '../server/directory-resolver'
+import { getProjectDirectory } from '../lib/directory-resolver'
 import { loadEnvFiles } from '../server/config/env-loader'
 
 const command = new Command('dev')
