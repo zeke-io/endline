@@ -1,8 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
+import { parseUrl } from './url-utils'
 
 // TODO: Add more options, and make a custom response class
 type RouteHandlerOptions = {
+  params: object
   res: ServerResponse
 }
 type RouteHandler = (options?: RouteHandlerOptions) => Promise<object>
@@ -10,11 +12,13 @@ type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 class RouteNode {
   public name: string
+  public isParam: boolean
   public children: Map<string, RouteNode>
   public methods: { [method in HTTPMethod]?: RouteHandler }
 
   constructor(options?: { name: string }) {
     this.name = options?.name || ''
+    this.isParam = this.name.startsWith(':')
     this.children = new Map()
     this.methods = {}
   }
@@ -56,11 +60,19 @@ export class AppRouter {
   public async run(req: IncomingMessage, res: ServerResponse) {
     // Ignore if req.url and req.method are undefined
     if (!req?.url || !req?.method) return
-    const { url, method } = req
+    const { url: reqUrl, method } = req
+    const { url, parsedSearchParams } = parseUrl(reqUrl)
 
-    const handler = this.getHandler(url, method)
-    if (handler) {
+    const foundHandler = this.getHandler(url.pathname, method)
+    if (foundHandler) {
+      const { handler, params: urlParams } = foundHandler
+      const params = {
+        ...parsedSearchParams,
+        ...urlParams,
+      }
+
       const response = await handler({
+        params,
         res,
       })
 
@@ -71,9 +83,10 @@ export class AppRouter {
     }
   }
 
-  private getHandler(url: string, method: string): RouteHandler | undefined {
+  private getHandler(url: string, method: string) {
     const segments = url.split('/').filter((u) => u != '')
     let currentNode = this.rootNode
+    const params: { [param in string]: string } = {}
 
     for (const segment of segments) {
       const child = currentNode.children.get(segment)
@@ -81,20 +94,31 @@ export class AppRouter {
       if (child) {
         currentNode = child
       } else {
-        /* URL Parameter Support
-        const paramChild = [...node.children].find(
+        const paramChild = [...currentNode.children].find(
           ([_key, value]: [string, RouteNode]) => value.isParam,
         )
         if (paramChild) {
-          node = paramChild[1]
+          const foundChild = paramChild[1]
+          let childName = foundChild.name
+          childName = childName.startsWith(':') ? childName.slice(1) : childName
+
+          params[childName] = segment
+          currentNode = foundChild
           continue
         }
-        */
+
         return undefined
       }
     }
 
-    return currentNode.getHandler(method as HTTPMethod)
+    const handler = currentNode.getHandler(method as HTTPMethod)
+
+    return handler
+      ? {
+          params,
+          handler,
+        }
+      : undefined
   }
 
   public addRouteHandler(
@@ -134,17 +158,10 @@ export class AppRouter {
     const { name, endpoints } = router
 
     for (const { route, method, handler } of endpoints) {
-      /**
-       * There is most likely a better approach to combine the name and the route into a valid url
-       * But for now I am using the URL class
-       * TODO: Find better approach
-       */
-      const urlRoute = new URL(
-        /** If the name of the router is index, map it at the root node */
+      const { url } = parseUrl(
         name === 'index' ? route : path.join(name, route),
-        'https://example.com',
-      ).pathname
-      this.addRouteHandler(urlRoute, method, handler)
+      )
+      this.addRouteHandler(url.pathname, method, handler)
     }
   }
 }
