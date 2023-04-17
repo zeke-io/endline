@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import dotenv, { DotenvConfigOutput } from 'dotenv'
 import { expand as dotenvExpand } from 'dotenv-expand'
+import { error } from '../../lib/logger'
 
 export async function loadEnvFiles({
   projectDir,
@@ -34,7 +35,7 @@ export async function loadEnvFiles({
       // eslint-disable-next-line
     } catch (e: any) {
       if (e.code !== 'ENOENT') {
-        console.error(`Could not load env file ${fileName}`)
+        error(`Could not load env file ${fileName}`)
         console.error(e)
       }
     }

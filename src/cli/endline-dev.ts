@@ -24,7 +24,7 @@ async function run(options: { port: number; hostname: string }) {
     projectDir,
     environment: 'development',
   })
-  createServer({ port, hostname, projectDir })
+  await createServer({ port, hostname, projectDir })
 }
 
 export default { command }

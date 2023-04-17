@@ -1,6 +1,7 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
 import process from 'process'
 import { EndlineServer } from './endline'
+import { error, info, ready } from '../lib/logger'
 
 let requestListener: (
   req: IncomingMessage,
@@ -36,7 +37,7 @@ export async function createServer({
     }
 
     if (message) {
-      console.error(message)
+      error(message)
       process.exit(1)
     }
 
@@ -44,7 +45,7 @@ export async function createServer({
   })
 
   server.on('listening', () => {
-    console.log(`Server is listening on ${hostname}:${port}`)
+    info(`Starting server on ${hostname}:${port}`)
   })
 
   server.listen(port, hostname)
@@ -54,4 +55,6 @@ export async function createServer({
   })
   requestListener = app.requestListener
   await app.initialize()
+
+  ready(`Server is ready and listening on ${hostname}:${port}`)
 }

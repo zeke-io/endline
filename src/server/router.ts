@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
 import { parseUrl } from './url-utils'
+import { warn } from '../lib/logger'
 
 // TODO: Add more options, and make a custom response class
 type RouteHandlerOptions = {
@@ -145,7 +146,7 @@ export class AppRouter {
     }
 
     if (currentNode.getHandler(method)) {
-      console.error(
+      warn(
         `Attempted to register an existing route '${url}' with same method '${method}'.`,
       )
       return
