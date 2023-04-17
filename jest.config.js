@@ -2,7 +2,7 @@
 const config = {
   clearMocks: true,
   moduleDirectories: ['node_modules'],
-  rootDir: 'test',
+  rootDir: 'tests',
   testMatch: ['**/*.test.ts', '**/*.test.js'],
   verbose: true,
 }
