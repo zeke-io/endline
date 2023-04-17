@@ -2,46 +2,58 @@ import { IncomingMessage, ServerResponse } from 'http'
 
 type RouteHandler = () => Promise<object>
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
-interface RouteNodeOptions {
-  name: string
-  handler?: RouteHandler
-}
 
 class RouteNode {
-  private name: string
-  public isParam: boolean
-  protected handler: RouteHandler | undefined
-  public children: Map<string, RouteNode> = new Map()
+  public name: string
+  public children: Map<string, RouteNode>
+  public methods: { [method in HTTPMethod]?: RouteHandler }
 
-  constructor(opts?: RouteNodeOptions) {
-    this.name = opts?.name || ''
-    this.handler = opts?.handler
-    this.isParam = this.name.startsWith(':')
+  constructor(options?: { name: string }) {
+    this.name = options?.name || ''
+    this.children = new Map()
+    this.methods = {}
   }
 
-  getHandler() {
-    return this.handler
+  public getHandler(method: HTTPMethod): RouteHandler | undefined {
+    return this.methods?.[method]
   }
+
+  public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
+    /** Return false if the {@link handler} is already registered */
+    if (this.getHandler(method) != null) {
+      return false
+    }
+
+    this.methods[method] = handler
+    return true
+  }
+
+  /*
+  public removeHandler(method: HTTPMethod): void {
+    delete this.methods[method]
+  }
+
+  get hasMethods(): boolean {
+    return !!Object.keys(this.methods).length
+  }
+  */
 }
 
 export class Router {
-  protected root: RouteNode
+  public rootNode: RouteNode
+  private name?: string
 
-  constructor() {
-    this.root = new RouteNode()
+  constructor(name?: string) {
+    this.name = name
+    this.rootNode = new RouteNode()
   }
 
-  // TODO: This should only be accessible for the request listener
-  // but I'm leaving it like this until I finish implementing the router.
   public async run(req: IncomingMessage, res: ServerResponse) {
-    if (!req.url) {
-      // TODO: Handle this better
-      console.warn('req.url is undefined, aborting')
-      return
-    }
+    // Ignore if req.url and req.method are undefined
+    if (!req?.url || !req?.method) return
+    const { url, method } = req
 
-    const handler = this.getHandler(req.url)
-
+    const handler = this.getHandler(url, method)
     if (handler) {
       const response = await handler()
 
@@ -52,17 +64,17 @@ export class Router {
     }
   }
 
-  protected getHandler(url: string): RouteHandler | undefined {
-    const urlSegments = url.split('/')
-    let node = this.root
+  private getHandler(url: string, method: string): RouteHandler | undefined {
+    const segments = url.split('/').filter((u) => u != '')
+    let currentNode = this.rootNode
 
-    for (const segment of urlSegments) {
-      if (segment === '') continue
+    for (const segment of segments) {
+      const child = currentNode.children.get(segment)
 
-      const child = node.children.get(segment)
       if (child) {
-        node = child
+        currentNode = child
       } else {
+        /* URL Parameter Support
         const paramChild = [...node.children].find(
           ([_key, value]: [string, RouteNode]) => value.isParam,
         )
@@ -70,48 +82,44 @@ export class Router {
           node = paramChild[1]
           continue
         }
+        */
         return undefined
       }
     }
 
-    return node.getHandler()
+    return currentNode.getHandler(method as HTTPMethod)
   }
 
-  protected addRoute(url: string, _method: HTTPMethod, handler: RouteHandler) {
-    const urlSegments = url.split('/')
-    let node = this.root
+  public addRouteHandler(
+    url: string,
+    method: HTTPMethod,
+    handler: RouteHandler,
+  ) {
+    const segments = url.split('/').filter((u) => u != '')
+    let currentNode = this.rootNode
 
-    for (const segment of urlSegments) {
-      if (segment === '') continue
+    for (const segment of segments) {
+      const child = currentNode.children.get(segment)
 
-      const child = node.children.get(segment)
-      if (!child) {
-        node.children.set(
-          segment,
-          new RouteNode({
-            name: segment,
-            handler,
-          }),
-        )
+      if (child) {
+        currentNode = child
       } else {
-        node = child
+        /** Create node if path does not exist */
+        const node = new RouteNode({
+          name: segment,
+        })
+        currentNode.children.set(segment, node)
+        currentNode = node
       }
     }
-  }
 
-  public GET(route: string, handler: RouteHandler): void {
-    this.addRoute(route, 'GET', handler)
-  }
-
-  public POST(route: string, handler: RouteHandler): void {
-    this.addRoute(route, 'POST', handler)
-  }
-
-  public PUT(route: string, handler: RouteHandler): void {
-    this.addRoute(route, 'PUT', handler)
-  }
-
-  public DELETE(route: string, handler: RouteHandler): void {
-    this.addRoute(route, 'DELETE', handler)
+    if (currentNode.getHandler(method)) {
+      console.error(
+        `Attempted to register an existing route '${url}' with same method '${method}'.`,
+      )
+      return
+    } else {
+      currentNode.addHandler(method, handler)
+    }
   }
 }
