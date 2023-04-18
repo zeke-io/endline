@@ -2,6 +2,10 @@
   "name": "endline",
   "version": "0.0.1",
   "license": "MIT",
+  "author": "Zeke <ezequiel_io@pm.me>",
+  "repository": "zeke-io/endline",
+  "homepage": "https://github.com/zeke-io/endline#readme",
+  "bugs": "https://github.com/zeke-io/endline/issues",
   "keywords": [
     "framework",
     "rest",
