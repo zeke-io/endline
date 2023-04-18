@@ -1,8 +1,13 @@
 {
-  "name": "endline.js",
-  "version": "0.0.0-alpha.0",
-  "private": true,
+  "name": "endline",
+  "version": "0.0.1",
   "license": "MIT",
+  "keywords": [
+    "framework",
+    "rest",
+    "restful",
+    "api"
+  ],
   "files": [
     "dist"
   ],
