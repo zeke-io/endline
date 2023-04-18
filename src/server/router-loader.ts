@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
-import { AppRouter, Router } from './router'
+import { AppRouter, Router, RouterConfig } from './router'
 import { findDirectory } from '../lib/directory-resolver'
 import { error, info, warn } from '../lib/logger'
 
@@ -58,14 +58,16 @@ async function findRouters(routesDir: string) {
 export async function loadApiRoutes(
   projectDir: string,
   appRouter: AppRouter,
-  routesFolderName = 'api',
+  routerConfig: RouterConfig,
 ) {
-  const routesDir = findDirectory(projectDir, routesFolderName)
+  const folderPath = routerConfig.apiFolderPath
+  const routesDir = findDirectory(projectDir, folderPath || 'api', !folderPath)
+
   if (routesDir == null) {
     error(
-      `Could not find folder '${routesFolderName}' in directory '${path.join(
+      `Could not find folder '${folderPath}' in directory '${path.join(
         projectDir,
-        'src',
+        routesDir || '.',
       )}'.`,
     )
     process.exit(1)
