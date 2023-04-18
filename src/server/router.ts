@@ -3,6 +3,10 @@ import path from 'path'
 import { parseUrl } from '../lib/url-utils'
 import { warn } from '../lib/logger'
 
+export interface RouterConfig {
+  apiFolderPath?: string
+}
+
 // TODO: Add more options, and make a custom response class
 type RouteHandlerOptions = {
   params: object
@@ -51,10 +55,8 @@ class RouteNode {
 
 export class AppRouter {
   public rootNode: RouteNode
-  private name?: string
 
-  constructor(name?: string) {
-    this.name = name
+  constructor() {
     this.rootNode = new RouteNode()
   }
 

@@ -2,6 +2,7 @@ import http, { IncomingMessage, ServerResponse } from 'http'
 import process from 'process'
 import { EndlineServer } from './endline'
 import { error, info, ready } from '../lib/logger'
+import loadConfig from './config'
 
 let requestListener: (
   req: IncomingMessage,
@@ -19,6 +20,7 @@ export async function createServer({
   hostname: string
   projectDir: string
 }) {
+  const config = await loadConfig(projectDir)
   const server = http.createServer(
     async (req: IncomingMessage, res: ServerResponse) =>
       await requestListener(req, res),
@@ -52,6 +54,7 @@ export async function createServer({
   const app = new EndlineServer({
     httpServer: server,
     projectDir,
+    config,
   })
   requestListener = app.requestListener
   await app.initialize()
