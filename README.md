@@ -10,9 +10,13 @@ npm install endline
 
 ## Features
 
-* Automatic route mapping based on file names
-* ~~Hot reload for development~~ **(WIP)**
-* Support for .env files
+- Automatic route mapping based on file names
+- ~~Hot reload for development~~ **(WIP)**
+- Support for .env files
+
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
