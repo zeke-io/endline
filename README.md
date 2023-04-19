@@ -5,11 +5,9 @@ A **Backend Framework** for **Node.js**
 [![NPM Version][npm-version-image]][npm-package-url]
 [![License][npm-license-image]](LICENSE)
 
-## Installation
+## Getting Started
 
-```bash
-npm install endline
-```
+Check the [Getting Started Guide](docs/getting-started.md) to get started.
 
 ## Features
 
