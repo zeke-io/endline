@@ -2,7 +2,7 @@ import http, { IncomingMessage, ServerResponse } from 'http'
 import process from 'process'
 import { EndlineServer } from './endline'
 import { error, info, ready } from '../lib/logger'
-import loadConfig from './config'
+import { EndlineConfig } from './config'
 
 let requestListener: (
   req: IncomingMessage,
@@ -15,12 +15,13 @@ export async function createServer({
   port,
   hostname,
   projectDir,
+  config,
 }: {
   port: number
   hostname: string
   projectDir: string
+  config: EndlineConfig
 }) {
-  const config = await loadConfig(projectDir)
   info(`Starting server on ${hostname}:${port}`)
   const server = http.createServer(
     async (req: IncomingMessage, res: ServerResponse) =>
