@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
-import { parseUrl } from '../lib/url-utils'
-import { warn } from '../lib/logger'
+import { parseUrl } from '../../lib/url-utils'
+import { warn } from '../../lib/logger'
 
 export interface RouterConfig {
   apiFolderPath?: string

@@ -26,4 +26,3 @@ Install the dependencies
 ```bash
 pnpm install
 ```
-

@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { pathToFileURL } from 'url'
-import { AppRouter, Router, RouterConfig } from './router'
-import { findDirectory } from '../lib/directory-resolver'
-import { error, info, warn } from '../lib/logger'
+import { AppRouter, Router, RouterConfig } from './'
+import { findDirectory } from '../../lib/directory-resolver'
+import { error, info, warn } from '../../lib/logger'
 
 // TODO: Add ES6 and typescript support
 async function findRouters(routesDir: string) {
