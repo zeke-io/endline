@@ -1,5 +1,5 @@
 {
-  "name": "endline-example-with-env-files",
+  "name": "endline-example-with-custom-paths",
   "version": "0.1.0",
   "private": true,
   "scripts": {
