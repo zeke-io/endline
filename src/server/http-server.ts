@@ -21,6 +21,7 @@ export async function createServer({
   projectDir: string
 }) {
   const config = await loadConfig(projectDir)
+  info(`Starting server on ${hostname}:${port}`)
   const server = http.createServer(
     async (req: IncomingMessage, res: ServerResponse) =>
       await requestListener(req, res),
@@ -46,9 +47,8 @@ export async function createServer({
     throw err
   })
 
-  server.on('listening', () => {
-    info(`Starting server on ${hostname}:${port}`)
-  })
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  server.on('listening', () => {})
 
   server.listen(port, hostname)
   const app = new EndlineServer({
