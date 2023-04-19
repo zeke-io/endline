@@ -12,20 +12,24 @@ const command = new Command('dev')
       .default(3000),
   )
   .option('-H, --hostname <host>', 'set hostname', 'localhost')
+  .option('-e, --environment <name>', 'set environment', 'development')
   .action(run)
 
-async function run(options: { port: number; hostname: string }) {
-  let { port, hostname } = options
+async function run(options: any) {
+  // eslint-disable-next-line prefer-const
+  let { port, hostname, environment } = options
+
   const projectDir = getProjectDirectory()
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
+  if (!environment) environment = 'development'
 
-  const config = await loadConfig(projectDir)
   await loadEnvFiles({
     projectDir,
-    environment: 'development',
+    environment,
   })
+  const config = await loadConfig(projectDir)
   await createServer({ port, hostname, projectDir, config })
 }
 
