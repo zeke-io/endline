@@ -5,6 +5,12 @@ node_modules/
 # Build
 dist/
 
+# Examples
+examples/**/package-lock.json
+examples/**/yarn.lock
+examples/**/pnpm-lock.yaml
+examples/**/.env*.local
+
 # Logs
 logs
 *.log
