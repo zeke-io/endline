@@ -21,7 +21,7 @@ export default async function loadConfig({
   environment,
 }: {
   projectDir: string
-  environment: string
+  environment?: string
 }): Promise<EndlineConfig> {
   const fileName = 'endline.config.js'
   const filePath = path.resolve(projectDir, fileName)
