@@ -8,7 +8,7 @@ const configSchema = {
     router: {
       type: 'object',
       properties: {
-        apiFolderPath: {
+        routesDirectory: {
           type: 'string',
         },
       },

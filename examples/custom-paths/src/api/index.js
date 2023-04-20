@@ -1,12 +1,11 @@
 async function IndexRoute(router) {
   router.GET('/', async ({ res }) => {
+    const payload = {
+      message: 'Hello from "src/api".',
+    }
+
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(
-      JSON.stringify({
-        message:
-          'This route is found in the "src/routes" directory instead of the default "src/api".',
-      }),
-    )
+    res.end(JSON.stringify(payload))
   })
 }
 

@@ -4,6 +4,7 @@ import { error, warn } from '../../lib/logger'
 import { validateConfig } from './config-schema'
 import { RouterConfig } from '../router'
 import fs from 'fs'
+import { loadEnvFiles } from './env-loader'
 
 export interface EndlineConfig {
   router: RouterConfig
@@ -11,14 +12,22 @@ export interface EndlineConfig {
 
 const defaultConfig: EndlineConfig = {
   router: {
-    apiFolderPath: 'src/api',
+    routesDirectory: 'src/routes',
   },
 }
 
-export default async function loadConfig(dir: string): Promise<EndlineConfig> {
+export default async function loadConfig({
+  projectDir,
+  environment,
+}: {
+  projectDir: string
+  environment: string
+}): Promise<EndlineConfig> {
   const fileName = 'endline.config.js'
-  const filePath = path.resolve(dir, fileName)
+  const filePath = path.resolve(projectDir, fileName)
   const fileExist = fs.existsSync(filePath)
+
+  await loadEnvFiles({ projectDir, environment })
 
   if (fileExist) {
     const userConfigFile = await import(pathToFileURL(filePath).href)

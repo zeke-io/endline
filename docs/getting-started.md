@@ -32,14 +32,16 @@ Open your `package.json` and add the `dev` script:
 }
 ```
 
-Create the directory `src/api` at the root of your project, this is where Endline looks for endpoint routes.
+Create the directory `src/routes` at the root of your project, this is where Endline looks for endpoint routes.
 
 However, you can change this by creating a configuration file `endline.config.js`.
+
+### Example
 
 ```javascript
 const config = {
   router: {
-    apiFolderPath: 'src/routes',
+    routesDirectory: 'src/api',
   },
 }
 
