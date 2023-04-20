@@ -60,8 +60,12 @@ export async function loadApiRoutes(
   appRouter: AppRouter,
   routerConfig: RouterConfig,
 ) {
-  const folderPath = routerConfig.apiFolderPath
-  const routesDir = findDirectory(projectDir, folderPath || 'api', !folderPath)
+  const folderPath = routerConfig.routesDirectory
+  const routesDir = findDirectory(
+    projectDir,
+    folderPath || 'routes',
+    !folderPath,
+  )
 
   if (routesDir == null) {
     error(

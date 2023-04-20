@@ -12,7 +12,7 @@ export interface EndlineConfig {
 
 const defaultConfig: EndlineConfig = {
   router: {
-    apiFolderPath: 'src/api',
+    routesDirectory: 'src/routes',
   },
 }
 

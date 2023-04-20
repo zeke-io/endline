@@ -4,7 +4,7 @@ async function IndexRoute(router) {
     res.end(
       JSON.stringify({
         message:
-          'This route is found in the "src/routes" directory instead of the default "src/api".',
+          'This route is found in the "src/api" directory instead of the default "src/routes".',
       }),
     )
   })

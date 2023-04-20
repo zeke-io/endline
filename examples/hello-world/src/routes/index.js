@@ -17,7 +17,7 @@ const getFarewell = async ({ res }) => {
 }
 
 /**
- * @description The index router will always be mapped to /api/
+ * @description The index router will always be mapped to the base url
  * @param router Router provided by Endline
  */
 async function IndexRoute(router) {
