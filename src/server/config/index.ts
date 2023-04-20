@@ -7,10 +7,12 @@ import fs from 'fs'
 import { loadEnvFiles } from './env-loader'
 
 export interface EndlineConfig {
+  distDir: string
   router: RouterConfig
 }
 
 const defaultConfig: EndlineConfig = {
+  distDir: './dist',
   router: {
     routesDirectory: 'src/routes',
   },
