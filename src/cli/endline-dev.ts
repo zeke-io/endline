@@ -5,7 +5,7 @@ import { loadEnvFiles } from '../server/config/env-loader'
 import loadConfig from '../server/config'
 
 const command = new Command('dev')
-  .description('Starts a development server')
+  .description('Starts the Endline App in development mode')
   .addOption(
     new Option('-p, --port <number>', 'set port')
       .argParser((val) => parseInt(val, 10))
@@ -13,13 +13,14 @@ const command = new Command('dev')
   )
   .option('-H, --hostname <host>', 'set hostname', 'localhost')
   .option('-e, --environment <name>', 'set environment', 'development')
+  .option('-d, --directory <path>', 'set the root directory of the project')
   .action(run)
 
 async function run(options: any) {
   // eslint-disable-next-line prefer-const
-  let { port, hostname, environment } = options
+  let { port, hostname, environment, directory } = options
 
-  const projectDir = getProjectDirectory()
+  const projectDir = getProjectDirectory(directory)
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
