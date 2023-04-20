@@ -10,6 +10,7 @@ export interface RouterConfig {
 // TODO: Add more options, and make a custom response class
 type RouteHandlerOptions = {
   params: object
+  req: IncomingMessage
   res: ServerResponse
 }
 type RouteHandler = (options?: RouteHandlerOptions) => Promise<object>
@@ -76,6 +77,7 @@ export class AppRouter {
 
       const response = await handler({
         params,
+        req,
         res,
       })
 
