@@ -1,7 +1,6 @@
 import { Command, Option } from 'commander'
-import { createServer } from '../server/http-server'
 import { getProjectDirectory } from '../lib/directory-resolver'
-import { loadEnvFiles } from '../server/config/env-loader'
+import { createServer } from '../server/http-server'
 import loadConfig from '../server/config'
 
 const command = new Command('dev')
@@ -26,11 +25,7 @@ async function run(options: any) {
   if (isNaN(port)) port = 3000
   if (!environment) environment = 'development'
 
-  await loadEnvFiles({
-    projectDir,
-    environment,
-  })
-  const config = await loadConfig(projectDir)
+  const config = await loadConfig({ projectDir, environment })
   await createServer({ port, hostname, projectDir, config })
 }
 
