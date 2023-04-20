@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
-import EndlineDev from '../cli/endline-dev'
+import { EndlineDev } from '../cli'
 
 const program = new Command()
 
