@@ -9,24 +9,34 @@ interface CompilerResults {
 }
 
 export class WebpackCompiler {
-  private projectDir: string
+  private readonly projectDir: string
+  private readonly routeFiles: any[]
   private config: EndlineConfig
 
-  constructor({ projectDir, config }: any) {
+  constructor({ projectDir, config, routeFiles }: any) {
     this.projectDir = projectDir
+    this.routeFiles = routeFiles
     this.config = config
   }
 
-  private async buildConfiguration(outputPath: string): Promise<Configuration> {
-    const entryPoints: Record<string, string> = {
-      './routes/index': './src/routes/index.js',
+  private createEntryPoints() {
+    const entryPoints: Record<string, string> = {}
+
+    for (const routeFile of this.routeFiles) {
+      entryPoints[
+        `routes/${path.parse(routeFile.fileName).name}`
+      ] = `./${routeFile.path}`
     }
 
+    return entryPoints
+  }
+
+  private async buildConfiguration(outputPath: string): Promise<Configuration> {
     return {
       mode: 'production',
       context: this.projectDir,
       target: 'node12.17',
-      entry: entryPoints,
+      entry: this.createEntryPoints(),
       output: {
         path: outputPath,
       },

@@ -7,7 +7,7 @@ import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
 
 // TODO: Add ES6 and typescript support
-async function findRouters(routesDir: string) {
+export async function findRouters(routesDir: string) {
   const filesInDir = fs.readdirSync(routesDir)
   const foundFiles = []
 
