@@ -1,7 +1,7 @@
+import path from 'path'
 import webpack, { Configuration, StatsError } from 'webpack'
 import { EndlineConfig } from '../config'
 import { error, warn } from '../../lib/logger'
-import path from 'path'
 
 interface CompilerResults {
   errors?: StatsError[]
@@ -17,19 +17,27 @@ export class WebpackCompiler {
     this.config = config
   }
 
-  async run() {
-    const outputPath = path.join(this.projectDir, this.config.distDir)
-    const webpackConfig: Configuration = {
+  private async buildConfiguration(outputPath: string): Promise<Configuration> {
+    const entryPoints: Record<string, string> = {
+      './routes/index': './src/routes/index.js',
+    }
+
+    return {
       mode: 'production',
       context: this.projectDir,
       target: 'node12.17',
-      entry: {
-        './routes/index': './src/routes/index.js',
-      },
+      entry: entryPoints,
       output: {
         path: outputPath,
       },
     }
+  }
+
+  async run() {
+    const outputPath = path.join(this.projectDir, this.config.distDir)
+    const webpackConfig: Configuration = await this.buildConfiguration(
+      outputPath,
+    )
 
     const { warnings, errors } = await this.build(webpackConfig)
     if (warnings?.length) {
