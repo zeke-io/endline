@@ -41,6 +41,7 @@ async function build() {
     .pipe(dest('dist/'))
 }
 
+exports.build = series(clean, build)
 exports.default = function () {
   series(clean, build)
 

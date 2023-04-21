@@ -22,7 +22,7 @@
   },
   "scripts": {
     "dev": "gulp",
-    "build": "swc src -d dist/ --config-file .swcrc",
+    "build": "gulp build",
     "test": "jest",
     "lint:check": "eslint .",
     "prettier:check": "prettier --check .",
