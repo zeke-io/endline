@@ -6,6 +6,7 @@
   "repository": "zeke-io/endline",
   "homepage": "https://github.com/zeke-io/endline#readme",
   "bugs": "https://github.com/zeke-io/endline/issues",
+  "types": "types/index.d.ts",
   "keywords": [
     "framework",
     "rest",
@@ -13,7 +14,8 @@
     "api"
   ],
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "bin": {
     "endline": "dist/bin/endline.js"
