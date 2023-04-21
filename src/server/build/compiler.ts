@@ -30,6 +30,12 @@ export class WebpackCompiler {
       output: {
         path: outputPath,
       },
+      resolve: {
+        modules: [path.join(this.projectDir, 'node_modules')],
+      },
+      resolveLoader: {
+        modules: ['node_modules'],
+      },
     }
   }
 
