@@ -33,8 +33,7 @@ export class WebpackCompiler {
     }
   }
 
-  async run() {
-    const outputPath = path.join(this.projectDir, this.config.distDir)
+  async run(outputPath: string) {
     const webpackConfig: Configuration = await this.buildConfiguration(
       outputPath,
     )
