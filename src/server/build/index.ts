@@ -16,6 +16,10 @@ export default async function build({
   config: EndlineConfig
 }) {
   const outputPath = path.join(projectDir, config.distDir)
+  if (fs.existsSync(outputPath)) {
+    fs.rmSync(outputPath, { recursive: true })
+  }
+
   const routeFiles = await findRouters(config.router.routesDirectory as string)
 
   const compiler = new WebpackCompiler({
