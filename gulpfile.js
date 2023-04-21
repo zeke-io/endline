@@ -42,8 +42,9 @@ async function build() {
 }
 
 exports.build = series(clean, build)
-exports.default = function () {
-  series(clean, build)
+exports.default = async function () {
+  await clean()
+  await build()
 
   watch('src/**/*', build)
 }
