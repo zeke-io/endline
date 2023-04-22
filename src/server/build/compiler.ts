@@ -37,10 +37,28 @@ export class WebpackCompiler {
       context: this.projectDir,
       target: 'node12.17',
       entry: this.createEntryPoints(),
+      devtool: false,
       output: {
         path: outputPath,
       },
+      optimization: {
+        nodeEnv: false,
+      },
+      module: {
+        rules: [
+          {
+            test: /\.m?js$/,
+            exclude: /node_modules/,
+            use: [
+              {
+                loader: 'swc-loader',
+              },
+            ],
+          },
+        ],
+      },
       resolve: {
+        extensions: ['.js', '.ts'],
         modules: [path.join(this.projectDir, 'node_modules')],
       },
       resolveLoader: {
