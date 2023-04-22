@@ -2,6 +2,7 @@ import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineConfig } from './server/config'
 import { error, info, ready } from './lib/logger'
 import process from 'process'
+import { EndlineServer } from './server/endline'
 
 interface EndlineAppOptions {
   config: EndlineConfig
@@ -19,6 +20,7 @@ class EndlineApp {
   private isDev: boolean
   private hostname: string
   private port: number
+  private endlineServer: EndlineServer
 
   constructor({
     config,
@@ -34,21 +36,23 @@ class EndlineApp {
     this.hostname = hostname
     this.port = port
     this.isDev = !!isDev
+
+    this.endlineServer = new EndlineServer({ config, projectDir })
   }
 
   public async initialize() {
-    const { hostname, port, httpServer } = this
+    const { hostname, port, httpServer, endlineServer } = this
     info(`Initializing server on ${hostname}:${port}`)
 
     httpServer.addListener('request', this.requestListener)
+    await endlineServer.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
   }
 
   get requestListener() {
     return async (req: IncomingMessage, res: ServerResponse) => {
-      res.statusCode = 200
-      res.end('Hello world')
+      await this.endlineServer.requestListener(req, res)
     }
   }
 }
