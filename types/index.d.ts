@@ -1,3 +1,3 @@
-import { EndlineServer } from '../dist/server/endline'
+import endline from '../dist/endline'
 
-export default EndlineServer
+export default endline

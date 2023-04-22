@@ -1,17 +1,8 @@
-import http, { IncomingMessage, ServerResponse } from 'http'
-import process from 'process'
-import { EndlineServer } from './endline'
-import { error, info, ready } from '../lib/logger'
+import http from 'http'
 import { EndlineConfig } from './config'
+import createEndlineApp from '../endline'
 
-let requestListener: (
-  req: IncomingMessage,
-  res: ServerResponse,
-) => Promise<void> = async (_req: IncomingMessage, _res: ServerResponse) => {
-  throw new Error('Request listener not implemented!')
-}
-
-export async function initializeApp({
+export async function initializeDevServer({
   port,
   hostname,
   projectDir,
@@ -22,43 +13,15 @@ export async function initializeApp({
   projectDir: string
   config: EndlineConfig
 }) {
-  info(`Starting server on ${hostname}:${port}`)
-  const server = http.createServer(
-    async (req: IncomingMessage, res: ServerResponse) =>
-      await requestListener(req, res),
-  )
-
-  server.on('error', (err: NodeJS.ErrnoException) => {
-    let message
-
-    switch (err.code) {
-      case 'EADDRINUSE':
-        message = `Could not start server on ${hostname}:${port} because the port is already in use!`
-        break
-      case 'EACCES':
-        message = `Could not start server on ${hostname}:${port} because you don't have access to the port!`
-        break
-    }
-
-    if (message) {
-      error(message)
-      process.exit(1)
-    }
-
-    throw err
-  })
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  server.on('listening', () => {})
-
-  server.listen(port, hostname)
-  const app = new EndlineServer({
+  const server = http.createServer()
+  const app = createEndlineApp({
     httpServer: server,
+    hostname,
+    port,
     projectDir,
     config,
+    isDev: true,
   })
-  requestListener = app.requestListener
-  await app.initialize()
 
-  ready(`Server is ready and listening on ${hostname}:${port}`)
+  server.listen(port, hostname, async () => await app.initialize())
 }
