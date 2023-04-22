@@ -11,7 +11,7 @@ let requestListener: (
   throw new Error('Request listener not implemented!')
 }
 
-export async function createServer({
+export async function initializeApp({
   port,
   hostname,
   projectDir,

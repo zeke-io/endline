@@ -1,6 +1,6 @@
 import { Command, Option } from 'commander'
 import { getProjectDirectory } from '../lib/directory-resolver'
-import { createServer } from '../server/http-server'
+import { initializeApp } from '../server'
 import loadConfig from '../server/config'
 import { warn } from '../lib/logger'
 
@@ -36,7 +36,7 @@ async function run(options: any) {
   await sleep()
 
   const config = await loadConfig({ projectDir, environment })
-  await createServer({ port, hostname, projectDir, config })
+  await initializeApp({ port, hostname, projectDir, config })
 }
 
 export default { command }
