@@ -60,7 +60,8 @@ export default async function loadConfig({
     }
   }
 
-  warn(`Could not find configuration file, using default configuration.`)
-
+  /**
+   * Silently use default config if no configuration file has been found.
+   */
   return defaultConfig
 }
