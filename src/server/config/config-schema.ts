@@ -5,6 +5,9 @@ import { AggregateAjvError } from '@segment/ajv-human-errors'
 const configSchema = {
   type: 'object',
   properties: {
+    distDir: {
+      type: 'string',
+    },
     router: {
       type: 'object',
       properties: {

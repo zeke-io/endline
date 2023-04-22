@@ -24,6 +24,7 @@
     "dev": "gulp",
     "build": "gulp build",
     "test": "jest",
+    "types": "tsc --declaration --emitDeclarationOnly --stripInternal --declarationDir dist",
     "lint:check": "eslint .",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write ."
@@ -34,15 +35,19 @@
     "chalk": "4.1.2",
     "commander": "^10.0.1",
     "dotenv": "^16.0.3",
-    "dotenv-expand": "^10.0.0"
+    "dotenv-expand": "^10.0.0",
+    "webpack": "^5.80.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
     "@swc/cli": "^0.1.62",
     "@swc/core": "^1.3.50",
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
+    "babel-loader": "^9.1.2",
     "del": "^7.0.0",
     "eslint": "^8.38.0",
     "gulp": "^4.0.2",
@@ -50,6 +55,7 @@
     "gulp-swc": "^1.3.2",
     "jest": "^29.5.0",
     "prettier": "^2.8.7",
+    "swc-loader": "^0.2.3",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4"
   },

@@ -7,10 +7,12 @@ import fs from 'fs'
 import { loadEnvFiles } from './env-loader'
 
 export interface EndlineConfig {
+  distDir: string
   router: RouterConfig
 }
 
 const defaultConfig: EndlineConfig = {
+  distDir: './dist',
   router: {
     routesDirectory: 'src/routes',
   },
@@ -21,7 +23,7 @@ export default async function loadConfig({
   environment,
 }: {
   projectDir: string
-  environment: string
+  environment?: string
 }): Promise<EndlineConfig> {
   const fileName = 'endline.config.js'
   const filePath = path.resolve(projectDir, fileName)
