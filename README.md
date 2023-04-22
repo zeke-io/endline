@@ -5,7 +5,7 @@ A **Backend Framework** for **Node.js**
 [![NPM Version][npm-version-image]][npm-package-url]
 [![License][npm-license-image]](LICENSE)
 
-⚠️ **This project is still in its early stages and under active development, so it is not ready to use in a production environment.**
+⚠️ **This project is still in its early stages and under active development. It is not yet ready to be used in a production environment.**
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ Check the [Getting Started Guide](docs/getting-started.md) to get started.
 
 ## Contributing
 
-If you'd like to contribute, you can do so by reporting issues, giving suggestions, or making changes to the code, anything helps!
+If you'd like to contribute, you can do so by reporting issues, giving suggestions, or making changes to the code and submitting a PR!
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more information on helping with development.
 
