@@ -34,6 +34,7 @@ export class WebpackCompiler {
   private async buildConfiguration(outputPath: string): Promise<Configuration> {
     return {
       mode: 'production',
+      name: 'server',
       context: this.projectDir,
       target: 'node12.17',
       entry: this.createEntryPoints(),
@@ -43,23 +44,25 @@ export class WebpackCompiler {
       },
       optimization: {
         nodeEnv: false,
+        minimize: false,
       },
       module: {
         rules: [
           {
-            test: /\.m?js$/,
+            test: /\.js$/,
             exclude: /node_modules/,
-            use: [
-              {
-                loader: 'swc-loader',
+            use: {
+              loader: 'babel-loader',
+              options: {
+                presets: ['@babel/preset-env'],
               },
-            ],
+            },
           },
         ],
       },
       resolve: {
         extensions: ['.js', '.ts'],
-        modules: [path.join(this.projectDir, 'node_modules')],
+        modules: ['node_modules'],
       },
       resolveLoader: {
         modules: ['node_modules'],
