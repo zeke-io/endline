@@ -55,6 +55,10 @@ class EndlineApp {
       await this.endlineServer.requestListener(req, res)
     }
   }
+
+  public shutdown() {
+    //
+  }
 }
 
 export function createEndlineApp({

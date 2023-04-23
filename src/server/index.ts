@@ -1,6 +1,19 @@
 import http from 'http'
 import { EndlineConfig } from './config'
 import createEndlineApp from '../endline'
+import { warn } from '../lib/logger'
+
+// Gracefully shutdown server
+let serverShutdown: () => void
+function shutdownHandler() {
+  console.log('')
+  warn('Shutting down server...')
+  serverShutdown && serverShutdown()
+  process.exit(1)
+}
+
+process.on('SIGTERM', shutdownHandler)
+process.on('SIGINT', shutdownHandler)
 
 export async function initializeDevServer({
   port,
@@ -22,6 +35,11 @@ export async function initializeDevServer({
     config,
     isDev: true,
   })
+
+  serverShutdown = () => {
+    server.close()
+    app.shutdown()
+  }
 
   server.listen(port, hostname, async () => await app.initialize())
 }
