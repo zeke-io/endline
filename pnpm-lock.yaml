@@ -19,6 +19,9 @@ dependencies:
   dotenv-expand:
     specifier: ^10.0.0
     version: 10.0.0
+  watchpack:
+    specifier: ^2.4.0
+    version: 2.4.0
   webpack:
     specifier: ^5.80.0
     version: 5.80.0(@swc/core@1.3.50)
@@ -42,6 +45,9 @@ devDependencies:
   '@types/node':
     specifier: ^18.15.11
     version: 18.15.11
+  '@types/watchpack':
+    specifier: ^2.4.1
+    version: 2.4.1
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.58.0
     version: 5.58.0(@typescript-eslint/parser@5.58.0)(eslint@8.38.0)(typescript@5.0.4)
@@ -1929,6 +1935,13 @@ packages:
 
   /@types/stack-utils@2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
+    dev: true
+
+  /@types/watchpack@2.4.1:
+    resolution: {integrity: sha512-Dh2UwEtwgpaSQylpZObwObXcrKEX9uOSDeUqp9HoJ0RJeDX0DwALImgwK7/PCiKgnm3DeuBLSONgatwG+JpkJQ==}
+    dependencies:
+      '@types/graceful-fs': 4.1.6
+      '@types/node': 18.15.11
     dev: true
 
   /@types/yargs-parser@21.0.0:
