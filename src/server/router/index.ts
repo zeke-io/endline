@@ -7,20 +7,19 @@ export interface RouterConfig {
   routesDirectory?: string
 }
 
-// TODO: Add more options, and make a custom response class
+type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 type RouteHandlerOptions = {
   params: object
   req: IncomingMessage
   res: ServerResponse
 }
-type RouteHandler = (options?: RouteHandlerOptions) => Promise<object>
-type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+type RequestHandler = (options?: RouteHandlerOptions) => Promise<any> | any
 
 class RouteNode {
   public name: string
   public isParam: boolean
   public children: Map<string, RouteNode>
-  public methods: { [method in HTTPMethod]?: RouteHandler }
+  public methods: { [method in HTTPMethod]?: RequestHandler }
 
   constructor(options?: { name: string }) {
     this.name = options?.name || ''
@@ -29,11 +28,11 @@ class RouteNode {
     this.methods = {}
   }
 
-  public getHandler(method: HTTPMethod): RouteHandler | undefined {
+  public getHandler(method: HTTPMethod): RequestHandler | undefined {
     return this.methods?.[method]
   }
 
-  public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
+  public addHandler(method: HTTPMethod, handler: RequestHandler): boolean {
     /** Return false if the {@link handler} is already registered */
     if (this.getHandler(method) != null) {
       return false
@@ -92,7 +91,7 @@ export class AppRouter {
     url: string,
     method: string,
   ):
-    | { params: { [param: string]: string }; handler: RouteHandler }
+    | { params: { [param: string]: string }; handler: RequestHandler }
     | undefined {
     const segments = url.split('/').filter((u) => u != '')
     let currentNode = this.rootNode
@@ -134,7 +133,7 @@ export class AppRouter {
   public addRouteHandler(
     url: string,
     method: HTTPMethod,
-    handler: RouteHandler,
+    handler: RequestHandler,
   ) {
     const segments = url.split('/').filter((u) => u != '')
     let currentNode = this.rootNode
@@ -181,7 +180,7 @@ export class Router {
   public readonly endpoints: {
     route: string
     method: HTTPMethod
-    handler: RouteHandler
+    handler: RequestHandler
   }[]
 
   constructor(name: string) {
@@ -189,26 +188,26 @@ export class Router {
     this.endpoints = []
   }
 
-  public GET(route: string, handler: RouteHandler): void {
+  public GET(route: string, handler: RequestHandler): void {
     this.addEndpoint(route, 'GET', handler)
   }
 
-  public POST(route: string, handler: RouteHandler): void {
+  public POST(route: string, handler: RequestHandler): void {
     this.addEndpoint(route, 'POST', handler)
   }
 
-  public PUT(route: string, handler: RouteHandler): void {
+  public PUT(route: string, handler: RequestHandler): void {
     this.addEndpoint(route, 'PUT', handler)
   }
 
-  public DELETE(route: string, handler: RouteHandler): void {
+  public DELETE(route: string, handler: RequestHandler): void {
     this.addEndpoint(route, 'DELETE', handler)
   }
 
   private addEndpoint(
     route: string,
     method: HTTPMethod,
-    handler: RouteHandler,
+    handler: RequestHandler,
   ) {
     this.endpoints.push({
       method,
