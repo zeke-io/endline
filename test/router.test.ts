@@ -2,6 +2,13 @@
 import { Router } from '../src/server/router'
 
 describe('Router', function () {
+  it('should map GET handler', () => {
+    const router = new Router().GET('/', () => {})
+
+    const handler = router.getHandler('GET', '/')
+    expect(handler).not.toBe(undefined)
+  })
+
   it('should map other routers', () => {
     const rootRouter = new Router()
     const newRouter = new Router().GET('/', () => {})
@@ -27,8 +34,8 @@ describe('Router', function () {
 
     const GETHandler = router.getHandler('GET', '/')
     const POSTHandler = router.getHandler('POST', '/')
-    expect(GETHandler()).toBe('GET')
-    expect(POSTHandler()).toBe('POST')
+    expect(GETHandler?.()).toBe('GET')
+    expect(POSTHandler?.()).toBe('POST')
   })
 
   /*
