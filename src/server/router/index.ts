@@ -176,32 +176,50 @@ export class AppRouter {
 }
 
 export class Router {
-  public readonly name: string
+  public name: string
+  public relativeUrl?: string
   public readonly endpoints: {
     route: string
     method: HTTPMethod
     handler: RequestHandler
   }[]
 
-  constructor(name: string) {
-    this.name = name
+  constructor(relativeUrl?: string) {
+    this.name = '/'
+    this.relativeUrl = relativeUrl
     this.endpoints = []
   }
 
-  public GET(route: string, handler: RequestHandler): void {
+  public getHandler(
+    method: HTTPMethod,
+    route: string,
+  ): RequestHandler | undefined {
+    //
+    return undefined
+  }
+
+  public merge(router: Router) {
+    //
+  }
+
+  public GET(route: string, handler: RequestHandler) {
     this.addEndpoint(route, 'GET', handler)
+    return this
   }
 
-  public POST(route: string, handler: RequestHandler): void {
+  public POST(route: string, handler: RequestHandler) {
     this.addEndpoint(route, 'POST', handler)
+    return this
   }
 
-  public PUT(route: string, handler: RequestHandler): void {
+  public PUT(route: string, handler: RequestHandler) {
     this.addEndpoint(route, 'PUT', handler)
+    return this
   }
 
-  public DELETE(route: string, handler: RequestHandler): void {
+  public DELETE(route: string, handler: RequestHandler) {
     this.addEndpoint(route, 'DELETE', handler)
+    return this
   }
 
   private addEndpoint(
