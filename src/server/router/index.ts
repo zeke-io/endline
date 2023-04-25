@@ -176,52 +176,72 @@ export class AppRouter {
 }
 
 export class Router {
-  public name: string
-  public relativeUrl?: string
+  // TODO: Delete name after refactor
+  public name = 'index'
+  // TODO: Redo implementation
   public readonly endpoints: {
     route: string
     method: HTTPMethod
     handler: RequestHandler
-  }[]
+  }[] = []
+
+  private relativeUrl: string
+  private stack: Layer[]
 
   constructor(relativeUrl?: string) {
-    this.name = '/'
-    this.relativeUrl = relativeUrl
-    this.endpoints = []
+    this.relativeUrl = relativeUrl || ''
+    this.stack = []
   }
 
   public getHandler(
     method: HTTPMethod,
     route: string,
   ): RequestHandler | undefined {
-    //
+    // TODO: Implement
     return undefined
   }
 
   public merge(router: Router) {
+    // TODO: Implement
+  }
+
+  // Temporarily using `handlers[0]` until implementation of multiple handlers is done
+  public GET(route: string, ...handlers: RequestHandler[]) {
+    this.addHandlers('GET', route, ...handlers)
+    this.addEndpoint(route, 'GET', handlers[0])
+    return this
+  }
+
+  public POST(route: string, ...handlers: RequestHandler[]) {
+    this.addHandlers('POST', route, ...handlers)
+    this.addEndpoint(route, 'POST', handlers[0])
+    return this
+  }
+
+  public PUT(route: string, ...handlers: RequestHandler[]) {
+    this.addHandlers('PUT', route, ...handlers)
+    this.addEndpoint(route, 'PUT', handlers[0])
+    return this
+  }
+
+  public DELETE(route: string, ...handlers: RequestHandler[]) {
+    this.addHandlers('DELETE', route, ...handlers)
+    this.addEndpoint(route, 'DELETE', handlers[0])
+    return this
+  }
+
+  private addHandlers(
+    method: HTTPMethod,
+    route: string,
+    ...handlers: RequestHandler[]
+  ) {
     //
   }
 
-  public GET(route: string, handler: RequestHandler) {
-    this.addEndpoint(route, 'GET', handler)
-    return this
-  }
-
-  public POST(route: string, handler: RequestHandler) {
-    this.addEndpoint(route, 'POST', handler)
-    return this
-  }
-
-  public PUT(route: string, handler: RequestHandler) {
-    this.addEndpoint(route, 'PUT', handler)
-    return this
-  }
-
-  public DELETE(route: string, handler: RequestHandler) {
-    this.addEndpoint(route, 'DELETE', handler)
-    return this
-  }
-
+  /**
+   * @deprecated This method will be deleted after the new implementation
+   * @private
+   */
   private addEndpoint(
     route: string,
     method: HTTPMethod,
@@ -234,3 +254,5 @@ export class Router {
     })
   }
 }
+
+export class Layer {}
