@@ -6,7 +6,7 @@ import { AppRouter, Router, RouterConfig } from './'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
 
-// TODO: Add ES6 and typescript support
+// TODO: Migrate this
 export async function findRouters(routesDir: string) {
   const filesInDir = fs.readdirSync(routesDir)
   const foundFiles = []

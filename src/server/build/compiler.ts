@@ -2,6 +2,7 @@ import path from 'path'
 import webpack, { Configuration, StatsError } from 'webpack'
 import { EndlineConfig } from '../config'
 import { error, warn } from '../../lib/logger'
+import { getRouteFiles } from '../../lib/project-files-resolver'
 
 interface CompilerResults {
   errors?: StatsError[]
@@ -9,23 +10,24 @@ interface CompilerResults {
 }
 
 export class WebpackCompiler {
-  private readonly projectDir: string
-  private readonly routeFiles: any[]
   private config: EndlineConfig
+  private readonly projectDir: string
+  private readonly routesDirectory: string
 
-  constructor({ projectDir, config, routeFiles }: any) {
+  constructor({ projectDir, config, routesDirectory }: any) {
     this.projectDir = projectDir
-    this.routeFiles = routeFiles
     this.config = config
+    this.routesDirectory = routesDirectory
   }
 
   private createEntryPoints() {
     const entryPoints: Record<string, string> = {}
+    const routeFiles = getRouteFiles(this.routesDirectory)
 
-    for (const routeFile of this.routeFiles) {
+    for (const routeFile of routeFiles) {
       entryPoints[
         `routes/${path.parse(routeFile.fileName).name}`
-      ] = `./${routeFile.path}`
+      ] = `${routeFile.path}`
     }
 
     return entryPoints
@@ -37,6 +39,7 @@ export class WebpackCompiler {
       name: 'server',
       context: this.projectDir,
       target: 'node12.17',
+      //entry: path.join(outputPath, './main.js'),
       entry: this.createEntryPoints(),
       devtool: false,
       output: {

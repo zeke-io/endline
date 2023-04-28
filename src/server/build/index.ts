@@ -2,7 +2,7 @@ import { WebpackCompiler } from './compiler'
 import { EndlineConfig } from '../config'
 import fs from 'fs'
 import path from 'path'
-import { findRouters } from '../router/router-loader'
+import { findDirectory } from '../../lib/directory-resolver'
 
 export default async function build({
   projectDir,
@@ -12,25 +12,33 @@ export default async function build({
   config: EndlineConfig
 }) {
   const outputPath = path.join(projectDir, config.distDir)
+  /** If dist folder exists, clean it */
   if (fs.existsSync(outputPath)) {
     fs.rmSync(outputPath, { recursive: true })
   }
 
-  const routeFiles = await findRouters(config.router.routesDirectory as string)
+  /** Create dist folder */
+  fs.mkdirSync(outputPath, { recursive: true })
 
-  const compiler = new WebpackCompiler({
-    projectDir,
-    config,
-    routeFiles,
-  })
-
-  await compiler.run(outputPath)
-
-  /**
-   * Write the main.js server file to run the built app
-   */
+  /** Write the main.js server file to run the built app */
   const mainServerFile = await fs.promises.readFile(
     path.join(__dirname, './_main.js'),
   )
-  await fs.promises.writeFile(path.join(outputPath, 'main.js'), mainServerFile)
+  fs.writeFileSync(path.join(outputPath, 'main.js'), mainServerFile)
+
+  const folderPath = config.router.routesDirectory
+  const routesDirectory = findDirectory(
+    projectDir,
+    folderPath || 'routes',
+    !folderPath,
+  )
+
+  /** Compile the application */
+  const compiler = new WebpackCompiler({
+    projectDir,
+    config,
+    routesDirectory,
+  })
+
+  await compiler.run(outputPath)
 }
