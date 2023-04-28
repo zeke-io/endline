@@ -1,8 +1,9 @@
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineConfig } from './server/config'
-import { error, info, ready } from './lib/logger'
+import { error, info, ready, watch } from './lib/logger'
 import process from 'process'
 import { EndlineServer } from './server/endline'
+import { WatchCompiler } from './server/build/watch-compiler'
 
 interface EndlineAppOptions {
   config: EndlineConfig
@@ -17,10 +18,11 @@ class EndlineApp {
   private config: EndlineConfig
   private httpServer: Server
   private projectDir: string
-  private isDev: boolean
+  private readonly isDev: boolean
   private hostname: string
   private port: number
   private endlineServer: EndlineServer
+  private watchCompiler?: WatchCompiler
 
   constructor({
     config,
@@ -37,17 +39,31 @@ class EndlineApp {
     this.port = port
     this.isDev = !!isDev
 
-    this.endlineServer = new EndlineServer({ config, projectDir })
+    this.endlineServer = new EndlineServer({ config, projectDir, isDev })
   }
 
   public async initialize() {
     const { hostname, port, httpServer, endlineServer } = this
     info(`Initializing server on ${hostname}:${port}`)
 
+    if (this.isDev) {
+      await this.runWatchCompiler()
+    }
+
     httpServer.addListener('request', this.requestListener)
     await endlineServer.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
+  }
+
+  private async runWatchCompiler() {
+    const { projectDir, config } = this
+
+    this.watchCompiler = new WatchCompiler({ projectDir, config })
+    await this.watchCompiler.watch((changes, removals) => {
+      watch('Changes detected, applying...')
+      // TODO: Apply changes
+    })
   }
 
   get requestListener() {
@@ -57,7 +73,7 @@ class EndlineApp {
   }
 
   public shutdown() {
-    //
+    this.watchCompiler?.close()
   }
 }
 

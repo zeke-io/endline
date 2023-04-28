@@ -1,16 +1,27 @@
 import { AppRouter } from './router'
-import { IncomingMessage, ServerResponse } from 'http'
+import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
 import { EndlineConfig } from './config'
+
+interface EndlineServerOptions {
+  config: EndlineConfig
+  httpServer?: Server
+  projectDir: string
+  hostname?: string
+  port?: number
+  isDev?: boolean
+}
 
 export class EndlineServer {
   private readonly router: AppRouter
   private readonly projectDir: string
   private config: EndlineConfig
+  private isDev?: boolean
 
-  constructor(opts: { projectDir: string; config: EndlineConfig }) {
-    this.projectDir = opts.projectDir
-    this.config = opts.config
+  constructor({ projectDir, config, isDev }: EndlineServerOptions) {
+    this.projectDir = projectDir
+    this.config = config
+    this.isDev = isDev
     this.router = new AppRouter()
   }
 
