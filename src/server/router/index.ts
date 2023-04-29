@@ -177,16 +177,24 @@ export class AppRouter {
 }
 
 export class Router {
-  public readonly name: string
+  private _name: string
   public readonly endpoints: {
     route: string
     method: HTTPMethod
     handler: RouteHandler
   }[]
 
-  constructor(name: string) {
-    this.name = name
+  constructor(name?: string) {
+    this._name = name || 'index'
     this.endpoints = []
+  }
+
+  set name(name: string) {
+    this._name = name
+  }
+
+  get name() {
+    return this._name
   }
 
   public GET(route: string, handler: RouteHandler): void {
