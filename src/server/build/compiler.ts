@@ -1,7 +1,7 @@
 import path from 'path'
 import webpack, { Configuration, StatsError } from 'webpack'
-import { EndlineConfig } from '../config'
 import { error, warn } from '../../lib/logger'
+import { getRouteFiles } from '../../lib/project-files-resolver'
 
 interface CompilerResults {
   errors?: StatsError[]
@@ -10,22 +10,21 @@ interface CompilerResults {
 
 export class WebpackCompiler {
   private readonly projectDir: string
-  private readonly routeFiles: any[]
-  private config: EndlineConfig
+  private readonly routesDirectory: string
 
-  constructor({ projectDir, config, routeFiles }: any) {
+  constructor({ projectDir, routesDirectory }: any) {
     this.projectDir = projectDir
-    this.routeFiles = routeFiles
-    this.config = config
+    this.routesDirectory = routesDirectory
   }
 
   private createEntryPoints() {
     const entryPoints: Record<string, string> = {}
+    const routeFiles = getRouteFiles(this.routesDirectory)
 
-    for (const routeFile of this.routeFiles) {
+    for (const routeFile of routeFiles) {
       entryPoints[
         `routes/${path.parse(routeFile.fileName).name}`
-      ] = `./${routeFile.path}`
+      ] = `${routeFile.path}`
     }
 
     return entryPoints
@@ -33,7 +32,7 @@ export class WebpackCompiler {
 
   private async buildConfiguration(outputPath: string): Promise<Configuration> {
     return {
-      mode: 'production',
+      mode: 'development',
       name: 'server',
       context: this.projectDir,
       target: 'node12.17',
@@ -41,10 +40,22 @@ export class WebpackCompiler {
       devtool: false,
       output: {
         path: outputPath,
+        libraryTarget: 'commonjs2',
       },
       optimization: {
         nodeEnv: false,
         minimize: false,
+      },
+      externals: [],
+      externalsPresets: {
+        node: true,
+      },
+      resolve: {
+        extensions: ['.js', '.ts'],
+        modules: ['node_modules'],
+      },
+      resolveLoader: {
+        modules: ['node_modules'],
       },
       module: {
         rules: [
@@ -54,23 +65,27 @@ export class WebpackCompiler {
             use: {
               loader: 'babel-loader',
               options: {
-                presets: ['@babel/preset-env'],
+                presets: [
+                  [
+                    '@babel/preset-env',
+                    {
+                      targets: {
+                        node: '12.17',
+                      },
+                    },
+                  ],
+                ],
               },
             },
           },
         ],
       },
-      resolve: {
-        extensions: ['.js', '.ts'],
-        modules: ['node_modules'],
-      },
-      resolveLoader: {
-        modules: ['node_modules'],
-      },
     }
   }
 
-  async run(outputPath: string) {
+  async run(outputPath?: string) {
+    outputPath ??= path.join(this.projectDir, 'dist/')
+
     const webpackConfig: Configuration = await this.buildConfiguration(
       outputPath,
     )

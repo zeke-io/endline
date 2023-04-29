@@ -1,10 +1,8 @@
-async function IndexRoute(router) {
+export default async function IndexRoute(router) {
   router.GET('/', getGreeting)
 }
 
-module.exports = IndexRoute
-
-const getGreeting = async ({ res, params }) => {
+async function getGreeting({ res, params }) {
   const payload = {
     message: `Hello${params.name ? ` ${params.name}` : ', World!'}`,
   }
