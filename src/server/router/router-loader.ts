@@ -87,6 +87,14 @@ export async function loadApiRoutes(
 
       /** Add endpoints to app router */
       appRouter.addFromRouter(router)
+    } else if (typeof module === 'object') {
+      router = module
+
+      if (!router.name) {
+        router.name = name
+      }
+
+      appRouter.addFromRouter(router)
     } else {
       warn(
         `The file '${routeFile.fileName}' does not export a default function, ignoring...`,
