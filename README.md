@@ -20,6 +20,7 @@ Check the [Getting Started Guide](docs/getting-started.md) to get started.
 
 ### 🏗️ Work In Progress
 
+- Directory based route mapping
 - Typescript Support
 
 ## Contributing

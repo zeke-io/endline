@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { pathToFileURL } from 'url'
 import { AppRouter, Router, RouterConfig } from './'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
