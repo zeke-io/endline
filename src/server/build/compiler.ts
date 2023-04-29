@@ -1,6 +1,5 @@
 import path from 'path'
 import webpack, { Configuration, StatsError } from 'webpack'
-import { EndlineConfig } from '../config'
 import { error, warn } from '../../lib/logger'
 import { getRouteFiles } from '../../lib/project-files-resolver'
 
@@ -10,13 +9,11 @@ interface CompilerResults {
 }
 
 export class WebpackCompiler {
-  private config: EndlineConfig
   private readonly projectDir: string
   private readonly routesDirectory: string
 
-  constructor({ projectDir, config, routesDirectory }: any) {
+  constructor({ projectDir, routesDirectory }: any) {
     this.projectDir = projectDir
-    this.config = config
     this.routesDirectory = routesDirectory
   }
 
@@ -86,7 +83,9 @@ export class WebpackCompiler {
     }
   }
 
-  async run(outputPath: string) {
+  async run(outputPath?: string) {
+    outputPath ??= path.join(this.projectDir, 'dist/')
+
     const webpackConfig: Configuration = await this.buildConfiguration(
       outputPath,
     )

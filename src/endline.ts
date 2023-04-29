@@ -1,9 +1,11 @@
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineConfig } from './server/config'
-import { error, info, ready, watch } from './lib/logger'
+import { error, info, ready } from './lib/logger'
 import process from 'process'
 import { EndlineServer } from './server/endline'
 import { WatchCompiler } from './server/build/watch-compiler'
+import { findDirectory } from './lib/directory-resolver'
+import path from 'path'
 
 interface EndlineAppOptions {
   config: EndlineConfig
@@ -57,12 +59,14 @@ class EndlineApp {
   }
 
   private async runWatchCompiler() {
-    const { projectDir, config } = this
+    const { projectDir } = this
 
-    this.watchCompiler = new WatchCompiler({ projectDir, config })
-    await this.watchCompiler.watch((changes, removals) => {
-      watch('Changes detected, applying...')
-      // TODO: Apply changes
+    const routesDirectory =
+      findDirectory(projectDir, 'routes') || path.join(projectDir, 'src/routes')
+
+    this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
+    await this.watchCompiler.watch(() => {
+      this.endlineServer.loadRoutes(true)
     })
   }
 

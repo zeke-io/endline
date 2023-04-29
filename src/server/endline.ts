@@ -13,9 +13,9 @@ interface EndlineServerOptions {
 }
 
 export class EndlineServer {
-  private readonly router: AppRouter
   private readonly projectDir: string
   private config: EndlineConfig
+  private router: AppRouter
   private isDev?: boolean
 
   constructor({ projectDir, config, isDev }: EndlineServerOptions) {
@@ -26,12 +26,20 @@ export class EndlineServer {
   }
 
   public async initialize() {
-    await loadApiRoutes(this.projectDir, this.router, this.config.router)
+    await this.loadRoutes()
   }
 
   get requestListener() {
     return async (req: IncomingMessage, res: ServerResponse) => {
       await this.router.run(req, res)
     }
+  }
+
+  async loadRoutes(cleanRouter = false) {
+    if (cleanRouter) {
+      this.router = new AppRouter()
+    }
+
+    await loadApiRoutes(this.projectDir, this.router, this.config.router)
   }
 }

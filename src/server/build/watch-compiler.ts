@@ -1,38 +1,44 @@
-import { EndlineConfig } from '../config'
 import Watchpack from 'watchpack'
+import { WebpackCompiler } from './compiler'
+import { watch } from '../../lib/logger'
 
 export class WatchCompiler {
   private readonly projectDir: string
-  private config: EndlineConfig
+  private routesDirectory: string
+  private webpack: WebpackCompiler
   private wp: Watchpack
 
   constructor({
     projectDir,
-    config,
+    routesDirectory,
   }: {
     projectDir: string
-    config: EndlineConfig
+    routesDirectory: string
   }) {
     this.projectDir = projectDir
-    this.config = config
+    this.routesDirectory = routesDirectory
+    this.webpack = new WebpackCompiler({
+      projectDir,
+      routesDirectory,
+    })
+
     this.wp = new Watchpack({
       ignored: '**/.git',
     })
   }
-  async watch(onAggregated: (changes: any, removals: any) => void) {
+
+  async watch(onSuccess?: () => void) {
+    await this.webpack.run()
     this.wp.watch({
       directories: [this.projectDir],
     })
-    this.wp.on('aggregated', onAggregated)
-    /*return wp.watch({}, (err, stats) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-
-      // info(`Changes detected, applying changes... [${stats?.hash}]`)
-    })*/
+    this.wp.on('aggregated', async (changes, removals) => {
+      watch('Changes detected, applying...')
+      await this.webpack.run()
+      onSuccess?.()
+    })
   }
+
   async close() {
     this.wp.close()
   }
