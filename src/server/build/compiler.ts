@@ -30,6 +30,17 @@ export class WebpackCompiler {
     return entryPoints
   }
 
+  private externalsHandler(
+    context?: string,
+    request?: string,
+    dependencyType?: string,
+    getResolve?: () => unknown,
+    callback?: () => void,
+  ) {
+    console.log({ context, request, dependencyType, getResolve })
+    callback?.()
+  }
+
   private async buildConfiguration(outputPath: string): Promise<Configuration> {
     return {
       mode: 'development',
@@ -42,11 +53,23 @@ export class WebpackCompiler {
         path: outputPath,
         libraryTarget: 'commonjs2',
       },
+      experiments: {
+        cacheUnaffected: true,
+      },
       optimization: {
         nodeEnv: false,
         minimize: false,
       },
-      externals: [],
+      externals: [
+        ({ context, request, dependencyType, getResolve }, callback) =>
+          this.externalsHandler(
+            context,
+            request,
+            dependencyType,
+            getResolve,
+            callback,
+          ),
+      ],
       externalsPresets: {
         node: true,
       },
