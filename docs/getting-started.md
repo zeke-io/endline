@@ -24,11 +24,12 @@ Pnpm:
 pnpm add endline
 ```
 
-Open your `package.json` and add the `dev` script:
+Open your `package.json` and add the `dev` and `build` script:
 
 ```yaml
 "scripts": {
-  "dev": "endline dev"
+  "dev": "endline dev",
+  "build": "endline build"
 }
 ```
 

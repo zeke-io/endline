@@ -14,13 +14,13 @@ Check the [Getting Started Guide](docs/getting-started.md) to get started.
 ## Features
 
 - Automatic route mapping based on file names
+- Hot Reloader
 - Support for .env files
+- ES6 Support
 
 ### 🏗️ Work In Progress
 
-- Webpack 5 Compiler
-- ES6 & Typescript support
-- Hot reloader
+- Typescript Support
 
 ## Contributing
 

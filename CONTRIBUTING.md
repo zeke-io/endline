@@ -2,7 +2,9 @@
 
 Thank you for considering contributing to the project!
 
-## Preparation
+## Development
+
+### Requirements
 
 This repository requires [pnpm](https://pnpm.js.org/en/),
 you can install it using npm:
@@ -19,10 +21,18 @@ corepack enable pnpm
 
 More information can be found at https://pnpm.io/installation
 
-### Dependencies
+### Preparation
 
 Install the dependencies
 
 ```bash
 pnpm install
 ```
+
+Build the project
+
+```bash
+pnpm dev
+```
+
+When running `pnpm dev` it will watch for changes made to the source code and automatically compile it.
