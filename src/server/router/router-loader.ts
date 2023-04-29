@@ -29,7 +29,7 @@ export async function findRouters(routesDir: string) {
      * Get exported router
      */
     try {
-      const file = await import(pathToFileURL(filePath).href)
+      const file = require(filePath)
       const module = file.default || file
 
       if (!module) {
@@ -60,12 +60,8 @@ export async function loadApiRoutes(
   appRouter: AppRouter,
   routerConfig: RouterConfig,
 ) {
-  const folderPath = routerConfig.routesDirectory
-  const routesDir = findDirectory(
-    projectDir,
-    folderPath || 'routes',
-    !folderPath,
-  )
+  const folderPath = 'dist/routes'
+  const routesDir = findDirectory(projectDir, folderPath, false)
 
   if (routesDir == null) {
     error(
