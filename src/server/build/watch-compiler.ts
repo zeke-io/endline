@@ -23,7 +23,7 @@ export class WatchCompiler {
     })
 
     this.wp = new Watchpack({
-      ignored: '**/.git',
+      ignored: ['**/.git', '**/dist/**/*'],
     })
   }
 
