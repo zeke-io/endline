@@ -21,5 +21,4 @@ export const warn = (...data: unknown[]) => console.warn(labels.warn, ...data)
 export const ready = (...data: unknown[]) => console.log(labels.ready, ...data)
 export const error = (...data: unknown[]) =>
   console.error(labels.error, ...data)
-export const watch = (...data: unknown[]) =>
-  console.error(labels.watch, ...data)
+export const watch = (...data: unknown[]) => console.log(labels.watch, ...data)
