@@ -78,7 +78,7 @@ export async function loadApiRoutes(
   for (const routeFile of foundRouters) {
     const module = routeFile.module
     const name = path.parse(routeFile.path).name
-    let router: Router
+    let router
 
     if (typeof module === 'function') {
       router = new Router(name)
@@ -88,6 +88,14 @@ export async function loadApiRoutes(
       appRouter.addFromRouter(router)
     } else if (typeof module === 'object') {
       router = module
+
+      /** Make sure the module is not empty or exporting an invalid object */
+      if (!(router instanceof Router)) {
+        warn(
+          `The file '${routeFile.fileName}' does not export a Router, ignoring...`,
+        )
+        continue
+      }
 
       if (!router.name) {
         router.name = name
