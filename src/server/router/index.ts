@@ -225,3 +225,5 @@ export class Router {
     })
   }
 }
+
+export default Router
