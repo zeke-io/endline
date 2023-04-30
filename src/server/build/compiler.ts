@@ -37,7 +37,7 @@ export class WebpackCompiler {
     getResolve?: () => unknown,
     callback?: () => void,
   ) {
-    console.log({ context, request, dependencyType, getResolve })
+    // const isEsm = dependencyType === 'esm'
     callback?.()
   }
 
@@ -114,12 +114,20 @@ export class WebpackCompiler {
     )
 
     const { warnings, errors } = await this.build(webpackConfig)
-    if (warnings?.length) {
-      warn(warnings)
-    }
 
     if (errors?.length) {
-      error(errors)
+      error('Failed to compile application, please fix the following errors:')
+      for (const error of errors) {
+        console.error(error)
+      }
+      process.exit(1)
+    }
+
+    if (warnings?.length) {
+      warn('Application compiled with some warnings:')
+      for (const warning of warnings) {
+        console.warn(warning)
+      }
     }
   }
 
