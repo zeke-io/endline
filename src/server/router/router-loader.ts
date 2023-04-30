@@ -58,8 +58,9 @@ export async function loadApiRoutes(
   projectDir: string,
   appRouter: AppRouter,
   routerConfig: RouterConfig,
+  isDev = true,
 ) {
-  const folderPath = 'dist/routes'
+  const folderPath = isDev ? 'dist/routes' : 'routes'
   const routesDir = findDirectory(projectDir, folderPath, false)
 
   if (routesDir == null) {
