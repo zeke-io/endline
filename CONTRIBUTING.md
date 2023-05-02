@@ -1,6 +1,25 @@
 # Contributing Guide
 
-Thank you for considering contributing to the project!
+Thank you for considering contributing to the "Endline" project!
+
+## Code of Conduct
+
+Please note we have a [Code of Conduct](CODE-OF-CONDUCT.md), please follow it in all your interactions with the project.
+
+## A message from the author
+
+Hey there! Thank you for taking your time reading this.
+
+I started Endline as a side-project, and it is my first **open-source** project,
+because of this, there could be some stuff missing in the repository,
+like documentation, GitHub files and other things.
+
+If you need to contact me directly, to recommend me something,
+or help with anything related to the project, please do so using the next contact information:
+
+- Email: [ezequiel_io@pm.me](mailto:ezequiel_io@pm.me)
+- Twitter: [@ezequiel_hvm](https://twitter.com/ezequiel_hvm)
+- Discord: zeke-io#9185
 
 ## Development
 
