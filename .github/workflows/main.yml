@@ -18,8 +18,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'pnpm'
           check-latest: true
+
+      - uses: actions/cache@v3
+        id: build-cache
+        with:
+          path: ./*
+          key: build-${{ github.run_number }}-${{ github.sha }}
 
       - run: pnpm install
       - run: pnpm build
@@ -38,6 +43,12 @@ jobs:
           node-version: 16
           cache: 'pnpm'
           check-latest: true
+
+      - uses: actions/cache@v3
+        id: restore-build-cache
+        with:
+          path: ./*
+          key: build-${{ github.run_number }}-${{ github.sha }}
 
       - run: pnpm prettier:check
       - run: pnpm lint:check
