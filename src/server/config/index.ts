@@ -1,9 +1,9 @@
+import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 import { error, warn } from '../../lib/logger'
 import { validateConfig } from './config-schema'
 import { RouterConfig } from '../router'
-import fs from 'fs'
 import { loadEnvFiles } from './env-loader'
 
 export interface EndlineConfig {
@@ -27,23 +27,23 @@ export default async function loadConfig({
 }): Promise<EndlineConfig> {
   const fileName = 'endline.config.js'
   const filePath = path.resolve(projectDir, fileName)
-  const fileExist = fs.existsSync(filePath)
 
+  /** Load env files first, so they are available in the config file */
   await loadEnvFiles({ projectDir, environment })
 
-  if (fileExist) {
+  if (fs.existsSync(filePath)) {
     const userConfigFile = await import(pathToFileURL(filePath).href)
     const userConfig = userConfigFile.default || userConfigFile
 
     if (Object.keys(userConfig).length === 0) {
       warn(
-        `Configuration file '${fileName}' detected, but no configuration has been exported.`,
+        `Configuration file '${fileName}' is not exporting a valid configuration.`,
       )
     }
 
     const validation = validateConfig(userConfig)
     if (validation.errors) {
-      error(`Configuration file '${fileName}' invalid:`)
+      error(`Configuration file '${fileName}' is invalid:`)
       validation.errors.forEach((e) => error(` · ${e}`))
 
       process.exit(1)

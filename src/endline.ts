@@ -1,11 +1,11 @@
+import path from 'path'
+import process from 'process'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineConfig } from './server/config'
 import { error, info, ready } from './lib/logger'
-import process from 'process'
 import { EndlineServer } from './server/endline-server'
 import { WatchCompiler } from './server/build/watch-compiler'
 import { findDirectory } from './lib/directory-resolver'
-import path from 'path'
 
 interface EndlineAppOptions {
   config: EndlineConfig
