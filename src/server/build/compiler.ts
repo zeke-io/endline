@@ -43,12 +43,12 @@ export class WebpackCompiler {
 
   private async buildConfiguration(outputPath: string): Promise<Configuration> {
     return {
-      mode: 'development',
+      mode: 'none',
       name: 'server',
       context: this.projectDir,
+      devtool: false,
       target: 'node12.17',
       entry: this.createEntryPoints(),
-      devtool: false,
       output: {
         path: outputPath,
         libraryTarget: 'commonjs2',
@@ -82,6 +82,12 @@ export class WebpackCompiler {
       },
       module: {
         rules: [
+          {
+            test: /\.m?js/,
+            resolve: {
+              fullySpecified: false,
+            },
+          },
           {
             test: /\.js$/,
             exclude: /node_modules/,
