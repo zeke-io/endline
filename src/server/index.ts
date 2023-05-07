@@ -9,7 +9,7 @@ function shutdownHandler() {
   console.log('')
   warn('Shutting down server...')
   serverShutdown && serverShutdown()
-  process.exit(1)
+  process.exit(0)
 }
 
 process.on('SIGTERM', shutdownHandler)
