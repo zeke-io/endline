@@ -37,7 +37,7 @@ export class WebpackCompiler {
     getResolve?: () => unknown,
     callback?: () => void,
   ) {
-    // const isEsm = dependencyType === 'esm'
+    // TODO: Implement this
     callback?.()
   }
 
@@ -50,6 +50,7 @@ export class WebpackCompiler {
       target: 'node12.17',
       entry: this.createEntryPoints(),
       output: {
+        clean: true,
         path: outputPath,
         libraryTarget: 'commonjs2',
       },
@@ -89,21 +90,16 @@ export class WebpackCompiler {
             },
           },
           {
-            test: /\.js$/,
+            test: /\.m?js$/,
+            include: [this.projectDir],
             exclude: /node_modules/,
             use: {
-              loader: 'babel-loader',
+              loader: require.resolve('babel-loader'),
               options: {
-                presets: [
-                  [
-                    '@babel/preset-env',
-                    {
-                      targets: {
-                        node: '12.17',
-                      },
-                    },
-                  ],
-                ],
+                targets: {
+                  node: '12.17',
+                },
+                cwd: this.projectDir,
               },
             },
           },
