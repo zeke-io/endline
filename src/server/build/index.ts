@@ -1,8 +1,9 @@
-import { WebpackCompiler } from './compiler'
-import { EndlineConfig } from '../config'
 import fs from 'fs'
 import path from 'path'
+import { WebpackCompiler } from './compiler'
+import { EndlineConfig } from '../config'
 import { findDirectory } from '../../lib/directory-resolver'
+import { done, info } from '../../lib/logger'
 
 export default async function build({
   projectDir,
@@ -19,6 +20,8 @@ export default async function build({
 
   /** Create dist folder */
   fs.mkdirSync(outputPath, { recursive: true })
+
+  info('Building application...')
 
   /** Write the main.js server file to run the built app */
   const mainServerFile = await fs.promises.readFile(
@@ -41,4 +44,6 @@ export default async function build({
   })
 
   await compiler.run(outputPath)
+
+  done('The application has been compiled successfully.')
 }
