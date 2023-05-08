@@ -50,7 +50,6 @@ export class WebpackCompiler {
       target: 'node12.17',
       entry: this.createEntryPoints(),
       output: {
-        clean: true,
         path: outputPath,
         libraryTarget: 'commonjs2',
       },
