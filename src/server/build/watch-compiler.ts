@@ -20,6 +20,7 @@ export class WatchCompiler {
     this.webpack = new WebpackCompiler({
       projectDir,
       routesDirectory,
+      clean: true,
     })
 
     this.wp = new Watchpack({

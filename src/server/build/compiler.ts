@@ -11,10 +11,12 @@ interface CompilerResults {
 export class WebpackCompiler {
   private readonly projectDir: string
   private readonly routesDirectory: string
+  private readonly shouldClean: boolean
 
-  constructor({ projectDir, routesDirectory }: any) {
+  constructor({ projectDir, routesDirectory, clean }: any) {
     this.projectDir = projectDir
     this.routesDirectory = routesDirectory
+    this.shouldClean = !!clean
   }
 
   private createEntryPoints() {
@@ -50,6 +52,7 @@ export class WebpackCompiler {
       target: 'node12.17',
       entry: this.createEntryPoints(),
       output: {
+        clean: this.shouldClean,
         path: outputPath,
         libraryTarget: 'commonjs2',
       },
