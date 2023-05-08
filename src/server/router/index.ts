@@ -177,7 +177,7 @@ export class AppRouter {
 
 export class Router {
   // TODO: Delete name after refactor
-  public name = 'index'
+  private _name = 'index'
   // TODO: Redo implementation
   public readonly endpoints: {
     route: string
@@ -203,6 +203,14 @@ export class Router {
 
   public merge(router: Router) {
     // TODO: Implement
+  }
+
+  set name(name: string) {
+    this._name = name
+  }
+
+  get name() {
+    return this._name
   }
 
   // Temporarily using `handlers[0]` until implementation of multiple handlers is done
@@ -256,3 +264,5 @@ export class Router {
 }
 
 export class Layer {}
+
+export default Router

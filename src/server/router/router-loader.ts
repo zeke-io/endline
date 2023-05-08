@@ -1,12 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { pathToFileURL } from 'url'
 import { AppRouter, Router, RouterConfig } from './'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
 
-// TODO: Add ES6 and typescript support
+// TODO: Migrate this
 export async function findRouters(routesDir: string) {
   const filesInDir = fs.readdirSync(routesDir)
   const foundFiles = []
@@ -29,7 +28,7 @@ export async function findRouters(routesDir: string) {
      * Get exported router
      */
     try {
-      const file = await import(pathToFileURL(filePath).href)
+      const file = require(filePath)
       const module = file.default || file
 
       if (!module) {
@@ -59,13 +58,10 @@ export async function loadApiRoutes(
   projectDir: string,
   appRouter: AppRouter,
   routerConfig: RouterConfig,
+  isDev = true,
 ) {
-  const folderPath = routerConfig.routesDirectory
-  const routesDir = findDirectory(
-    projectDir,
-    folderPath || 'routes',
-    !folderPath,
-  )
+  const folderPath = isDev ? 'dist/routes' : 'routes'
+  const routesDir = findDirectory(projectDir, folderPath, false)
 
   if (routesDir == null) {
     error(
@@ -83,13 +79,29 @@ export async function loadApiRoutes(
   for (const routeFile of foundRouters) {
     const module = routeFile.module
     const name = path.parse(routeFile.path).name
-    let router: Router
+    let router
 
     if (typeof module === 'function') {
       router = new Router(name)
       await module(router)
 
       /** Add endpoints to app router */
+      appRouter.addFromRouter(router)
+    } else if (typeof module === 'object') {
+      router = module
+
+      /** Make sure the module is not empty or exporting an invalid object */
+      if (!(router instanceof Router)) {
+        warn(
+          `The file '${routeFile.fileName}' does not export a Router, ignoring...`,
+        )
+        continue
+      }
+
+      if (!router.name) {
+        router.name = name
+      }
+
       appRouter.addFromRouter(router)
     } else {
       warn(

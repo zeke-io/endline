@@ -1,7 +1,7 @@
 const GITHUB_REPOSITORY_URL = process.env.GITHUB_REPOSITORY_URL
 const NPM_PACKAGE_URL = process.env.NPM_PACKAGE_URL
 
-async function IndexRoute(router) {
+export default async function IndexRoute(router) {
   router.GET('/', async ({ res }) => {
     const payload = {
       repositoryUrl: GITHUB_REPOSITORY_URL,
@@ -12,5 +12,3 @@ async function IndexRoute(router) {
     res.end(JSON.stringify(payload))
   })
 }
-
-module.exports = IndexRoute
