@@ -33,7 +33,7 @@ export class WatchCompiler {
     this.wp.watch({
       directories: [this.projectDir],
     })
-    this.wp.on('aggregated', async (changes, removals) => {
+    this.wp.on('aggregated', async (_changes, _removals) => {
       watch('Changes detected, applying...')
       await this.webpack.run()
       onSuccess?.()

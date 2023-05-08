@@ -33,10 +33,10 @@ export class WebpackCompiler {
   }
 
   private externalsHandler(
-    context?: string,
-    request?: string,
-    dependencyType?: string,
-    getResolve?: () => unknown,
+    _context?: string,
+    _request?: string,
+    _dependencyType?: string,
+    _getResolve?: () => unknown,
     callback?: () => void,
   ) {
     // TODO: Implement this
