@@ -2,8 +2,8 @@
 
 A **Backend Framework** for **Node.js**
 
-[![NPM Version][npm-version-image]][npm-package-url]
-[![License][npm-license-image]](LICENSE)
+[![NPM Version][npm-version-badge]][npm-package-url]
+[![License][npm-license-badge]](LICENSE)
 
 ⚠️ **This project is still in its early stages and under active development. It is not yet ready to be used in a production environment.**
 
@@ -35,5 +35,5 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more information on helping wi
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 [npm-package-url]: https://www.npmjs.com/package/endline
-[npm-version-image]: https://img.shields.io/npm/v/endline.svg
-[npm-license-image]: https://img.shields.io/npm/l/endline
+[npm-version-badge]: https://img.shields.io/npm/v/endline?style=for-the-badge
+[npm-license-badge]: https://img.shields.io/npm/l/endline?style=for-the-badge
