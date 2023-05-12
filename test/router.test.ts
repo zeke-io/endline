@@ -1,4 +1,4 @@
-import { AppRouter, Router } from '../src/server/router'
+import { AppRouter, Router } from '../packages/endline/src/server/router'
 
 describe('Router', function () {
   let appRouter: AppRouter
