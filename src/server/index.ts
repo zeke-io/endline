@@ -1,5 +1,5 @@
 import http from 'http'
-import { EndlineConfig } from './config'
+import { EndlineConfig } from '../config'
 import createEndlineApp from '../endline'
 import { warn } from '../lib/logger'
 

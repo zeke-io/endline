@@ -1,7 +1,7 @@
 import path from 'path'
 import process from 'process'
 import { IncomingMessage, Server, ServerResponse } from 'http'
-import { EndlineConfig } from './server/config'
+import { EndlineConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
 import { WatchCompiler } from './server/build/watch-compiler'
@@ -59,10 +59,11 @@ class EndlineApp {
   }
 
   private async runWatchCompiler() {
-    const { projectDir } = this
+    const { projectDir, config } = this
 
     const routesDirectory =
-      findDirectory(projectDir, 'routes') || path.join(projectDir, 'src/routes')
+      findDirectory(projectDir, config.router.routesDirectory, false) ||
+      path.join(projectDir, 'src/routes')
 
     this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
     await this.watchCompiler.watch(() => {
