@@ -7,6 +7,9 @@
   "repository": "zeke-io/endline",
   "homepage": "https://github.com/zeke-io/endline#readme",
   "bugs": "https://github.com/zeke-io/endline/issues",
+  "bin": {
+    "create-endline-app": "dist/index.js"
+  },
   "packageManager": "pnpm@8.2.0",
   "engines": {
     "node": ">=14.17.3"
