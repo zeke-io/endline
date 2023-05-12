@@ -13,7 +13,7 @@
   },
   "overrides": [
     {
-      "files": ["types/**"],
+      "files": ["packages/**/types/**"],
       "rules": {
         "@typescript-eslint/triple-slash-reference": "off"
       }
