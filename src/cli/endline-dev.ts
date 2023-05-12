@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander'
 import { getProjectDirectory } from '../lib/directory-resolver'
 import { initializeDevServer } from '../server'
-import loadConfig from '../server/config'
+import loadConfig from '../config'
 
 const command = new Command('dev')
   .description('Starts the Endline App in development mode')

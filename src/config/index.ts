@@ -1,9 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
-import { error, warn } from '../../lib/logger'
+import { error, warn } from '../lib/logger'
 import { validateConfig } from './config-schema'
-import { RouterConfig } from '../router'
+import { RouterConfig } from '../server/router'
 import { loadEnvFiles } from './env-loader'
 
 export interface EndlineConfig {

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { WebpackCompiler } from './compiler'
-import { EndlineConfig } from '../config'
+import { EndlineConfig } from '../../config'
 import { findDirectory } from '../../lib/directory-resolver'
 import { done, info } from '../../lib/logger'
 

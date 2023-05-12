@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { getProjectDirectory } from '../lib/directory-resolver'
-import loadConfig from '../server/config'
+import loadConfig from '../config'
 import build from '../server/build'
 
 const command = new Command('build')

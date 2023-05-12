@@ -1,7 +1,7 @@
 import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
-import { EndlineConfig } from './config'
+import { EndlineConfig } from '../config'
 
 interface EndlineServerOptions {
   config: EndlineConfig
