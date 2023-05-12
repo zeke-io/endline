@@ -16,6 +16,8 @@
     /* Completeness */
     "skipLibCheck": true
   },
-  "include": ["src/"],
+  "include": [
+    "packages/endline/src/"
+  ],
   "exclude": ["node_modules/"]
 }
