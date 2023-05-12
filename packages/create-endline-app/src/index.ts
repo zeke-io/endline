@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
 import prompts from 'prompts'
+import validateNpmName from 'validate-npm-package-name'
+import { createEndlineApp } from './create-endline-app'
 
 const program = new Command()
 
@@ -8,24 +10,33 @@ program
   .name('create-endline-app')
   .version('0.0.1')
   .description('Create an Endline App')
-  .argument('[name]', 'name of the project')
+  .arguments('[project-directory]')
   .action(main)
+  .parse()
 
-program.parse()
-
-async function main(name: string) {
+async function main(projectName: string) {
   /** Validate arguments provided, prompt required options */
-  if (!name) {
+  if (!projectName) {
     const response = await prompts({
-      name: 'name',
+      name: 'projectName',
       type: 'text',
       message: 'Name of the project',
       initial: 'endline-api',
-      validate: (value) => (value ? true : 'Invalid project name'),
+      validate: (value) => {
+        const { errors = [], warnings = [] } = validateNpmName(value)
+
+        if (errors?.length || warnings?.length) {
+          return `Invalid package name: ${[...errors, ...warnings][0]}`
+        }
+
+        return true
+      },
     })
 
-    if (response.name) {
-      name = response.name.trim()
+    if (response.projectName) {
+      projectName = response.projectName.trim()
     }
   }
+
+  await createEndlineApp(projectName)
 }
