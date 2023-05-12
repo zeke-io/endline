@@ -59,10 +59,11 @@ class EndlineApp {
   }
 
   private async runWatchCompiler() {
-    const { projectDir } = this
+    const { projectDir, config } = this
 
     const routesDirectory =
-      findDirectory(projectDir, 'routes') || path.join(projectDir, 'src/routes')
+      findDirectory(projectDir, config.router.routesDirectory, false) ||
+      path.join(projectDir, 'src/routes')
 
     this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
     await this.watchCompiler.watch(() => {
