@@ -56,6 +56,15 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
+  packages/create-endline-app:
+    dependencies:
+      chalk:
+        specifier: 4.1.2
+        version: 4.1.2
+      commander:
+        specifier: ^10.0.1
+        version: 10.0.1
+
   packages/endline:
     dependencies:
       '@segment/ajv-human-errors':

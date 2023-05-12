@@ -8,7 +8,7 @@
   "homepage": "https://github.com/zeke-io/endline#readme",
   "bugs": "https://github.com/zeke-io/endline/issues",
   "scripts": {
-    "dev": "lerna run dev",
+    "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build",
     "test": "jest",
     "lint:check": "eslint .",
