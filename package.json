@@ -1,6 +1,6 @@
 {
   "name": "endline",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "author": "Zeke <ezequiel_io@pm.me>",
   "repository": "zeke-io/endline",
@@ -11,7 +11,10 @@
     "framework",
     "rest",
     "restful",
-    "api"
+    "backend",
+    "api",
+    "web",
+    "http"
   ],
   "files": [
     "dist",
