@@ -1,7 +1,13 @@
 import fs from 'fs'
 import path from 'path'
+import { warn } from './logger'
 
 export function getRouteFiles(routesDir: string, extensions = ['.js']) {
+  if (!fs.existsSync(routesDir)) {
+    warn(`The routes directory at '${routesDir}' does not exist.`)
+    return []
+  }
+
   const filesInDir = fs.readdirSync(routesDir)
   const foundFiles = []
 

@@ -4,7 +4,7 @@ import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 
 export interface RouterConfig {
-  routesDirectory?: string
+  routesDirectory: string
 }
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'

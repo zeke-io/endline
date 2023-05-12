@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import dotenv, { DotenvConfigOutput } from 'dotenv'
 import { expand as dotenvExpand } from 'dotenv-expand'
-import { error } from '../../lib/logger'
+import { error } from '../lib/logger'
 
 export async function loadEnvFiles({
   projectDir,
