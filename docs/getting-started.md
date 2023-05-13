@@ -2,11 +2,24 @@
 
 Before getting started, you will need Node.js 14.17 or a newer version.
 
-## Installation
+## Creating a new project
+
+We recommend using `create-endline-app`, it will create the necessary files and install the dependencies required to create an Endline app.
+
+You can create a new project with `create-endline-app` by running:
+
+```bash
+# NPX
+npx create-endline-app@latest
+# Yarn
+yarn create endline-app
+# PNPM
+pnpm create endline-app
+```
+
+### Manual Installation
 
 Install Endline using your favorite package manager:
-
-NPM:
 
 ```bash
 # NPM

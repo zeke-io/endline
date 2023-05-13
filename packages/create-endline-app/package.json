@@ -1,0 +1,36 @@
+{
+  "name": "create-endline-app",
+  "description": "Create an Endline app the easy way",
+  "version": "0.2.5",
+  "license": "MIT",
+  "author": "Zeke <ezequiel_io@pm.me>",
+  "repository": "zeke-io/endline",
+  "homepage": "https://github.com/zeke-io/endline#readme",
+  "bugs": "https://github.com/zeke-io/endline/issues",
+  "bin": {
+    "create-endline-app": "dist/index.js"
+  },
+  "scripts": {
+    "dev": "gulp"
+  },
+  "dependencies": {
+    "chalk": "4.1.2",
+    "commander": "^10.0.1",
+    "cpy": "^7.3.0",
+    "cross-spawn": "^7.0.3",
+    "prompts": "^2.4.2",
+    "validate-npm-package-name": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.2",
+    "@types/prompts": "^2.4.4",
+    "@types/validate-npm-package-name": "^4.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "packageManager": "pnpm@8.2.0",
+  "engines": {
+    "node": ">=14.17.3"
+  }
+}
