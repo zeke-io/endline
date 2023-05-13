@@ -1,7 +1,7 @@
 {
   "name": "create-endline-app",
   "description": "Create an Endline app the easy way",
-  "version": "0.0.1",
+  "version": "0.2.5",
   "license": "MIT",
   "author": "Zeke <ezequiel_io@pm.me>",
   "repository": "zeke-io/endline",
