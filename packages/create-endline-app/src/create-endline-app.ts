@@ -25,7 +25,7 @@ export async function createEndlineApp(projectPath: string) {
   console.log()
   console.log('You can start with:')
   console.log(`  - cd ${projectRoot}`)
-  console.log(`  - ${packageManager} dev`)
+  console.log(`  - ${packageManager} run dev`)
 }
 
 async function createProjectFiles({

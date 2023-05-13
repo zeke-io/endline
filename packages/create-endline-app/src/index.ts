@@ -24,7 +24,7 @@ async function main(projectName: string) {
       name: 'projectName',
       type: 'text',
       message: 'Name of the project',
-      initial: 'endline-api',
+      initial: 'my-endline-app',
       validate: (value) => {
         const { errors = [], warnings = [] } = validateNpmName(value)
 
