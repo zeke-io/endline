@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build",
+    "types": "lerna run types",
     "test": "jest",
     "lint:check": "eslint .",
     "prettier:check": "prettier --check .",
