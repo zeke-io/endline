@@ -7,7 +7,9 @@ export async function createEndlineApp(projectPath: string) {
   const projectRoot = path.resolve(projectPath)
   const packageManager = 'npm'
 
-  console.log(`Creating new Endline project in ${projectRoot}\n`)
+  console.log(
+    `Creating new Endline project in ${chalk.blueBright(projectRoot)}\n`,
+  )
 
   await createProjectFiles({
     projectPath,
@@ -15,6 +17,7 @@ export async function createEndlineApp(projectPath: string) {
     packageManager,
   })
 
+  console.log()
   console.log(
     chalk.green(`Done! Created '${projectPath}' project at ${projectRoot}.`),
   )
@@ -55,6 +58,7 @@ async function createProjectFiles({
   )
 
   /** Install dependencies */
+  console.log(chalk.yellow(`Installing dependencies with ${packageManager}...`))
   const dependencies = ['endline']
   await installDependencies(packageManager, dependencies)
 }
