@@ -11,7 +11,8 @@
     "create-endline-app": "dist/index.js"
   },
   "scripts": {
-    "dev": "gulp"
+    "dev": "gulp",
+    "build": "gulp build"
   },
   "dependencies": {
     "chalk": "4.1.2",
