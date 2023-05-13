@@ -16,6 +16,7 @@
   "dependencies": {
     "chalk": "4.1.2",
     "commander": "^10.0.1",
+    "cpy": "^7.3.0",
     "cross-spawn": "^7.0.3",
     "prompts": "^2.4.2",
     "validate-npm-package-name": "^5.0.0"

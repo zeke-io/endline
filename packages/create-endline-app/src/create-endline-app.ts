@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
+import cpy from 'cpy'
 import { installDependencies } from './lib/install-dependencies'
 
 export async function createEndlineApp(projectPath: string) {
@@ -40,6 +41,20 @@ async function createProjectFiles({
   fs.mkdirSync(projectRoot, { recursive: true })
 
   process.chdir(projectRoot)
+
+  /** Copy template */
+  await cpy(['**'], projectRoot, {
+    parents: true,
+    cwd: path.join(__dirname, '..', 'template'),
+    rename: (name) => {
+      switch (name) {
+        case 'gitignore':
+          return `.${name}`
+        default:
+          return name
+      }
+    },
+  })
 
   /** Create package.json */
   const packageJson = {
