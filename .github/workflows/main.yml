@@ -11,13 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 6.32.9
+          version: 8.5.0
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'pnpm'
           check-latest: true
       - uses: actions/cache@v3
         id: build-cache
@@ -33,9 +34,9 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 6.32.9
+          version: 8.5.0
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -56,9 +57,9 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.2.4
         with:
-          version: 6.32.9
+          version: 8.5.0
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:

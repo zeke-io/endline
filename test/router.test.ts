@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Router } from '../src/server/router'
+import { Router } from '../packages/endline/src/server/router'
 
 describe('Router', function () {
   it('should map GET handler', () => {

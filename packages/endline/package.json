@@ -1,0 +1,51 @@
+{
+  "name": "endline",
+  "description": "A Backend Framework for Node.js",
+  "version": "0.2.7",
+  "license": "MIT",
+  "author": "Zeke <ezequiel_io@pm.me>",
+  "repository": "zeke-io/endline",
+  "homepage": "https://github.com/zeke-io/endline#readme",
+  "bugs": "https://github.com/zeke-io/endline/issues",
+  "types": "types/index.d.ts",
+  "bin": {
+    "endline": "dist/bin/endline.js"
+  },
+  "scripts": {
+    "dev": "gulp",
+    "build": "gulp build",
+    "types": "tsc --declaration --emitDeclarationOnly --stripInternal --declarationDir dist"
+  },
+  "dependencies": {
+    "@segment/ajv-human-errors": "^2.7.0",
+    "ajv": "^8.12.0",
+    "babel-loader": "^9.1.2",
+    "chalk": "4.1.2",
+    "commander": "^10.0.1",
+    "dotenv": "^16.0.3",
+    "dotenv-expand": "^10.0.0",
+    "watchpack": "^2.4.0",
+    "webpack": "^5.80.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@types/watchpack": "^2.4.1"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "keywords": [
+    "framework",
+    "rest",
+    "restful",
+    "backend",
+    "api",
+    "web",
+    "http"
+  ],
+  "packageManager": "pnpm@8.2.0",
+  "engines": {
+    "node": ">=14.17.3"
+  }
+}

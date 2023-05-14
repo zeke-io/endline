@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { AppRouter, Router, RouterConfig } from './'
+import { AppRouter, Router, RouterConfig } from './index'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
 
