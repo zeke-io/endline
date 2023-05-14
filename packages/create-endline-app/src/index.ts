@@ -11,8 +11,8 @@ const program = new Command()
 
 program
   .name('create-endline-app')
-  .version('0.0.1')
-  .description('Create an Endline App')
+  .version(require('../package.json').version)
+  .description('Create an Endline app')
   .arguments('[project-directory]')
   .action(main)
   .parse()
@@ -48,7 +48,7 @@ async function main(projectName: string) {
   if (folderExists) {
     console.log(
       chalk.yellow(
-        `Cannot create project in ${rootDirectory} because the folder already exists.`,
+        `Cannot create a project in ${rootDirectory} because the folder already exists.`,
       ),
     )
     process.exit(1)

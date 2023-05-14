@@ -4,7 +4,7 @@ import loadConfig from '../config'
 import build from '../server/build'
 
 const command = new Command('build')
-  .description('Compiles the Endline App for production')
+  .description('Compiles the Endline app for production')
   .option('-d, --directory <path>', 'set the root directory of the project')
   .action(run)
 
