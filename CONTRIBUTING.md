@@ -4,7 +4,7 @@ Thank you for considering contributing to the "Endline" project!
 
 ## Code of Conduct
 
-Please note we have a [Code of Conduct](CODE-OF-CONDUCT.md), please follow it in all your interactions with the project.
+Please note we have a [Code of Conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
 
 ## A message from the author
 
