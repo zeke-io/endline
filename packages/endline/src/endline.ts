@@ -76,7 +76,6 @@ class EndlineApp {
         this.endlineServer.loadRoutes(true)
       })
     } else {
-      info('Using rollup as a compiler')
       const outputPath = path.join(projectDir, config.distDir)
       this.watchCompiler = new RollupWatchCompiler()
       await this.watchCompiler.initialize(projectDir, outputPath, () => {

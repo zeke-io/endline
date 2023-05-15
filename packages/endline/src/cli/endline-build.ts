@@ -6,11 +6,12 @@ import build from '../server/build'
 const command = new Command('build')
   .description('Compiles the Endline app for production')
   .option('-d, --directory <path>', 'set the root directory of the project')
-  .option('-r, --use-rollup', 'use rollup as compiler', false)
+  // Temporarily disable webpack and use rollup as default
+  //.option('-r, --use-rollup', 'use rollup as compiler', false)
   .action(run)
 
 async function run(options: { directory?: string; useRollup: boolean }) {
-  const { directory, useRollup } = options
+  const { directory, useRollup = true } = options
 
   const projectDir = getProjectDirectory(directory)
 

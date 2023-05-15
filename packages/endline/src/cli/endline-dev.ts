@@ -14,7 +14,8 @@ const command = new Command('dev')
   .option('-H, --hostname <host>', 'set the hostname', 'localhost')
   .option('-e, --environment <name>', 'set the environment', 'development')
   .option('-d, --directory <path>', 'set the root directory of the project')
-  .option('-r, --use-rollup', 'use rollup as compiler', false)
+  // Temporarily disable webpack and use rollup as default
+  //.option('-r, --use-rollup', 'use rollup as compiler', false)
   .action(run)
 
 async function run(options: {
@@ -29,7 +30,7 @@ async function run(options: {
     `\nIf you'd like to contribute with code, report issues, or give suggestions, check out the project's repository: https://github.com/zeke-io/endline.`,
   )
   // eslint-disable-next-line prefer-const
-  let { port, hostname, environment, directory, useRollup } = options
+  let { port, hostname, environment, directory, useRollup = true } = options
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
