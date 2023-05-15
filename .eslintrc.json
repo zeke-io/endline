@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "plugins": ["@typescript-eslint"],
   "env": {
@@ -25,10 +26,34 @@
       "warn",
       {
         "ignoreRestSiblings": true,
-        "args": "none"
+        "args": "all",
+        "argsIgnorePattern": "^_"
       }
     ],
+    "no-array-constructor": "warn",
+    "@typescript-eslint/no-array-constructor": "warn",
+    "no-unused-expressions": "off",
+    "@typescript-eslint/no-unused-expressions": [
+      "error",
+      {
+        "allowTernary": true,
+        "allowShortCircuit": true,
+        "allowTaggedTemplates": true
+      }
+    ],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": [
+      "warn",
+      {
+        "builtinGlobals": false
+      }
+    ],
+    "new-parens": "warn",
+    "eqeqeq": ["warn", "smart"],
+    "no-cond-assign": "warn",
+    "array-callback-return": "warn",
+    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "warn"
   }
 }
