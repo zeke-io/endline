@@ -66,7 +66,7 @@ export async function loadApiRoutes(
     error(
       `Could not find folder '${folderPath}' in directory '${path.join(
         projectDir,
-        routesDir || '.',
+        '.',
       )}'.`,
     )
     process.exit(1)

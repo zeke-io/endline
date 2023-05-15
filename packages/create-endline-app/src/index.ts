@@ -28,7 +28,7 @@ async function main(projectName: string) {
       validate: (value) => {
         const { errors = [], warnings = [] } = validateNpmName(value)
 
-        if (errors?.length || warnings?.length) {
+        if (errors.length || warnings.length) {
           return `Invalid package name: ${[...errors, ...warnings][0]}`
         }
 

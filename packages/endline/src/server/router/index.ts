@@ -30,7 +30,7 @@ class RouteNode {
   }
 
   public getHandler(method: HTTPMethod): RouteHandler | undefined {
-    return this.methods?.[method]
+    return this.methods[method]
   }
 
   public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
@@ -63,7 +63,7 @@ export class AppRouter {
 
   public async run(req: IncomingMessage, res: ServerResponse) {
     // Ignore if req.url and req.method are undefined
-    if (!req?.url || !req?.method) return
+    if (!req.url || !req.method) return
     const { url: reqUrl, method } = req
     const { url, parsedSearchParams } = parseUrl(reqUrl)
 

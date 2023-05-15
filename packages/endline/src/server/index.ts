@@ -8,7 +8,7 @@ let serverShutdown: () => void
 function shutdownHandler() {
   console.log('')
   warn('Shutting down server...')
-  serverShutdown && serverShutdown()
+  serverShutdown()
   process.exit(0)
 }
 
