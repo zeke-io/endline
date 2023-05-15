@@ -1,5 +1,5 @@
 import rollup, { RollupWatcher } from 'rollup'
-import { createOptions } from './'
+import { createOptions } from './options'
 
 export class RollupWatchCompiler {
   private watcher?: RollupWatcher
