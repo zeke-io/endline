@@ -12,6 +12,7 @@
     "build": "lerna run build",
     "types": "lerna run types",
     "test": "jest",
+    "type:check": "tsc --noEmit",
     "lint:check": "eslint .",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write ."
