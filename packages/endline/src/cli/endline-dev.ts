@@ -16,7 +16,12 @@ const command = new Command('dev')
   .option('-d, --directory <path>', 'set the root directory of the project')
   .action(run)
 
-async function run(options: any) {
+async function run(options: {
+  port: number
+  hostname: string
+  environment: string
+  directory?: string
+}) {
   warn(
     `This project is still in its early stages and under active development. It is not yet ready to be used in a production environment.`,
     `\nIf you'd like to contribute with code, report issues, or give suggestions, check out the project's repository: https://github.com/zeke-io/endline.`,

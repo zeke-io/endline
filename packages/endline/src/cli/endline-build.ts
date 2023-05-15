@@ -8,9 +8,8 @@ const command = new Command('build')
   .option('-d, --directory <path>', 'set the root directory of the project')
   .action(run)
 
-async function run(options: any) {
-  // eslint-disable-next-line prefer-const
-  let { directory } = options
+async function run(options: { directory?: string }) {
+  const { directory } = options
 
   const projectDir = getProjectDirectory(directory)
 

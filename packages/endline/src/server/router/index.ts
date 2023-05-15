@@ -94,7 +94,7 @@ export class AppRouter {
   ):
     | { params: { [param: string]: string }; handler: RouteHandler }
     | undefined {
-    const segments = url.split('/').filter((u) => u != '')
+    const segments = url.split('/').filter((u) => u !== '')
     let currentNode = this.rootNode
     const params: { [param: string]: string } = {}
 
@@ -136,7 +136,7 @@ export class AppRouter {
     method: HTTPMethod,
     handler: RouteHandler,
   ) {
-    const segments = url.split('/').filter((u) => u != '')
+    const segments = url.split('/').filter((u) => u !== '')
     let currentNode = this.rootNode
 
     for (const segment of segments) {

@@ -13,7 +13,15 @@ export class WebpackCompiler {
   private readonly routesDirectory: string
   private readonly shouldClean: boolean
 
-  constructor({ projectDir, routesDirectory, clean }: any) {
+  constructor({
+    projectDir,
+    routesDirectory,
+    clean,
+  }: {
+    projectDir: string
+    routesDirectory: string
+    clean?: boolean
+  }) {
     this.projectDir = projectDir
     this.routesDirectory = routesDirectory
     this.shouldClean = !!clean
@@ -121,8 +129,8 @@ export class WebpackCompiler {
 
     if (errors?.length) {
       error('Failed to compile application, please fix the following errors:')
-      for (const error of errors) {
-        console.error(error)
+      for (const statError of errors) {
+        console.error(statError)
       }
       process.exit(1)
     }
