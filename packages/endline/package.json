@@ -17,6 +17,7 @@
     "types": "tsc --declaration --emitDeclarationOnly --stripInternal --declarationDir dist"
   },
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@segment/ajv-human-errors": "^2.7.0",
     "ajv": "^8.12.0",
     "babel-loader": "^9.1.2",
@@ -24,11 +25,14 @@
     "commander": "^10.0.1",
     "dotenv": "^16.0.3",
     "dotenv-expand": "^10.0.0",
+    "rollup": "^3.21.7",
+    "rollup-plugin-node-externals": "^6.0.1",
     "watchpack": "^2.4.0",
     "webpack": "^5.80.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
+    "@types/glob": "^8.1.0",
     "@types/watchpack": "^2.4.1"
   },
   "files": [
