@@ -40,11 +40,6 @@ export class EndlineServer {
       this.router = new AppRouter()
     }
 
-    await loadApiRoutes(
-      this.projectDir,
-      this.router,
-      this.config.router,
-      this.isDev,
-    )
+    await loadApiRoutes(this.projectDir, this.router, this.isDev)
   }
 }

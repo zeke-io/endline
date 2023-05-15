@@ -30,17 +30,16 @@ export default async function build({
   fs.writeFileSync(path.join(outputPath, 'main.js'), mainServerFile)
 
   const folderPath = config.router.routesDirectory
-  const routesDirectory = findDirectory(
-    projectDir,
-    folderPath || 'routes',
-    !folderPath,
-  )
+  // TODO: Refactor
+  const routesDirectory =
+    findDirectory(projectDir, folderPath || 'routes', !folderPath) ||
+    'src/routes'
 
   /** Compile the application */
   const compiler = new WebpackCompiler({
     projectDir,
-    config,
     routesDirectory,
+    clean: true,
   })
 
   await compiler.run(outputPath)
