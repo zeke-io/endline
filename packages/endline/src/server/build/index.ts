@@ -4,6 +4,7 @@ import { WebpackCompiler } from './compiler'
 import { EndlineConfig } from '../../config'
 import { findDirectory } from '../../lib/directory-resolver'
 import { done, info } from '../../lib/logger'
+import { build as rollupBuild } from './rollup'
 
 export default async function build({
   projectDir,
@@ -40,6 +41,8 @@ export default async function build({
     })
 
     await compiler.run(outputPath)
+  } else {
+    await rollupBuild(projectDir, outputPath)
   }
 
   /** Write the main.js server file to run the built app */
