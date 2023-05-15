@@ -61,7 +61,11 @@ export class AppRouter {
     this.rootNode = new RouteNode()
   }
 
-  public async run(req: IncomingMessage, res: ServerResponse) {
+  public async run(
+    req: IncomingMessage,
+    res: ServerResponse,
+    additionalParams: Record<string, unknown>,
+  ) {
     // Ignore if req.url and req.method are undefined
     if (!req.url || !req.method) return
     const { url: reqUrl, method } = req
@@ -79,6 +83,7 @@ export class AppRouter {
         params,
         req,
         res,
+        ...additionalParams,
       })
 
       res.writeHead(200, { 'Content-Type': 'application/json' })

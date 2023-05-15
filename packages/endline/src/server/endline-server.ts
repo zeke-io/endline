@@ -2,6 +2,8 @@ import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
 import { EndlineConfig } from '../config'
+import { getMainFile } from '../lib/project-files-resolver'
+import { warn } from '../lib/logger'
 
 interface EndlineServerOptions {
   config: EndlineConfig
@@ -17,6 +19,8 @@ export class EndlineServer {
   private config: EndlineConfig
   private router: AppRouter
   private isDev?: boolean
+  // TODO: Refactor
+  private additionalParams: Record<string, unknown> = {}
 
   constructor({ projectDir, config, isDev }: EndlineServerOptions) {
     this.projectDir = projectDir
@@ -26,13 +30,30 @@ export class EndlineServer {
   }
 
   public async initialize() {
+    await this.initializeMainFile()
     await this.loadRoutes()
   }
 
   get requestListener() {
     return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.router.run(req, res)
+      await this.router.run(req, res, this.additionalParams)
     }
+  }
+
+  private async initializeMainFile() {
+    const filePath = getMainFile(this.projectDir, false)
+
+    if (filePath == null) return
+
+    const file = require(filePath)
+    const module = file.default || file
+
+    if (!module) {
+      warn(`The main file does not export a default function, ignoring...`)
+      return
+    }
+
+    this.additionalParams = (await module()) || {}
   }
 
   async loadRoutes(cleanRouter = false) {
