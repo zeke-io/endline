@@ -1,9 +1,9 @@
 import fs from 'fs'
 import path from 'path'
-import { WebpackCompiler } from './compiler'
 import { EndlineConfig } from '../../config'
 import { findDirectory } from '../../lib/directory-resolver'
 import { done, info } from '../../lib/logger'
+import { WebpackCompiler } from './webpack/compiler'
 import { build as rollupBuild } from './rollup'
 
 export default async function build({

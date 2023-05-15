@@ -4,9 +4,9 @@ import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
-import { WatchCompiler } from './server/build/watch-compiler'
-import { findDirectory } from './lib/directory-resolver'
+import { Watch } from './server/build/webpack/watch'
 import { RollupWatchCompiler } from './server/build/rollup/watch'
+import { findDirectory } from './lib/directory-resolver'
 
 interface EndlineAppOptions {
   config: EndlineConfig
@@ -26,7 +26,7 @@ class EndlineApp {
   private hostname: string
   private port: number
   private endlineServer: EndlineServer
-  private watchCompiler?: WatchCompiler | RollupWatchCompiler
+  private watchCompiler?: Watch | RollupWatchCompiler
   private useRollup: boolean
 
   constructor({
@@ -71,7 +71,7 @@ class EndlineApp {
         findDirectory(projectDir, config.router.routesDirectory, false) ||
         path.join(projectDir, 'src/routes')
 
-      this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
+      this.watchCompiler = new Watch({ projectDir, routesDirectory })
       await this.watchCompiler.watch(() => {
         this.endlineServer.loadRoutes(true)
       })
