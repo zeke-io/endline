@@ -6,6 +6,7 @@ import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
 import { WatchCompiler } from './server/build/watch-compiler'
 import { findDirectory } from './lib/directory-resolver'
+import { RollupWatchCompiler } from './server/build/rollup/watch'
 
 interface EndlineAppOptions {
   config: EndlineConfig
@@ -14,6 +15,7 @@ interface EndlineAppOptions {
   hostname: string
   port: number
   isDev?: boolean
+  useRollup: boolean
 }
 
 class EndlineApp {
@@ -24,7 +26,8 @@ class EndlineApp {
   private hostname: string
   private port: number
   private endlineServer: EndlineServer
-  private watchCompiler?: WatchCompiler
+  private watchCompiler?: WatchCompiler | RollupWatchCompiler
+  private useRollup: boolean
 
   constructor({
     config,
@@ -33,6 +36,7 @@ class EndlineApp {
     hostname,
     port,
     isDev,
+    useRollup,
   }: EndlineAppOptions) {
     this.config = config
     this.httpServer = httpServer
@@ -40,6 +44,7 @@ class EndlineApp {
     this.hostname = hostname
     this.port = port
     this.isDev = !!isDev
+    this.useRollup = useRollup
 
     this.endlineServer = new EndlineServer({ config, projectDir, isDev })
   }
@@ -59,16 +64,25 @@ class EndlineApp {
   }
 
   private async runWatchCompiler() {
-    const { projectDir, config } = this
+    const { projectDir, config, useRollup } = this
 
-    const routesDirectory =
-      findDirectory(projectDir, config.router.routesDirectory, false) ||
-      path.join(projectDir, 'src/routes')
+    if (!useRollup) {
+      const routesDirectory =
+        findDirectory(projectDir, config.router.routesDirectory, false) ||
+        path.join(projectDir, 'src/routes')
 
-    this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
-    await this.watchCompiler.watch(() => {
-      this.endlineServer.loadRoutes(true)
-    })
+      this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
+      await this.watchCompiler.watch(() => {
+        this.endlineServer.loadRoutes(true)
+      })
+    } else {
+      info('Using rollup as a compiler')
+      const outputPath = path.join(projectDir, config.distDir)
+      this.watchCompiler = new RollupWatchCompiler()
+      await this.watchCompiler.initialize(projectDir, outputPath, () => {
+        this.endlineServer.loadRoutes(true)
+      })
+    }
   }
 
   get requestListener() {

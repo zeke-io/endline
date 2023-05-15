@@ -14,6 +14,7 @@ const command = new Command('dev')
   .option('-H, --hostname <host>', 'set the hostname', 'localhost')
   .option('-e, --environment <name>', 'set the environment', 'development')
   .option('-d, --directory <path>', 'set the root directory of the project')
+  .option('-r, --use-rollup', 'use rollup as compiler', false)
   .action(run)
 
 async function run(options: {
@@ -21,13 +22,14 @@ async function run(options: {
   hostname: string
   environment: string
   directory?: string
+  useRollup: boolean
 }) {
   warn(
     `This project is still in its early stages and under active development. It is not yet ready to be used in a production environment.`,
     `\nIf you'd like to contribute with code, report issues, or give suggestions, check out the project's repository: https://github.com/zeke-io/endline.`,
   )
   // eslint-disable-next-line prefer-const
-  let { port, hostname, environment, directory } = options
+  let { port, hostname, environment, directory, useRollup } = options
 
   if (!hostname) hostname = 'localhost'
   if (isNaN(port)) port = 3000
@@ -35,7 +37,7 @@ async function run(options: {
 
   const projectDir = getProjectDirectory(directory)
   const config = await loadConfig({ projectDir, environment })
-  await initializeDevServer({ port, hostname, projectDir, config })
+  await initializeDevServer({ port, hostname, projectDir, config, useRollup })
 }
 
 export default { command }

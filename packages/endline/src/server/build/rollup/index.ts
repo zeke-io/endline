@@ -4,7 +4,7 @@ import { InputOptions, OutputOptions, rollup, RollupBuild } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { error, warn } from '../../../lib/logger'
 
-async function createOptions(
+export async function createOptions(
   directory: string,
   distFolder: string,
 ): Promise<{
