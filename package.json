@@ -26,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "del": "^7.0.0",
+    "endline": "workspace:*",
     "eslint": "^8.38.0",
     "gulp": "^4.0.2",
     "gulp-sourcemaps": "^3.0.0",

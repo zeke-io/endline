@@ -25,6 +25,9 @@ importers:
       del:
         specifier: ^7.0.0
         version: 7.0.0
+      endline:
+        specifier: workspace:*
+        version: link:packages/endline
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
