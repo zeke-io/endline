@@ -2,10 +2,26 @@ import glob from 'glob'
 import path from 'node:path'
 import { InputOptions, OutputOptions } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
+import typescript from '@rollup/plugin-typescript'
+
+export function generateInputs(directory: string) {
+  return Object.fromEntries(
+    glob
+      .sync('src/**/*.{js,ts}')
+      .map((file) => [
+        path.relative(
+          'src',
+          file.slice(0, file.length - path.extname(file).length),
+        ),
+        path.join(directory, file),
+      ]),
+  )
+}
 
 export async function createOptions(
   directory: string,
   distFolder: string,
+  usingTypescript: boolean,
 ): Promise<{
   inputOptions: InputOptions
   outputOptions: OutputOptions
@@ -15,18 +31,18 @@ export async function createOptions(
 
   return {
     inputOptions: {
-      input: Object.fromEntries(
-        glob
-          .sync('src/**/*.js')
-          .map((file) => [
-            path.relative(
-              'src',
-              file.slice(0, file.length - path.extname(file).length),
-            ),
-            path.join(directory, file),
-          ]),
-      ),
-      plugins: [nodeResolve(), externals()],
+      input: generateInputs(directory),
+      plugins: [
+        ...(usingTypescript
+          ? [
+              typescript({
+                tsconfig: path.join(directory, 'tsconfig.json'),
+              }),
+            ]
+          : []),
+        nodeResolve(),
+        externals(),
+      ],
     },
     outputOptions: {
       format: 'cjs',

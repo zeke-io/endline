@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { IncomingMessage, Server, ServerResponse } from 'http'
@@ -66,19 +67,28 @@ class EndlineApp {
   private async runWatchCompiler() {
     const { projectDir, config, useRollup } = this
 
-    if (!useRollup) {
+    if (useRollup) {
+      const outputPath = path.join(projectDir, config.distDir)
+
+      const typescriptConfig = path.join(projectDir, 'tsconfig.json')
+      const useTypescript = fs.existsSync(typescriptConfig)
+
+      this.watchCompiler = new RollupWatchCompiler()
+      await this.watchCompiler.initialize(
+        projectDir,
+        { distFolder: outputPath, typescript: useTypescript },
+        () => {
+          this.endlineServer.loadRoutes(true)
+        },
+      )
+    } else {
+      // TODO: Deprecate this
       const routesDirectory =
         findDirectory(projectDir, config.router.routesDirectory, false) ||
         path.join(projectDir, 'src/routes')
 
       this.watchCompiler = new Watch({ projectDir, routesDirectory })
       await this.watchCompiler.watch(() => {
-        this.endlineServer.loadRoutes(true)
-      })
-    } else {
-      const outputPath = path.join(projectDir, config.distDir)
-      this.watchCompiler = new RollupWatchCompiler()
-      await this.watchCompiler.initialize(projectDir, outputPath, () => {
         this.endlineServer.loadRoutes(true)
       })
     }

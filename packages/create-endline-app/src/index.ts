@@ -14,10 +14,14 @@ program
   .version(require('../package.json').version)
   .description('Create an Endline app')
   .arguments('[project-directory]')
+  .option('-t, --typescript', 'use typescript')
   .action(main)
   .parse()
 
-async function main(projectName: string) {
+async function main(
+  projectName: string,
+  { typescript }: { typescript?: boolean },
+) {
   /** Validate arguments provided, prompt required options */
   if (!projectName) {
     const response = await prompts({
@@ -41,6 +45,17 @@ async function main(projectName: string) {
     }
   }
 
+  if (typescript == null) {
+    const response = await prompts({
+      name: 'typescript',
+      type: 'confirm',
+      message: 'Do you want to use typescript?',
+      initial: false,
+    })
+
+    typescript = response.typescript
+  }
+
   /** Prepare for installation */
   const rootDirectory = path.resolve(projectName)
   const folderExists = fs.existsSync(rootDirectory)
@@ -54,5 +69,5 @@ async function main(projectName: string) {
     process.exit(1)
   }
 
-  await createEndlineApp(projectName)
+  await createEndlineApp(projectName, typescript!)
 }
