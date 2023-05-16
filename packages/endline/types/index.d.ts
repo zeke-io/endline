@@ -1,4 +1,1 @@
-/// <reference path="./router.d.ts" />
-import endline from '../dist/endline'
-
-export default endline
+export { Router } from '../dist/server/router'
