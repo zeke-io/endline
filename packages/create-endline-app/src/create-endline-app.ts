@@ -4,7 +4,10 @@ import chalk from 'chalk'
 import cpy from 'cpy'
 import { installDependencies } from './lib/install-dependencies'
 
-export async function createEndlineApp(projectPath: string) {
+export async function createEndlineApp(
+  projectPath: string,
+  typescript: boolean,
+) {
   const projectRoot = path.resolve(projectPath)
   const packageManager = 'npm'
 
@@ -16,6 +19,7 @@ export async function createEndlineApp(projectPath: string) {
     projectPath,
     projectRoot,
     packageManager,
+    typescript,
   })
 
   console.log()
@@ -32,10 +36,12 @@ async function createProjectFiles({
   projectPath,
   projectRoot,
   packageManager,
+  typescript,
 }: {
   projectPath: string
   projectRoot: string
   packageManager: string
+  typescript: boolean
 }) {
   /** Create directory */
   fs.mkdirSync(projectRoot, { recursive: true })
@@ -45,7 +51,12 @@ async function createProjectFiles({
   /** Copy template */
   await cpy(['**'], projectRoot, {
     parents: true,
-    cwd: path.join(__dirname, '..', 'template', 'javascript'),
+    cwd: path.join(
+      __dirname,
+      '..',
+      'template',
+      typescript ? 'typescript' : 'javascript',
+    ),
     rename: (name) => {
       switch (name) {
         // Renaming gitignore as .gitignore (with the period) is ignored when compiled
@@ -77,4 +88,7 @@ async function createProjectFiles({
   console.log(chalk.yellow(`Installing dependencies with ${packageManager}...`))
   const dependencies = ['endline']
   await installDependencies(packageManager, dependencies)
+
+  const devDependencies = ['typescript', '@types/node']
+  await installDependencies(packageManager, devDependencies, true)
 }
