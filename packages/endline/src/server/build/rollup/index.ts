@@ -22,10 +22,14 @@ async function generateOutputs(
   }
 }
 
-export async function build(projectDir: string, distFolder: string) {
+export async function build(
+  projectDir: string,
+  { distFolder, typescript }: { distFolder: string; typescript: boolean },
+) {
   const { inputOptions, outputOptions } = await createOptions(
     projectDir,
     distFolder,
+    typescript,
   )
   let bundle
   try {

@@ -6,12 +6,13 @@ export class RollupWatchCompiler {
 
   public async initialize(
     projectDir: string,
-    distFolder: string,
+    { distFolder, typescript }: { distFolder: string; typescript: boolean },
     onSuccess: () => void,
   ) {
     const { inputOptions, outputOptions } = await createOptions(
       projectDir,
       distFolder,
+      typescript,
     )
     this.watcher = rollup.watch({
       ...inputOptions,

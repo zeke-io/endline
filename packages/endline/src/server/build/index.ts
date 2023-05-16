@@ -32,8 +32,16 @@ export default async function build({
     findDirectory(projectDir, folderPath || 'routes', !folderPath) ||
     'src/routes'
 
+  const typescriptConfig = path.join(projectDir, 'tsconfig.json')
+  const useTypescript = fs.existsSync(typescriptConfig)
+
   /** Compile the application */
-  if (!useRollup) {
+  if (useRollup) {
+    await rollupBuild(projectDir, {
+      distFolder: outputPath,
+      typescript: useTypescript,
+    })
+  } else {
     const compiler = new WebpackCompiler({
       projectDir,
       routesDirectory,
@@ -41,8 +49,6 @@ export default async function build({
     })
 
     await compiler.run(outputPath)
-  } else {
-    await rollupBuild(projectDir, outputPath)
   }
 
   /** Write the main.js server file to run the built app */

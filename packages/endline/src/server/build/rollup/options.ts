@@ -6,6 +6,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 export async function createOptions(
   directory: string,
   distFolder: string,
+  _typescript: boolean,
 ): Promise<{
   inputOptions: InputOptions
   outputOptions: OutputOptions
