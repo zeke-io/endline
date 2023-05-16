@@ -45,7 +45,7 @@ async function createProjectFiles({
   /** Copy template */
   await cpy(['**'], projectRoot, {
     parents: true,
-    cwd: path.join(__dirname, '..', 'template'),
+    cwd: path.join(__dirname, '..', 'template', 'javascript'),
     rename: (name) => {
       switch (name) {
         // Renaming gitignore as .gitignore (with the period) is ignored when compiled
