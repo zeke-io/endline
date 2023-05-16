@@ -9,7 +9,7 @@ export async function createEndlineApp(projectPath: string) {
   const packageManager = 'npm'
 
   console.log(
-    `Creating new Endline project in ${chalk.blueBright(projectRoot)}\n`,
+    `Creating a new Endline project in ${chalk.blueBright(projectRoot)}\n`,
   )
 
   await createProjectFiles({
@@ -24,7 +24,7 @@ export async function createEndlineApp(projectPath: string) {
   )
   console.log()
   console.log('You can start with:')
-  console.log(`  - cd ${projectRoot}`)
+  console.log(`  - cd ${projectPath}`)
   console.log(`  - ${packageManager} run dev`)
 }
 
@@ -48,6 +48,7 @@ async function createProjectFiles({
     cwd: path.join(__dirname, '..', 'template'),
     rename: (name) => {
       switch (name) {
+        // Renaming gitignore as .gitignore (with the period) is ignored when compiled
         case 'gitignore':
           return `.${name}`
         default:
