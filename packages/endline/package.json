@@ -28,6 +28,7 @@
     "dotenv-expand": "^10.0.0",
     "rollup": "^3.21.7",
     "rollup-plugin-node-externals": "^6.0.1",
+    "tslib": "^2.5.0",
     "watchpack": "^2.4.0",
     "webpack": "^5.80.0"
   },
