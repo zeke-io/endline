@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// TODO: Add types to router and params
+import { Router } from 'endline'
 
-export default function (router: any) {
+export default function (router: Router) {
   router.GET('/ping', () => {
     return 'Pong!'
   })
