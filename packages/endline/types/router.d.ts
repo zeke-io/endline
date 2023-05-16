@@ -1,3 +1,3 @@
-import { Router } from '../../../dist/server/router'
+export { Router } from '../dist/server/router'
 
 export default Router
