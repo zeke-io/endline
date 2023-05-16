@@ -13,7 +13,9 @@ type RouteHandlerOptions = {
   req: IncomingMessage
   res: ServerResponse
 }
-type RouteHandler = (options?: RouteHandlerOptions) => Promise<object>
+// TODO: Disabling no-explicit-any for now until we add more types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 class RouteNode {
