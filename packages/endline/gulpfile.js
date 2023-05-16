@@ -41,7 +41,7 @@ async function clean() {
 }
 
 async function build(path, distFolder, opts = {}) {
-  return src(`src/${path}`)
+  return src([`src/${path}`, `!src/${path}.d.ts`])
     .pipe(sourcemaps.init())
     .pipe(gulpSwc(swcOptions))
     .pipe(sourcemaps.write('.'))
