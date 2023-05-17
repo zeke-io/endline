@@ -15,9 +15,16 @@
   },
   "overrides": [
     {
-      "files": ["packages/**/types/**"],
+      "files": ["packages/**/types/**/*"],
       "rules": {
         "@typescript-eslint/triple-slash-reference": "off"
+      }
+    },
+    {
+      "files": ["packages/create-endline-app/template/**/*"],
+      "rules": {
+        "no-explicit-any": "off",
+        "@typescript-eslint/no-explicit-any": "off"
       }
     }
   ],
