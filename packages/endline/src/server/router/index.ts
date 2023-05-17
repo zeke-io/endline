@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
+import { HTTPMethod } from '../http'
 
 export interface RouterConfig {
   routesDirectory: string
@@ -16,7 +17,6 @@ type RouteHandlerOptions = {
 // TODO: Disabling no-explicit-any for now until we add more types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
-type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 class RouteNode {
   public name: string
