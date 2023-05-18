@@ -29,7 +29,7 @@ class Router {
     return this._name
   }
 
-  public addEndpoint(route: string, method: HTTPMethod, handler: RouteHandler) {
+  public addEndpoint(method: HTTPMethod, route: string, handler: RouteHandler) {
     this.endpoints.push({
       method,
       route,
@@ -44,7 +44,7 @@ HTTPMethodsArray.forEach(
       route: string,
       handler: RouteHandler,
     ) {
-      this.addEndpoint(route, method, handler)
+      this.addEndpoint(method, route, handler)
     }),
 )
 
