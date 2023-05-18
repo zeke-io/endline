@@ -1,16 +1,15 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { HTTPMethod, HTTPMethodsArray } from '../http'
 
-// TODO: Add more options, and make a custom response class
-export type RouteHandlerOptions = {
-  params: Record<string, string>
+export type HandlerContext = {
   req: IncomingMessage
   res: ServerResponse
-}
+  params: Record<string, string>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} & Record<string, any>
 
-// TODO: Disabling no-explicit-any for now until we add more types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
+export type RouteHandler = (context: HandlerContext) => Promise<any> | any
 
 type RouterMethods = {
   [method in HTTPMethod]: (route: string, handler: RouteHandler) => void

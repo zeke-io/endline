@@ -3,7 +3,7 @@ import path from 'path'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
-import { Router, RouteHandler } from './impl'
+import { Router, RouteHandler, HandlerContext } from './impl'
 
 export interface RouterConfig {
   routesDirectory: string
@@ -174,6 +174,6 @@ export class AppRouter {
   }
 }
 
-export { Router, RouteHandler }
+export { Router, RouteHandler, HandlerContext }
 
 export default Router
