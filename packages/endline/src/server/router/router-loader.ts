@@ -1,9 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { AppRouter, Router } from './index'
+import { AppRouter } from './index'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
+import { Router } from './impl'
 
 // TODO: Migrate this
 export async function findRouters(routesDir: string) {

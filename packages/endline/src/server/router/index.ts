@@ -3,20 +3,21 @@ import path from 'path'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
+import { Router } from './impl'
 
 export interface RouterConfig {
   routesDirectory: string
 }
 
 // TODO: Add more options, and make a custom response class
-type RouteHandlerOptions = {
+export type RouteHandlerOptions = {
   params: object
   req: IncomingMessage
   res: ServerResponse
 }
 // TODO: Disabling no-explicit-any for now until we add more types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
+export type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
 
 class RouteNode {
   public name: string
@@ -183,54 +184,5 @@ export class AppRouter {
   }
 }
 
-export class Router {
-  private _name: string
-  public readonly endpoints: {
-    route: string
-    method: HTTPMethod
-    handler: RouteHandler
-  }[]
-
-  constructor(name?: string) {
-    this._name = name || 'index'
-    this.endpoints = []
-  }
-
-  set name(name: string) {
-    this._name = name
-  }
-
-  get name() {
-    return this._name
-  }
-
-  public GET(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'GET', handler)
-  }
-
-  public POST(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'POST', handler)
-  }
-
-  public PUT(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'PUT', handler)
-  }
-
-  public DELETE(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'DELETE', handler)
-  }
-
-  private addEndpoint(
-    route: string,
-    method: HTTPMethod,
-    handler: RouteHandler,
-  ) {
-    this.endpoints.push({
-      method,
-      route,
-      handler,
-    })
-  }
-}
-
+export { Router }
 export default Router
