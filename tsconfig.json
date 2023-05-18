@@ -1,20 +1,14 @@
 {
   "compilerOptions": {
-    /* Language and Environment */
     "target": "ESNext",
-    /* Modules */
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "Node",
-    "outDir": "dist/",
-    /* JavaScript Support */
     "allowJs": true,
-    /* Interop Constraints */
+    "noEmit": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    /* Type Checking */
     "strict": true,
-    /* Completeness */
     "skipLibCheck": true
   },
-  "exclude": ["node_modules/"]
+  "exclude": ["node_modules/", "examples/"]
 }

@@ -8,7 +8,7 @@ let serverShutdown: () => void
 function shutdownHandler() {
   console.log('')
   warn('Shutting down server...')
-  serverShutdown && serverShutdown()
+  serverShutdown()
   process.exit(0)
 }
 
@@ -20,11 +20,13 @@ export async function initializeDevServer({
   hostname,
   projectDir,
   config,
+  useRollup,
 }: {
   port: number
   hostname: string
   projectDir: string
   config: EndlineConfig
+  useRollup: boolean
 }) {
   const server = http.createServer()
   const app = createEndlineApp({
@@ -34,6 +36,7 @@ export async function initializeDevServer({
     projectDir,
     config,
     isDev: true,
+    useRollup,
   })
 
   serverShutdown = () => {

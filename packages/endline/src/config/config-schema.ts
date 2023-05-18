@@ -27,6 +27,7 @@ const ajv = new Ajv({
 const validate = ajv.compile(configSchema)
 
 export function validateConfig(config: EndlineConfig): {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: Array<any> | null
 } {
   let errors

@@ -50,6 +50,7 @@ jobs:
           key: build-${{ github.run_number }}-${{ github.sha }}
 
       - run: pnpm prettier:check
+      - run: pnpm type:check
       - run: pnpm lint:check
 
   test:

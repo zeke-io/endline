@@ -2,24 +2,27 @@ import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
+import { HTTPMethod } from '../http'
 
 export interface RouterConfig {
   routesDirectory: string
 }
 
-type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+// TODO: Add more options, and make a custom response class
 type RouteHandlerOptions = {
   params: object
   req: IncomingMessage
   res: ServerResponse
 }
-type RequestHandler = (options?: RouteHandlerOptions) => Promise<any> | any
+// TODO: Disabling no-explicit-any for now until we add more types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
 
 class RouteNode {
   public name: string
   public isParam: boolean
   public children: Map<string, RouteNode>
-  public methods: { [method in HTTPMethod]?: RequestHandler }
+  public methods: { [method in HTTPMethod]?: RouteHandler }
 
   constructor(options?: { name: string }) {
     this.name = options?.name || ''
@@ -28,11 +31,11 @@ class RouteNode {
     this.methods = {}
   }
 
-  public getHandler(method: HTTPMethod): RequestHandler | undefined {
-    return this.methods?.[method]
+  public getHandler(method: HTTPMethod): RouteHandler | undefined {
+    return this.methods[method]
   }
 
-  public addHandler(method: HTTPMethod, handler: RequestHandler): boolean {
+  public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
     /** Return false if the {@link handler} is already registered */
     if (this.getHandler(method) != null) {
       return false
@@ -60,9 +63,13 @@ export class AppRouter {
     this.rootNode = new RouteNode()
   }
 
-  public async run(req: IncomingMessage, res: ServerResponse) {
+  public async run(
+    req: IncomingMessage,
+    res: ServerResponse,
+    additionalParams: Record<string, unknown>,
+  ) {
     // Ignore if req.url and req.method are undefined
-    if (!req?.url || !req?.method) return
+    if (!req.url || !req.method) return
     const { url: reqUrl, method } = req
     const { url, parsedSearchParams } = parseUrl(reqUrl)
 
@@ -78,6 +85,7 @@ export class AppRouter {
         params,
         req,
         res,
+        ...additionalParams,
       })
 
       res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -91,9 +99,9 @@ export class AppRouter {
     url: string,
     method: string,
   ):
-    | { params: { [param: string]: string }; handler: RequestHandler }
+    | { params: { [param: string]: string }; handler: RouteHandler }
     | undefined {
-    const segments = url.split('/').filter((u) => u != '')
+    const segments = url.split('/').filter((u) => u !== '')
     let currentNode = this.rootNode
     const params: { [param: string]: string } = {}
 
@@ -133,9 +141,9 @@ export class AppRouter {
   public addRouteHandler(
     url: string,
     method: HTTPMethod,
-    handler: RequestHandler,
+    handler: RouteHandler,
   ) {
-    const segments = url.split('/').filter((u) => u != '')
+    const segments = url.split('/').filter((u) => u !== '')
     let currentNode = this.rootNode
 
     for (const segment of segments) {
@@ -182,7 +190,7 @@ export class Router {
   public readonly endpoints: {
     route: string
     method: HTTPMethod
-    handler: RequestHandler
+    handler: RouteHandler
   }[] = []
 
   private relativeUrl: string
@@ -196,7 +204,7 @@ export class Router {
   public getHandler(
     method: HTTPMethod,
     route: string,
-  ): RequestHandler | undefined {
+  ): RouteHandler | undefined {
     // TODO: Implement
     return undefined
   }
@@ -214,25 +222,25 @@ export class Router {
   }
 
   // Temporarily using `handlers[0]` until implementation of multiple handlers is done
-  public GET(route: string, ...handlers: RequestHandler[]) {
+  public GET(route: string, ...handlers: RouteHandler[]) {
     this.addHandlers('GET', route, ...handlers)
     this.addEndpoint(route, 'GET', handlers[0])
     return this
   }
 
-  public POST(route: string, ...handlers: RequestHandler[]) {
+  public POST(route: string, ...handlers: RouteHandler[]) {
     this.addHandlers('POST', route, ...handlers)
     this.addEndpoint(route, 'POST', handlers[0])
     return this
   }
 
-  public PUT(route: string, ...handlers: RequestHandler[]) {
+  public PUT(route: string, ...handlers: RouteHandler[]) {
     this.addHandlers('PUT', route, ...handlers)
     this.addEndpoint(route, 'PUT', handlers[0])
     return this
   }
 
-  public DELETE(route: string, ...handlers: RequestHandler[]) {
+  public DELETE(route: string, ...handlers: RouteHandler[]) {
     this.addHandlers('DELETE', route, ...handlers)
     this.addEndpoint(route, 'DELETE', handlers[0])
     return this
@@ -241,7 +249,7 @@ export class Router {
   private addHandlers(
     method: HTTPMethod,
     route: string,
-    ...handlers: RequestHandler[]
+    ...handlers: RouteHandler[]
   ) {
     //
   }
@@ -253,7 +261,7 @@ export class Router {
   private addEndpoint(
     route: string,
     method: HTTPMethod,
-    handler: RequestHandler,
+    handler: RouteHandler,
   ) {
     this.endpoints.push({
       method,

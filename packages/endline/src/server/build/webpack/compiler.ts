@@ -1,7 +1,7 @@
 import path from 'path'
 import webpack, { Configuration, StatsError } from 'webpack'
-import { error, warn } from '../../lib/logger'
-import { getRouteFiles } from '../../lib/project-files-resolver'
+import { error, warn } from '../../../lib/logger'
+import { getMainFile, getRouteFiles } from '../../../lib/project-files-resolver'
 
 interface CompilerResults {
   errors?: StatsError[]
@@ -13,23 +13,36 @@ export class WebpackCompiler {
   private readonly routesDirectory: string
   private readonly shouldClean: boolean
 
-  constructor({ projectDir, routesDirectory, clean }: any) {
+  constructor({
+    projectDir,
+    routesDirectory,
+    clean,
+  }: {
+    projectDir: string
+    routesDirectory: string
+    clean?: boolean
+  }) {
     this.projectDir = projectDir
     this.routesDirectory = routesDirectory
     this.shouldClean = !!clean
   }
 
   private createEntryPoints() {
-    const entryPoints: Record<string, string> = {}
+    const entries: webpack.EntryObject = {}
     const routeFiles = getRouteFiles(this.routesDirectory)
 
     for (const routeFile of routeFiles) {
-      entryPoints[
+      entries[
         `routes/${path.parse(routeFile.fileName).name}`
       ] = `${routeFile.path}`
     }
 
-    return entryPoints
+    const mainFilePath = getMainFile(this.projectDir, true)
+    if (mainFilePath) {
+      entries['index'] = mainFilePath
+    }
+
+    return entries
   }
 
   private externalsHandler(
@@ -121,8 +134,8 @@ export class WebpackCompiler {
 
     if (errors?.length) {
       error('Failed to compile application, please fix the following errors:')
-      for (const error of errors) {
-        console.error(error)
+      for (const statError of errors) {
+        console.error(statError)
       }
       process.exit(1)
     }

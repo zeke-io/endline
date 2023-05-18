@@ -4,18 +4,22 @@ import chalk from 'chalk'
 import cpy from 'cpy'
 import { installDependencies } from './lib/install-dependencies'
 
-export async function createEndlineApp(projectPath: string) {
+export async function createEndlineApp(
+  projectPath: string,
+  typescript: boolean,
+) {
   const projectRoot = path.resolve(projectPath)
   const packageManager = 'npm'
 
   console.log(
-    `Creating new Endline project in ${chalk.blueBright(projectRoot)}\n`,
+    `Creating a new Endline project in ${chalk.blueBright(projectRoot)}\n`,
   )
 
   await createProjectFiles({
     projectPath,
     projectRoot,
     packageManager,
+    typescript,
   })
 
   console.log()
@@ -24,7 +28,7 @@ export async function createEndlineApp(projectPath: string) {
   )
   console.log()
   console.log('You can start with:')
-  console.log(`  - cd ${projectRoot}`)
+  console.log(`  - cd ${projectPath}`)
   console.log(`  - ${packageManager} run dev`)
 }
 
@@ -32,10 +36,12 @@ async function createProjectFiles({
   projectPath,
   projectRoot,
   packageManager,
+  typescript,
 }: {
   projectPath: string
   projectRoot: string
   packageManager: string
+  typescript: boolean
 }) {
   /** Create directory */
   fs.mkdirSync(projectRoot, { recursive: true })
@@ -45,9 +51,15 @@ async function createProjectFiles({
   /** Copy template */
   await cpy(['**'], projectRoot, {
     parents: true,
-    cwd: path.join(__dirname, '..', 'template'),
+    cwd: path.join(
+      __dirname,
+      '..',
+      'template',
+      typescript ? 'typescript' : 'javascript',
+    ),
     rename: (name) => {
       switch (name) {
+        // Renaming gitignore as .gitignore (with the period) is ignored when compiled
         case 'gitignore':
           return `.${name}`
         default:
@@ -76,4 +88,7 @@ async function createProjectFiles({
   console.log(chalk.yellow(`Installing dependencies with ${packageManager}...`))
   const dependencies = ['endline']
   await installDependencies(packageManager, dependencies)
+
+  const devDependencies = ['typescript', '@types/node']
+  await installDependencies(packageManager, devDependencies, true)
 }
