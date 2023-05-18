@@ -3,20 +3,21 @@ import path from 'path'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
+import { Router } from './impl'
 
 export interface RouterConfig {
   routesDirectory: string
 }
 
 // TODO: Add more options, and make a custom response class
-type RouteHandlerOptions = {
+export type RouteHandlerOptions = {
   params: object
   req: IncomingMessage
   res: ServerResponse
 }
 // TODO: Disabling no-explicit-any for now until we add more types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
+export type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
 
 class RouteNode {
   public name: string
@@ -183,94 +184,5 @@ export class AppRouter {
   }
 }
 
-export class Router {
-  // TODO: Delete name after refactor
-  private _name = 'index'
-  // TODO: Redo implementation
-  public readonly endpoints: {
-    route: string
-    method: HTTPMethod
-    handler: RouteHandler
-  }[] = []
-
-  private relativeUrl: string
-  private stack: Layer[]
-
-  constructor(relativeUrl?: string) {
-    this.relativeUrl = relativeUrl || ''
-    this.stack = []
-  }
-
-  public getHandler(
-    method: HTTPMethod,
-    route: string,
-  ): RouteHandler | undefined {
-    // TODO: Implement
-    return undefined
-  }
-
-  public merge(router: Router) {
-    // TODO: Implement
-  }
-
-  set name(name: string) {
-    this._name = name
-  }
-
-  get name() {
-    return this._name
-  }
-
-  // Temporarily using `handlers[0]` until implementation of multiple handlers is done
-  public GET(route: string, ...handlers: RouteHandler[]) {
-    this.addHandlers('GET', route, ...handlers)
-    this.addEndpoint(route, 'GET', handlers[0])
-    return this
-  }
-
-  public POST(route: string, ...handlers: RouteHandler[]) {
-    this.addHandlers('POST', route, ...handlers)
-    this.addEndpoint(route, 'POST', handlers[0])
-    return this
-  }
-
-  public PUT(route: string, ...handlers: RouteHandler[]) {
-    this.addHandlers('PUT', route, ...handlers)
-    this.addEndpoint(route, 'PUT', handlers[0])
-    return this
-  }
-
-  public DELETE(route: string, ...handlers: RouteHandler[]) {
-    this.addHandlers('DELETE', route, ...handlers)
-    this.addEndpoint(route, 'DELETE', handlers[0])
-    return this
-  }
-
-  private addHandlers(
-    method: HTTPMethod,
-    route: string,
-    ...handlers: RouteHandler[]
-  ) {
-    //
-  }
-
-  /**
-   * @deprecated This method will be deleted after the new implementation
-   * @private
-   */
-  private addEndpoint(
-    route: string,
-    method: HTTPMethod,
-    handler: RouteHandler,
-  ) {
-    this.endpoints.push({
-      method,
-      route,
-      handler,
-    })
-  }
-}
-
-export class Layer {}
-
+export { Router }
 export default Router
