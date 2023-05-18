@@ -44,7 +44,7 @@ HTTPMethodsArray.forEach(
       route: string,
       handler: RouteHandler,
     ) {
-      this.addEndpoint(route, 'POST', handler)
+      this.addEndpoint(route, method, handler)
     }),
 )
 
