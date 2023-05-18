@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Router } from '../packages/endline/src/server/router'
+import { Router } from 'endline/src/server/router'
 
 describe('Router', function () {
   it('should map GET handler', () => {
@@ -40,8 +40,8 @@ describe('Router', function () {
     expect(GETHandler).not.toBe(undefined)
     expect(POSTHandler).not.toBe(undefined)
 
-    expect(GETHandler().method).toBe('GET')
-    expect(POSTHandler().method).toBe('POST')
+    expect(GETHandler?.().method).toBe('GET')
+    expect(POSTHandler?.().method).toBe('POST')
   })
 
   it('should map router with param url', () => {
