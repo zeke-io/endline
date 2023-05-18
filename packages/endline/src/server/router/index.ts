@@ -11,7 +11,7 @@ export interface RouterConfig {
 
 // TODO: Add more options, and make a custom response class
 export type RouteHandlerOptions = {
-  params: object
+  params: Record<string, string>
   req: IncomingMessage
   res: ServerResponse
 }
