@@ -9,6 +9,8 @@ type RouterMethods = {
 interface Router extends RouterMethods {}
 
 class Router {
+  private _route: string
+
   private _name: string
   public readonly endpoints: {
     route: string
@@ -16,15 +18,33 @@ class Router {
     handler: RouteHandler
   }[]
 
-  constructor(name?: string) {
-    this._name = name || 'index'
+  constructor(route?: string) {
+    this._route = route || '/'
+
+    this._name = route || 'index'
     this.endpoints = []
   }
 
+  get route() {
+    return this._route
+  }
+
+  set route(route: string) {
+    this._route = route
+  }
+
+  /**
+   * @deprecated in favor of route property.
+   * @see {@link route}
+   */
   set name(name: string) {
     this._name = name
   }
 
+  /**
+   * @deprecated in favor of route property.
+   * @see {@link route}
+   */
   get name() {
     return this._name
   }
