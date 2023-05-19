@@ -28,8 +28,8 @@ class Router {
     handler: RouteHandler
   }[]
 
-  constructor(route?: string) {
-    this._route = route || '/'
+  constructor(route = '/') {
+    this._route = route
 
     this._name = route || 'index'
     this.endpoints = []

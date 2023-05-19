@@ -1,5 +1,5 @@
-import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
+import { AppRouter, Router } from './router'
 import { loadApiRoutes } from './router/router-loader'
 import { EndlineConfig } from '../config'
 import { getMainFile } from '../lib/project-files-resolver'
@@ -17,7 +17,8 @@ interface EndlineServerOptions {
 export class EndlineServer {
   private readonly projectDir: string
   private config: EndlineConfig
-  private router: AppRouter
+  private appRouter: AppRouter
+  private rootRouter: Router
   private isDev?: boolean
   // TODO: Refactor
   private additionalParams: Record<string, unknown> = {}
@@ -26,7 +27,8 @@ export class EndlineServer {
     this.projectDir = projectDir
     this.config = config
     this.isDev = isDev
-    this.router = new AppRouter()
+    this.appRouter = new AppRouter()
+    this.rootRouter = new Router('/')
   }
 
   public async initialize() {
@@ -36,7 +38,8 @@ export class EndlineServer {
 
   get requestListener() {
     return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.router.run(req, res, this.additionalParams)
+      /** TODO: Use {@link rootRouter} instead */
+      await this.appRouter.run(req, res, this.additionalParams)
     }
   }
 
@@ -58,9 +61,10 @@ export class EndlineServer {
 
   async loadRoutes(cleanRouter = false) {
     if (cleanRouter) {
-      this.router = new AppRouter()
+      this.appRouter = new AppRouter()
     }
 
-    await loadApiRoutes(this.projectDir, this.router, this.isDev)
+    /** TODO: Load routes to {@link rootRouter} instead */
+    await loadApiRoutes(this.projectDir, this.appRouter, this.isDev)
   }
 }
