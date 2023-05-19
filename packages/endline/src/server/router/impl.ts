@@ -35,6 +35,23 @@ class Router {
     this.endpoints = []
   }
 
+  // TODO: Implement
+  public getHandler(
+    _method: HTTPMethod,
+    _route: string,
+  ): RouteHandler | undefined {
+    return undefined
+  }
+
+  // TODO: Implement
+  public run(
+    _req: IncomingMessage,
+    _res: ServerResponse,
+    _additionalParams: Record<string, unknown>,
+  ) {
+    //
+  }
+
   get route() {
     return this._route
   }
