@@ -1,17 +1,19 @@
 import { HTTPMethod } from '../http'
 import { RouteHandler } from './impl'
 
+type Handlers = { [method in HTTPMethod]?: RouteHandler }
+
 export class RouteNode {
   public name: string
   public isParam: boolean
   public children: Map<string, RouteNode>
-  public methods: { [method in HTTPMethod]?: RouteHandler }
+  public methods: Handlers
 
-  constructor(options?: { name: string }) {
-    this.name = options?.name || ''
+  constructor(name?: string, handlers?: Handlers) {
+    this.name = name || ''
     this.isParam = this.name.startsWith(':')
     this.children = new Map()
-    this.methods = {}
+    this.methods = handlers || {}
   }
 
   public getHandler(method: HTTPMethod): RouteHandler | undefined {

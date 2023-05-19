@@ -107,9 +107,7 @@ export class AppRouter {
         currentNode = child
       } else {
         /** Create node if path does not exist */
-        const node = new RouteNode({
-          name: segment,
-        })
+        const node = new RouteNode(segment)
         currentNode.children.set(segment, node)
         currentNode = node
       }
