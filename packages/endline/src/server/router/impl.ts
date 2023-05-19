@@ -1,15 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { HTTPMethod, HTTPMethodsArray } from '../http'
-
-export type HandlerContext = {
-  req: IncomingMessage
-  res: ServerResponse
-  params: Record<string, string>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} & Record<string, any>
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RouteHandler = (context: HandlerContext) => Promise<any> | any
+import { RouteHandler } from './handler-types'
 
 type RouterMethods = {
   [method in HTTPMethod]: (route: string, handler: RouteHandler) => void

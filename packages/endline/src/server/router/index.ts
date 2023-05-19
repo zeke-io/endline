@@ -3,7 +3,8 @@ import path from 'path'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
-import { Router, RouteHandler, HandlerContext } from './impl'
+import { Router } from './impl'
+import { RouteHandler, HandlerContext } from './handler-types'
 import { RouteNode } from './router-node'
 
 export interface RouterConfig {

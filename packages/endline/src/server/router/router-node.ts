@@ -1,5 +1,5 @@
 import { HTTPMethod } from '../http'
-import { RouteHandler } from './impl'
+import { RouteHandler } from './handler-types'
 
 type Handlers = { [method in HTTPMethod]?: RouteHandler }
 
