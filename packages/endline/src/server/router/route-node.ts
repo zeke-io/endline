@@ -6,8 +6,11 @@ type Handlers = { [method in HTTPMethod]?: RouteHandler }
 export class RouteNode {
   public name: string
   public isParam: boolean
-  public children: Map<string, RouteNode>
   public methods: Handlers
+  /**
+   * @deprecated this will be removed after the new routing implementation
+   */
+  public children: Map<string, RouteNode>
 
   constructor(name?: string, handlers?: Handlers) {
     this.name = name || ''
