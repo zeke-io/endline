@@ -5,7 +5,7 @@ import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
 import { Router } from './impl'
 import { RouteHandler, HandlerContext } from './handler-types'
-import { RouteNode } from './router-node'
+import { RouteNode } from './route-node'
 
 export interface RouterConfig {
   routesDirectory: string

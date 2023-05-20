@@ -21,7 +21,7 @@ export class RouteNode {
   }
 
   public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
-    /** Return false if the {@link handler} is already registered */
+    // Return false if the method is already registered
     if (this.getHandler(method) != null) {
       return false
     }
