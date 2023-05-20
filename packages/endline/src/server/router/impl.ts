@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { HTTPMethod, HTTPMethodsArray } from '../http'
 import { RouteHandler } from './handler-types'
+import { Layer } from './layer'
 
 type RouterMethods = {
   [method in HTTPMethod]: (route: string, handler: RouteHandler) => void
@@ -11,6 +12,7 @@ interface Router extends RouterMethods {}
 
 class Router {
   private _route: string
+  private stack: Layer[]
 
   private _name: string
   public readonly endpoints: {
@@ -21,6 +23,7 @@ class Router {
 
   constructor(route = '/') {
     this._route = route
+    this.stack = []
 
     this._name = route || 'index'
     this.endpoints = []
@@ -41,6 +44,14 @@ class Router {
     _additionalParams: Record<string, unknown>,
   ) {
     //
+  }
+
+  public addEndpoint(method: HTTPMethod, route: string, handler: RouteHandler) {
+    this.endpoints.push({
+      method,
+      route,
+      handler,
+    })
   }
 
   get route() {
@@ -65,14 +76,6 @@ class Router {
    */
   get name() {
     return this._name
-  }
-
-  public addEndpoint(method: HTTPMethod, route: string, handler: RouteHandler) {
-    this.endpoints.push({
-      method,
-      route,
-      handler,
-    })
   }
 }
 
