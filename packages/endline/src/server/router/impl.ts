@@ -38,29 +38,16 @@ class Router {
     return undefined
   }
 
+  /**
+   * Handles an incoming request
+   * @private
+   */
   public async run(
     req: IncomingMessage,
     res: ServerResponse,
     additionalParams: Record<string, unknown>,
   ) {
     const { url, parsedSearchParams } = parseUrl(req.url!)
-    let foundLayer: Layer | undefined
-
-    for (const layer of this.stack) {
-      const matches = layer.match(url.pathname)
-      if (matches) {
-        continue
-      }
-
-      foundLayer = layer
-    }
-
-    if (!foundLayer) {
-      // No layers found with given url
-      // TODO: Implement "not found" handler
-      return
-    }
-
     const context: HandlerContext = {
       req,
       res,
@@ -69,7 +56,25 @@ class Router {
       },
       ...additionalParams,
     }
-    await foundLayer.handleRequest(context)
+
+    for (const layer of this.stack) {
+      const matches = layer.match(url.pathname)
+
+      if (!matches) {
+        continue
+      }
+
+      await layer.handleRequest(context)
+    }
+  }
+
+  public middleware(handler: RouteHandler): void
+  public middleware(path: string, handler: RouteHandler): void
+  public middleware(
+    pathOrHandler: RouteHandler | string,
+    handler?: RouteHandler,
+  ): void {
+    // TODO: Implement
   }
 
   public merge(router: Router) {

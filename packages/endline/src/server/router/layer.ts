@@ -23,7 +23,7 @@ export class Layer {
     return !!foundMatch
   }
 
-  public handleRequest(context: HandlerContext) {
-    this.handler(context)
+  public async handleRequest(context: HandlerContext) {
+    await this.handler(context)
   }
 }
