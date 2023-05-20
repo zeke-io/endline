@@ -72,6 +72,10 @@ class Router {
     await foundLayer.handleRequest(context)
   }
 
+  public merge(router: Router) {
+    //
+  }
+
   public addEndpoint(method: HTTPMethod, route: string, handler: RouteHandler) {
     this.endpoints.push({
       method,
