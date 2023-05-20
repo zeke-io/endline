@@ -1,7 +1,8 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { HTTPMethod, HTTPMethodsArray } from '../http'
-import { RouteHandler } from './handler-types'
+import { HandlerContext, RouteHandler } from './handler-types'
 import { Layer } from './layer'
+import { parseUrl } from '../../lib/url-utils'
 
 type RouterMethods = {
   [method in HTTPMethod]: (route: string, handler: RouteHandler) => void
@@ -37,13 +38,38 @@ class Router {
     return undefined
   }
 
-  // TODO: Implement
-  public run(
-    _req: IncomingMessage,
-    _res: ServerResponse,
-    _additionalParams: Record<string, unknown>,
+  public async run(
+    req: IncomingMessage,
+    res: ServerResponse,
+    additionalParams: Record<string, unknown>,
   ) {
-    //
+    const { url, parsedSearchParams } = parseUrl(req.url!)
+    let foundLayer: Layer | undefined
+
+    for (const layer of this.stack) {
+      const matches = layer.match(url.pathname)
+      if (matches) {
+        continue
+      }
+
+      foundLayer = layer
+    }
+
+    if (!foundLayer) {
+      // No layers found with given url
+      // TODO: Implement "not found" handler
+      return
+    }
+
+    const context: HandlerContext = {
+      req,
+      res,
+      params: {
+        ...parsedSearchParams,
+      },
+      ...additionalParams,
+    }
+    await foundLayer.handleRequest(context)
   }
 
   public addEndpoint(method: HTTPMethod, route: string, handler: RouteHandler) {

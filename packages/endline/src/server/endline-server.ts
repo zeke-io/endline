@@ -38,8 +38,12 @@ export class EndlineServer {
 
   get requestListener() {
     return async (req: IncomingMessage, res: ServerResponse) => {
+      await this.rootRouter.run(req, res, {
+        ...this.additionalParams,
+      })
+
       /** TODO: Use {@link rootRouter} instead */
-      await this.appRouter.run(req, res, this.additionalParams)
+      // await this.appRouter.run(req, res, this.additionalParams)
     }
   }
 
