@@ -1,4 +1,4 @@
-import glob from 'glob'
+import { glob } from 'glob'
 import path from 'node:path'
 import { InputOptions, OutputOptions } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
