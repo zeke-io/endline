@@ -7,12 +7,10 @@ const swcOptions = {
   jsc: {
     parser: {
       syntax: 'typescript',
-      jsx: false,
       dynamicImport: true,
-      importAssertions: true,
-      topLevelAwait: true,
-      preserveAllComments: false,
+      importAssertions: true
     },
+    loose: true,
     target: 'es2016',
     externalHelpers: false,
   },
@@ -26,6 +24,7 @@ const swcOptions = {
     },
   },
   sourceMaps: true,
+  inlineSourcesContent: false
 }
 
 const bin = async () => build('bin/**/*', 'bin', { mode: 0o755 })
