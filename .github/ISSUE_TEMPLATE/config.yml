@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Feature requests
-    about: Find or create feature requests in the "Ideas" discussions category
+    about: Find or create feature requests in the "Ideas" category in Discussions
     url: https://github.com/zeke-io/endline/discussions/categories/ideas
   - name: Need help?
-    about: You can ask questions in the "Help" discussions category
+    about: You can ask questions in the "Help" category in Discussions
     url: https://github.com/zeke-io/endline/discussions/categories/help-q-a
