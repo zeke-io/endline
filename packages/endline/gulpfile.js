@@ -1,3 +1,4 @@
+const path = require('path')
 const { src, dest, series, watch, parallel } = require('gulp')
 const sourcemaps = require('gulp-sourcemaps')
 const gulpSwc = require('gulp-swc')
@@ -7,12 +8,10 @@ const swcOptions = {
   jsc: {
     parser: {
       syntax: 'typescript',
-      jsx: false,
       dynamicImport: true,
       importAssertions: true,
-      topLevelAwait: true,
-      preserveAllComments: false,
     },
+    loose: true,
     target: 'es2016',
     externalHelpers: false,
   },
@@ -26,6 +25,7 @@ const swcOptions = {
     },
   },
   sourceMaps: true,
+  inlineSourcesContent: false,
 }
 
 const bin = async () => build('bin/**/*', 'bin', { mode: 0o755 })
@@ -40,10 +40,21 @@ async function clean() {
   return del.deleteSync(['dist/'])
 }
 
-async function build(path, distFolder, opts = {}) {
-  return src([`src/${path}`, `!src/${path}.d.ts`])
+async function build(srcPath, distFolder, opts = {}) {
+  return src([`src/${srcPath}`, `!src/${srcPath}.d.ts`])
     .pipe(sourcemaps.init())
     .pipe(gulpSwc(swcOptions))
+    .pipe(
+      sourcemaps.mapSources(function (sourcePath, _file) {
+        const distPath = path.dirname(
+          path.join(__dirname, 'dist', distFolder, sourcePath),
+        )
+        let filePath = path.join(__dirname, 'src', distFolder, sourcePath)
+        // Replace .js extension to .ts
+        filePath = path.format({ ...path.parse(filePath), base: '', ext: 'ts' })
+        return path.relative(distPath, filePath)
+      }),
+    )
     .pipe(sourcemaps.write('.'))
     .pipe(dest(`dist/${distFolder}`, { ...opts }))
 }
