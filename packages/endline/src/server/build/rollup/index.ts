@@ -9,8 +9,6 @@ async function generateOutputs(
   const { output } = await bundle.generate(outputOptions)
 
   for (const chunk of output) {
-    console.log(`- [${chunk.type}]`, chunk.fileName)
-
     if (chunk.type === 'asset') {
       warn(
         `Found chunk of type 'asset', support for this is not implemented yet and will be ignored by the compiler: ${chunk.fileName}`,
@@ -33,7 +31,21 @@ export async function build(
   )
   let bundle
   try {
-    bundle = await rollup({ ...inputOptions, output: outputOptions })
+    bundle = await rollup({
+      ...inputOptions,
+      output: outputOptions,
+      onwarn: (message) => {
+        warn(message.message)
+
+        if (message.loc) {
+          console.log(message.loc.file)
+        }
+
+        if (message.frame) {
+          console.log(message.frame)
+        }
+      },
+    })
 
     await generateOutputs(bundle, outputOptions)
   } catch (e) {
