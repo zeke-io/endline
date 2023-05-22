@@ -1,5 +1,5 @@
 import { HTTPMethod, HTTPMethodsArray } from '../http'
-import { RouteHandler } from './index'
+import { RouteHandler } from './handler-types'
 
 type RouterMethods = {
   [method in HTTPMethod]: (route: string, handler: RouteHandler) => void
