@@ -1,5 +1,5 @@
-import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
+import { Router } from './router'
 import { loadApiRoutes } from './router/router-loader'
 import { EndlineConfig } from '../config'
 import { getMainFile } from '../lib/project-files-resolver'
@@ -17,7 +17,8 @@ interface EndlineServerOptions {
 export class EndlineServer {
   private readonly projectDir: string
   private config: EndlineConfig
-  private router: AppRouter
+  // private appRouter: AppRouter
+  private rootRouter: Router
   private isDev?: boolean
   // TODO: Refactor
   private additionalParams: Record<string, unknown> = {}
@@ -26,7 +27,8 @@ export class EndlineServer {
     this.projectDir = projectDir
     this.config = config
     this.isDev = isDev
-    this.router = new AppRouter()
+    this.rootRouter = new Router('/')
+    // this.appRouter = new AppRouter()
   }
 
   public async initialize() {
@@ -36,7 +38,11 @@ export class EndlineServer {
 
   get requestListener() {
     return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.router.run(req, res, this.additionalParams)
+      await this.rootRouter.run(req, res, {
+        ...this.additionalParams,
+      })
+
+      // await this.appRouter.run(req, res, this.additionalParams)
     }
   }
 
@@ -57,10 +63,12 @@ export class EndlineServer {
   }
 
   async loadRoutes(cleanRouter = false) {
+    // This does not work, and will be updated after new routing implementation
+    // TODO: Look for a way to "clear" the router
     if (cleanRouter) {
-      this.router = new AppRouter()
+      // this.appRouter = new AppRouter()
     }
 
-    await loadApiRoutes(this.projectDir, this.router, this.isDev)
+    await loadApiRoutes(this.projectDir, this.rootRouter, this.isDev)
   }
 }

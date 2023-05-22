@@ -4,57 +4,11 @@ import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
 import { Router } from './impl'
+import { RouteHandler, HandlerContext } from './handler-types'
+import { RouteNode } from './route-node'
 
 export interface RouterConfig {
   routesDirectory: string
-}
-
-// TODO: Add more options, and make a custom response class
-export type RouteHandlerOptions = {
-  params: Record<string, string>
-  req: IncomingMessage
-  res: ServerResponse
-}
-// TODO: Disabling no-explicit-any for now until we add more types
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RouteHandler = (options?: RouteHandlerOptions) => Promise<any> | any
-
-class RouteNode {
-  public name: string
-  public isParam: boolean
-  public children: Map<string, RouteNode>
-  public methods: { [method in HTTPMethod]?: RouteHandler }
-
-  constructor(options?: { name: string }) {
-    this.name = options?.name || ''
-    this.isParam = this.name.startsWith(':')
-    this.children = new Map()
-    this.methods = {}
-  }
-
-  public getHandler(method: HTTPMethod): RouteHandler | undefined {
-    return this.methods[method]
-  }
-
-  public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
-    /** Return false if the {@link handler} is already registered */
-    if (this.getHandler(method) != null) {
-      return false
-    }
-
-    this.methods[method] = handler
-    return true
-  }
-
-  /*
-  public removeHandler(method: HTTPMethod): void {
-    delete this.methods[method]
-  }
-
-  get hasMethods(): boolean {
-    return !!Object.keys(this.methods).length
-  }
-  */
 }
 
 export class AppRouter {
@@ -154,9 +108,7 @@ export class AppRouter {
         currentNode = child
       } else {
         /** Create node if path does not exist */
-        const node = new RouteNode({
-          name: segment,
-        })
+        const node = new RouteNode(segment)
         currentNode.children.set(segment, node)
         currentNode = node
       }
@@ -184,5 +136,6 @@ export class AppRouter {
   }
 }
 
-export { Router }
+export { Router, RouteHandler, HandlerContext }
+
 export default Router

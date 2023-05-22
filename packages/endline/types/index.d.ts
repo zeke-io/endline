@@ -1,1 +1,1 @@
-export { Router, RouteHandler } from '../dist/server/router'
+export { Router, RouteHandler, HandlerContext } from '../dist/server/router'

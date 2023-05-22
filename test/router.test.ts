@@ -1,51 +1,84 @@
-import { AppRouter, Router } from '../packages/endline/src/server/router'
+/* eslint-disable */
+import { Router } from 'endline/src/server/router'
 
 describe('Router', function () {
-  let appRouter: AppRouter
+  it('should map route handlers', () => {
+    const router = new Router()
 
-  beforeAll(() => {
-    appRouter = new AppRouter()
-  })
+    router.GET('/route1', () => {})
+    router.POST('/route2', () => {})
 
-  it('should map GET handler', function () {
-    const router = new Router('test')
-    router.GET('/', async () => ({ method: 'GET' }))
-    appRouter.addFromRouter(router)
-
-    const handler = appRouter.getHandler('/test', 'GET')
-
+    // TODO: Get handler
+    const handler = undefined // router.getHandler('GET', '/route1')
     expect(handler).not.toBe(undefined)
   })
 
-  it('should map POST handler with same route as GET handler', function () {
-    const testRouter = new Router('test')
-    testRouter.POST('/', async () => ({ method: 'POST' }))
-    appRouter.addFromRouter(testRouter)
+  it('should map other routers', () => {
+    const newRouter = new Router()
+    newRouter.GET('/', () => {})
 
-    const handler = appRouter.getHandler('/test', 'POST')
+    const rootRouter = new Router()
+    // TODO: Merge routers
+    // rootRouter.merge(newRouter)
+
+    // TODO: Get handler
+    const handler = undefined // rootRouter.getHandler('GET', '/')
     expect(handler).not.toBe(undefined)
   })
 
-  it('should map route with param url', function () {
-    const testRouter = new Router('test')
-    const testId = 'testId'
-    testRouter.GET('/:id', async () => ({ method: 'GET', testId }))
-    appRouter.addFromRouter(testRouter)
+  it('should map routers with relative url', () => {
+    const newRouter = new Router('/test')
+    newRouter.GET('/', () => {})
 
-    const handler = appRouter.getHandler(`/test/${testId}`, 'GET')
+    const rootRouter = new Router()
+    // TODO: Merge routers
+    // rootRouter.merge(newRouter)
+
+    // TODO: Get handler
+    const handler = undefined // rootRouter.getHandler('GET', '/test')
     expect(handler).not.toBe(undefined)
-    expect(handler?.params.id).toBe(testId)
   })
 
-  it('should not allow to register two param routes', async function () {
-    const testRouter = new Router('test')
-    testRouter.GET('/:another', async () => {
-      throw new Error('This should not be called')
+  it('should support multiple methods with the same url', () => {
+    const router = new Router()
+    router.GET('/', () => ({ method: 'GET' }))
+    router.POST('/', () => ({ method: 'POST' }))
+
+    // TODO: Get both handlers
+    const GETHandler = undefined // router.getHandler('GET', '/')
+    const POSTHandler = undefined // router.getHandler('POST', '/')
+
+    expect(GETHandler).not.toBe(undefined)
+    expect(POSTHandler).not.toBe(undefined)
+
+    // TODO: Make sure they have their corresponding methods
+    // expect(GETHandler?.().method).toBe('GET')
+    // expect(POSTHandler?.().method).toBe('POST')
+  })
+
+  it('should map router with param url', () => {
+    const testId = 'abc123'
+    const router = new Router()
+
+    router.GET('/:id', () => ({ testId }))
+
+    // TODO: Get handler
+    const handler = undefined // router.getHandler('GET', `/${testId}`)
+    expect(handler).not.toBe(undefined)
+
+    // TODO: Check if param id is present and is equal to testId
+  })
+
+  it('should not map two param routes with the same base', () => {
+    const router = new Router()
+    router.GET('/:id', () => ({ message: 'This is fine' }))
+    router.GET('/:anotherId', () => {
+      throw new Error('This is not')
     })
 
-    appRouter.addFromRouter(testRouter)
-    const handler = appRouter.getHandler('/test/anotherId', 'GET')
-    expect(handler?.handler).not.toThrow(Error)
-    expect(handler?.params.another).not.toBeDefined()
+    // TODO: Get handler
+    const handler = undefined // router.getHandler('GET', '/anotherId')
+    expect(handler).not.toBe(undefined)
+    expect(handler).not.toThrow(Error)
   })
 })

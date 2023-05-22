@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { AppRouter } from './index'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
 import { Router } from './impl'
@@ -57,7 +56,7 @@ export async function findRouters(routesDir: string) {
 
 export async function loadApiRoutes(
   projectDir: string,
-  appRouter: AppRouter,
+  rootRouter: Router,
   isDev = true,
 ) {
   const folderPath = isDev ? 'dist/routes' : 'routes'
@@ -78,6 +77,7 @@ export async function loadApiRoutes(
 
   for (const routeFile of foundRouters) {
     const module = routeFile.module
+    // TODO: Get relative path and use it as router path, for directory-based routing
     const name = path.parse(routeFile.path).name
     let router
 
@@ -85,8 +85,7 @@ export async function loadApiRoutes(
       router = new Router(name)
       await module(router)
 
-      /** Add endpoints to app router */
-      appRouter.addFromRouter(router)
+      rootRouter.merge(router)
     } else if (typeof module === 'object') {
       router = module
 
@@ -102,7 +101,7 @@ export async function loadApiRoutes(
         router.name = name
       }
 
-      appRouter.addFromRouter(router)
+      rootRouter.merge(router)
     } else {
       warn(
         `The file '${routeFile.fileName}' does not export a default function, ignoring...`,
