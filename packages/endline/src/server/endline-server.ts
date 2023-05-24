@@ -56,6 +56,7 @@ export class EndlineServer {
     if (filePath == null) return
 
     const file = require(filePath)
+    delete require.cache[filePath]
     const module = file.default || file
 
     if (!module) {
