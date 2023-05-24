@@ -5,7 +5,6 @@ import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
-import { Watch } from './build/webpack/watch'
 import { RollupWatchCompiler } from './build/rollup/watch'
 import { findDirectory } from './lib/directory-resolver'
 
@@ -27,7 +26,7 @@ class EndlineApp {
   private hostname: string
   private port: number
   private endlineServer: EndlineServer
-  private watchCompiler?: Watch | RollupWatchCompiler
+  private watchCompiler?: RollupWatchCompiler
   private useRollup: boolean
 
   constructor({
@@ -65,33 +64,21 @@ class EndlineApp {
   }
 
   private async runWatchCompiler() {
-    const { projectDir, config, useRollup } = this
+    const { projectDir, config } = this
 
-    if (useRollup) {
-      const outputPath = path.join(projectDir, config.distDir)
+    const outputPath = path.join(projectDir, config.distDir)
 
-      const typescriptConfig = path.join(projectDir, 'tsconfig.json')
-      const useTypescript = fs.existsSync(typescriptConfig)
+    const typescriptConfig = path.join(projectDir, 'tsconfig.json')
+    const useTypescript = fs.existsSync(typescriptConfig)
 
-      this.watchCompiler = new RollupWatchCompiler()
-      await this.watchCompiler.initialize(
-        projectDir,
-        { distFolder: outputPath, typescript: useTypescript },
-        () => {
-          this.endlineServer.initialize()
-        },
-      )
-    } else {
-      // TODO: Deprecate this
-      const routesDirectory =
-        findDirectory(projectDir, config.router.routesDirectory, false) ||
-        path.join(projectDir, 'src/routes')
-
-      this.watchCompiler = new Watch({ projectDir, routesDirectory })
-      await this.watchCompiler.watch(() => {
-        this.endlineServer.loadRoutes(true)
-      })
-    }
+    this.watchCompiler = new RollupWatchCompiler()
+    await this.watchCompiler.initialize(
+      projectDir,
+      { distFolder: outputPath, typescript: useTypescript },
+      () => {
+        this.endlineServer.initialize()
+      },
+    )
   }
 
   public shutdown() {
