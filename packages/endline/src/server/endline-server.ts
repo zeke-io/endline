@@ -5,6 +5,11 @@ import { EndlineConfig } from '../config'
 import { getMainFile } from '../lib/project-files-resolver'
 import { warn } from '../lib/logger'
 
+export type RequestListener = (
+  req: IncomingMessage,
+  res: ServerResponse,
+) => Promise<void>
+
 interface EndlineServerOptions {
   config: EndlineConfig
   httpServer?: Server
@@ -31,13 +36,18 @@ export class EndlineServer {
 
   public async initialize() {
     await this.initializeMainFile()
-    await this.loadRoutes()
+    await this.loadRoutes(true)
   }
 
-  get requestListener() {
-    return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.router.run(req, res, this.additionalParams)
-    }
+  public getRequestHandler(): RequestListener {
+    return this.handleRequest.bind(this)
+  }
+
+  public async handleRequest(
+    req: IncomingMessage,
+    res: ServerResponse,
+  ): Promise<void> {
+    await this.router.run(req, res, this.additionalParams)
   }
 
   private async initializeMainFile() {

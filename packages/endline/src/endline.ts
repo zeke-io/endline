@@ -58,7 +58,7 @@ class EndlineApp {
       await this.runWatchCompiler()
     }
 
-    httpServer.addListener('request', this.requestListener)
+    httpServer.addListener('request', this.endlineServer.getRequestHandler())
     await endlineServer.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
@@ -78,7 +78,7 @@ class EndlineApp {
         projectDir,
         { distFolder: outputPath, typescript: useTypescript },
         () => {
-          this.endlineServer.loadRoutes(true)
+          this.endlineServer.initialize()
         },
       )
     } else {
@@ -91,12 +91,6 @@ class EndlineApp {
       await this.watchCompiler.watch(() => {
         this.endlineServer.loadRoutes(true)
       })
-    }
-  }
-
-  get requestListener() {
-    return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.endlineServer.requestListener(req, res)
     }
   }
 
