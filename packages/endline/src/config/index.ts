@@ -3,18 +3,15 @@ import path from 'path'
 import { pathToFileURL } from 'url'
 import { error, warn } from '../lib/logger'
 import { validateConfig } from './config-schema'
-import { RouterConfig } from '../server/router'
 import { loadEnvFiles } from './env-loader'
+import { EndlineConfig, EndlineRequiredConfig } from './config-interfaces'
 
-export interface EndlineConfig {
-  distDir: string
-  router: RouterConfig
-}
+export { EndlineConfig, EndlineRequiredConfig }
 
-const defaultConfig: EndlineConfig = {
+export const defaultConfig: EndlineRequiredConfig = {
   distDir: './dist',
   router: {
-    routesDirectory: 'src/routes',
+    routesDirectory: './src/routes',
   },
 }
 
@@ -24,7 +21,7 @@ export default async function loadConfig({
 }: {
   projectDir: string
   environment?: string
-}): Promise<EndlineConfig> {
+}): Promise<EndlineRequiredConfig> {
   const fileName = 'endline.config.js'
   const filePath = path.resolve(projectDir, fileName)
 

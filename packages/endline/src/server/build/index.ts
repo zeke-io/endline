@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { EndlineConfig } from '../../config'
+import { EndlineRequiredConfig } from '../../config'
 import { findDirectory } from '../../lib/directory-resolver'
 import { done, info } from '../../lib/logger'
 import { WebpackCompiler } from './webpack/compiler'
@@ -12,7 +12,7 @@ export default async function build({
   useRollup,
 }: {
   projectDir: string
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   useRollup: boolean
 }) {
   const outputPath = path.join(projectDir, config.distDir)

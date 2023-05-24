@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import process from 'process'
 import { IncomingMessage, Server, ServerResponse } from 'http'
-import { EndlineConfig } from './config'
+import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
 import { Watch } from './server/build/webpack/watch'
@@ -10,7 +10,7 @@ import { RollupWatchCompiler } from './server/build/rollup/watch'
 import { findDirectory } from './lib/directory-resolver'
 
 interface EndlineAppOptions {
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   httpServer: Server
   projectDir: string
   hostname: string
@@ -20,7 +20,7 @@ interface EndlineAppOptions {
 }
 
 class EndlineApp {
-  private config: EndlineConfig
+  private config: EndlineRequiredConfig
   private httpServer: Server
   private projectDir: string
   private readonly isDev: boolean

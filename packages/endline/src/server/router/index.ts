@@ -8,10 +8,6 @@ import { RouteHandler } from './handler-types'
 
 export { HandlerContext, RouteHandler } from './handler-types'
 
-export interface RouterConfig {
-  routesDirectory: string
-}
-
 class RouteNode {
   public name: string
   public isParam: boolean

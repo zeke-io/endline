@@ -1,5 +1,5 @@
 import http from 'http'
-import { EndlineConfig } from '../config'
+import { EndlineRequiredConfig } from '../config'
 import createEndlineApp from '../endline'
 import { warn } from '../lib/logger'
 
@@ -25,7 +25,7 @@ export async function initializeDevServer({
   port: number
   hostname: string
   projectDir: string
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   useRollup: boolean
 }) {
   const server = http.createServer()
