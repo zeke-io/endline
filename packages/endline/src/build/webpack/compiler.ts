@@ -24,7 +24,7 @@ export class WebpackCompiler {
   }) {
     this.projectDir = projectDir
     this.routesDirectory = routesDirectory
-    this.shouldClean = !!clean
+    this.shouldClean = clean || false
   }
 
   private createEntryPoints() {
