@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { EndlineRequiredConfig } from '../../config'
-import { findDirectory } from '../../lib/directory-resolver'
-import { done, info } from '../../lib/logger'
+import { EndlineRequiredConfig } from '../config'
+import { findDirectory } from '../lib/directory-resolver'
+import { done, info } from '../lib/logger'
 import { WebpackCompiler } from './webpack/compiler'
 import { build as rollupBuild } from './rollup'
 

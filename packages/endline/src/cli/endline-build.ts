@@ -1,7 +1,7 @@
 import { Command } from 'commander'
 import { getProjectDirectory } from '../lib/directory-resolver'
 import loadConfig from '../config'
-import build from '../server/build'
+import build from '../build'
 
 const command = new Command('build')
   .description('Compiles the Endline app for production')

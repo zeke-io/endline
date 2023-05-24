@@ -1,5 +1,5 @@
 import { OutputOptions, rollup, RollupBuild } from 'rollup'
-import { error, warn } from '../../../lib/logger'
+import { error, warn } from '../../lib/logger'
 import { createOptions } from './options'
 
 async function generateOutputs(

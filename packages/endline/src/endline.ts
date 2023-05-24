@@ -5,8 +5,8 @@ import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
-import { Watch } from './server/build/webpack/watch'
-import { RollupWatchCompiler } from './server/build/rollup/watch'
+import { Watch } from './build/webpack/watch'
+import { RollupWatchCompiler } from './build/rollup/watch'
 import { findDirectory } from './lib/directory-resolver'
 
 interface EndlineAppOptions {

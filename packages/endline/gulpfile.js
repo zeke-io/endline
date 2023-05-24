@@ -28,19 +28,12 @@ const swcOptions = {
   inlineSourcesContent: false,
 }
 
-const bin = async () => build('bin/**/*', 'bin', { mode: 0o755 })
-const cli = async () => build('cli/**/*', 'cli')
-const config = async () => build('config/**/*', 'config')
-const lib = async () => build('lib/**/*', 'lib')
-const server = async () => build('server/**/*', 'server')
-const index = async () => build('*.ts', '')
-
 async function clean() {
   const del = await import('del')
   return del.deleteSync(['dist/'])
 }
 
-async function build(srcPath, distFolder, opts = {}) {
+async function buildPipeline(srcPath, distFolder, opts = {}) {
   return src([`src/${srcPath}`, `!src/${srcPath}.d.ts`])
     .pipe(sourcemaps.init())
     .pipe(gulpSwc(swcOptions))
@@ -59,8 +52,17 @@ async function build(srcPath, distFolder, opts = {}) {
     .pipe(dest(`dist/${distFolder}`, { ...opts }))
 }
 
+const bin = async () => buildPipeline('bin/**/*', 'bin', { mode: 0o755 })
+const build = async () => buildPipeline('build/**/*', 'build')
+const cli = async () => buildPipeline('cli/**/*', 'cli')
+const config = async () => buildPipeline('config/**/*', 'config')
+const lib = async () => buildPipeline('lib/**/*', 'lib')
+const server = async () => buildPipeline('server/**/*', 'server')
+const index = async () => buildPipeline('*.ts', '')
+
 async function buildAll() {
   await bin()
+  await build()
   await cli()
   await config()
   await lib()
@@ -68,12 +70,16 @@ async function buildAll() {
   await index()
 }
 
-exports.build = series(clean, parallel(bin, cli, config, lib, server, index))
+exports.build = series(
+  clean,
+  parallel(bin, build, cli, config, lib, server, index),
+)
 exports.default = async function () {
   await clean()
   await buildAll()
 
   watch('src/bin/**/*', bin)
+  watch('src/build/**/*', build)
   watch('src/cli/**/*', cli)
   watch('src/config/**/*', config)
   watch('src/lib/**/*', lib)
