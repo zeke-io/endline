@@ -21,7 +21,6 @@ async function run(options: {
   hostname: string
   environment: string
   directory?: string
-  useRollup: boolean
 }) {
   warn(
     `This project is still in its early stages and under active development. It is not yet ready to be used in a production environment.`,

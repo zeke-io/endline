@@ -14,7 +14,6 @@ interface EndlineAppOptions {
   hostname: string
   port: number
   isDev?: boolean
-  useRollup?: boolean
 }
 
 class EndlineApp {
@@ -26,7 +25,6 @@ class EndlineApp {
   private port: number
   private endlineServer: EndlineServer
   private watchCompiler?: RollupWatchCompiler
-  private useRollup: boolean
 
   constructor({
     config,
@@ -35,7 +33,6 @@ class EndlineApp {
     hostname,
     port,
     isDev,
-    useRollup = true,
   }: EndlineAppOptions) {
     this.config = config
     this.httpServer = httpServer
@@ -43,7 +40,6 @@ class EndlineApp {
     this.hostname = hostname
     this.port = port
     this.isDev = !!isDev
-    this.useRollup = useRollup
 
     this.endlineServer = new EndlineServer({ config, projectDir, isDev })
   }
