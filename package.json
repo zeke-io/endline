@@ -16,7 +16,7 @@
     "lint:check": "eslint .",
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "prerelease": "pnpm build && pnpm test && pnpm types"
+    "prerelease": "pnpm test && pnpm build && pnpm types"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
