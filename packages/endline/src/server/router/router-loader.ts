@@ -30,6 +30,7 @@ export async function findRouters(routesDir: string) {
      */
     try {
       const file = require(filePath)
+      delete require.cache[filePath]
       const module = file.default || file
 
       if (!module) {
@@ -83,6 +84,7 @@ export async function loadApiRoutes(
 
     if (typeof module === 'function') {
       router = new Router(name)
+      console.log(module)
       await module(router)
 
       /** Add endpoints to app router */
