@@ -84,7 +84,6 @@ export async function loadApiRoutes(
 
     if (typeof module === 'function') {
       router = new Router(name)
-      console.log(module)
       await module(router)
 
       /** Add endpoints to app router */

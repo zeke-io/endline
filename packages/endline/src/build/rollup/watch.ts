@@ -1,6 +1,7 @@
 import rollup, { RollupWatcher } from 'rollup'
 import { createOptions } from './options'
 import { build } from './index'
+import { watch } from '../../lib/logger'
 
 export class RollupWatchCompiler {
   private watcher?: RollupWatcher
@@ -24,6 +25,7 @@ export class RollupWatchCompiler {
     })
 
     this.watcher.on('change', async (_id, _event) => {
+      watch('Detected changes! Reloading...')
       await build(projectDir, { distFolder, typescript })
       onSuccess()
     })
