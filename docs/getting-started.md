@@ -1,10 +1,13 @@
-# Getting Started Guide
+# Getting Started
 
-Before getting started, you will need Node.js 14.17 or a newer version.
+Before getting started, you will need to install Node.js v16.20 or a newer version.
+But it is recommended you use at least the current LTS version of Node.
 
 ## Creating a new project
 
-We recommend using `create-endline-app`, it will create the necessary files and install the dependencies required to create an Endline app.
+We recommend using `create-endline-app`,
+it will create the necessary files
+and install the dependencies required to get you started quick without any manual configuration or installation.
 
 You can create a new project with `create-endline-app` by running:
 
@@ -16,6 +19,8 @@ yarn create endline-app
 # PNPM
 pnpm create endline-app
 ```
+
+When running the command without arguments, `create-endline-app` will prompt you with some questions on how you want to set up your new project.
 
 ### Manual Installation
 
@@ -39,15 +44,14 @@ Open your `package.json`, and add a `dev` and `build` script:
 }
 ```
 
-Create the directory `src/routes` at the root of your project, this is where Endline looks for endpoint routes.
-However, you can change this by creating a configuration file `endline.config.js`, and changing the path of the `routes` directory from the root folder.
-
-### Example
+Create the directory `src/routes` at the root of your project, this is where Endline looks for routes.
+However, you can change this by creating a configuration file `endline.config.js`, and changing the path of the `routes` directory.
 
 ```javascript
+/** @type {import('endline').EndlineConfig} */
 const config = {
   router: {
-    routesDirectory: 'src/api',
+    routesDirectory: './src/api',
   },
 }
 
