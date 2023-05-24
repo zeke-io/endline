@@ -9,11 +9,11 @@ import { build as rollupBuild } from './rollup'
 export default async function build({
   projectDir,
   config,
-  useRollup,
+  useRollup = true,
 }: {
   projectDir: string
   config: EndlineRequiredConfig
-  useRollup: boolean
+  useRollup?: boolean
 }) {
   const outputPath = path.join(projectDir, config.distDir)
   /** If dist folder exists, clean it */

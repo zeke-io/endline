@@ -16,7 +16,7 @@ interface EndlineAppOptions {
   hostname: string
   port: number
   isDev?: boolean
-  useRollup: boolean
+  useRollup?: boolean
 }
 
 class EndlineApp {
@@ -37,7 +37,7 @@ class EndlineApp {
     hostname,
     port,
     isDev,
-    useRollup,
+    useRollup = true,
   }: EndlineAppOptions) {
     this.config = config
     this.httpServer = httpServer

@@ -20,13 +20,11 @@ export async function initializeDevServer({
   hostname,
   projectDir,
   config,
-  useRollup,
 }: {
   port: number
   hostname: string
   projectDir: string
   config: EndlineRequiredConfig
-  useRollup: boolean
 }) {
   const server = http.createServer()
   const app = createEndlineApp({
@@ -36,7 +34,6 @@ export async function initializeDevServer({
     projectDir,
     config,
     isDev: true,
-    useRollup,
   })
 
   serverShutdown = () => {
