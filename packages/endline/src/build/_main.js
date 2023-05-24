@@ -1,5 +1,5 @@
 const http = require('http')
-const endline = require('endline/dist/endline')
+const endline = require('packages/endline/dist/endline')
 const hostname = 'localhost'
 const port = parseInt(process.env.PORT, 10) || 3000
 

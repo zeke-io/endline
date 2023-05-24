@@ -1,19 +1,19 @@
 import fs from 'fs'
 import path from 'path'
-import { EndlineConfig } from '../../config'
-import { findDirectory } from '../../lib/directory-resolver'
-import { done, info } from '../../lib/logger'
+import { EndlineRequiredConfig } from '../config'
+import { findDirectory } from '../lib/directory-resolver'
+import { done, info } from '../lib/logger'
 import { WebpackCompiler } from './webpack/compiler'
 import { build as rollupBuild } from './rollup'
 
 export default async function build({
   projectDir,
   config,
-  useRollup,
+  useRollup = true,
 }: {
   projectDir: string
-  config: EndlineConfig
-  useRollup: boolean
+  config: EndlineRequiredConfig
+  useRollup?: boolean
 }) {
   const outputPath = path.join(projectDir, config.distDir)
   /** If dist folder exists, clean it */

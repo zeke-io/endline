@@ -23,7 +23,8 @@ export class RollupWatchCompiler {
       output: outputOptions,
     })
 
-    this.watcher.on('change', (_id, _event) => {
+    this.watcher.on('change', async (_id, _event) => {
+      await build(projectDir, { distFolder, typescript })
       onSuccess()
     })
   }

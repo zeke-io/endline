@@ -1,6 +1,6 @@
 import Watchpack from 'watchpack'
 import { WebpackCompiler } from './compiler'
-import { watch } from '../../../lib/logger'
+import { watch } from '../../lib/logger'
 
 export class Watch {
   private readonly projectDir: string

@@ -1,7 +1,7 @@
 import path from 'path'
 import webpack, { Configuration, StatsError } from 'webpack'
-import { error, warn } from '../../../lib/logger'
-import { getMainFile, getRouteFiles } from '../../../lib/project-files-resolver'
+import { error, warn } from '../../lib/logger'
+import { getMainFile, getRouteFiles } from '../../lib/project-files-resolver'
 
 interface CompilerResults {
   errors?: StatsError[]
@@ -24,7 +24,7 @@ export class WebpackCompiler {
   }) {
     this.projectDir = projectDir
     this.routesDirectory = routesDirectory
-    this.shouldClean = !!clean
+    this.shouldClean = clean || false
   }
 
   private createEntryPoints() {

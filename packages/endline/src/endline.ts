@@ -1,26 +1,26 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { IncomingMessage, Server, ServerResponse } from 'http'
-import { EndlineConfig } from './config'
+import { Server } from 'http'
+import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
-import { Watch } from './server/build/webpack/watch'
-import { RollupWatchCompiler } from './server/build/rollup/watch'
+import { Watch } from './build/webpack/watch'
+import { RollupWatchCompiler } from './build/rollup/watch'
 import { findDirectory } from './lib/directory-resolver'
 
 interface EndlineAppOptions {
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   httpServer: Server
   projectDir: string
   hostname: string
   port: number
   isDev?: boolean
-  useRollup: boolean
+  useRollup?: boolean
 }
 
 class EndlineApp {
-  private config: EndlineConfig
+  private config: EndlineRequiredConfig
   private httpServer: Server
   private projectDir: string
   private readonly isDev: boolean
@@ -37,7 +37,7 @@ class EndlineApp {
     hostname,
     port,
     isDev,
-    useRollup,
+    useRollup = true,
   }: EndlineAppOptions) {
     this.config = config
     this.httpServer = httpServer
@@ -58,7 +58,7 @@ class EndlineApp {
       await this.runWatchCompiler()
     }
 
-    httpServer.addListener('request', this.requestListener)
+    httpServer.addListener('request', this.endlineServer.getRequestHandler())
     await endlineServer.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
@@ -78,7 +78,7 @@ class EndlineApp {
         projectDir,
         { distFolder: outputPath, typescript: useTypescript },
         () => {
-          this.endlineServer.loadRoutes(true)
+          this.endlineServer.initialize()
         },
       )
     } else {
@@ -91,12 +91,6 @@ class EndlineApp {
       await this.watchCompiler.watch(() => {
         this.endlineServer.loadRoutes(true)
       })
-    }
-  }
-
-  get requestListener() {
-    return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.endlineServer.requestListener(req, res)
     }
   }
 
