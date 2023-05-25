@@ -59,7 +59,7 @@ export class EndlineServer {
     delete require.cache[filePath]
     const module = file.default || file
 
-    if (!module) {
+    if (!module || typeof module !== 'function') {
       warn(`The main file does not export a default function, ignoring...`)
       return
     }
