@@ -9,7 +9,6 @@ export type HTTPMethod =
   | 'CONNECT'
   | 'PATCH'
 
-// Doing this for now
 export const HTTPMethodsArray: HTTPMethod[] = [
   'GET',
   'HEAD',
