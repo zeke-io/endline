@@ -8,22 +8,24 @@ export class WatchCompiler {
   public async initialize(
     projectDir: string,
     { distFolder, typescript }: { distFolder: string; typescript: boolean },
-    onSuccess: () => void,
+    onSuccess: (
+      timeInfoEntries: Map<string, { safeTime: number; timestamp: number }>,
+    ) => void,
   ) {
     await build(projectDir, { distFolder, typescript })
 
     this.watchpack = new Watchpack({
-      ignored: ['**/.git', '**/dist/**/*']
+      ignored: ['**/.git', '**/dist/**/*'],
     })
 
     this.watchpack.on('aggregated', async () => {
       watch('Detected changes! Reloading...')
       await build(projectDir, { distFolder, typescript })
-      onSuccess()
+      onSuccess(this.watchpack!.getTimeInfoEntries())
     })
 
     this.watchpack.watch({
-      directories: [projectDir]
+      directories: [projectDir],
     })
   }
 

@@ -74,8 +74,12 @@ class EndlineApp {
     await this.watchCompiler.initialize(
       projectDir,
       { distFolder: outputPath, typescript: useTypescript },
-      () => {
-        // TODO: Load env configuration
+      (_files) => {
+        /*for (const [fileName] of files) {
+          // TODO: Load env files if they were changed
+        }*/
+
+        // TODO: Refactor
         this.endlineServer.initialize()
       },
     )
