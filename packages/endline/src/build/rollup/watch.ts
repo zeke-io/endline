@@ -1,37 +1,33 @@
-import rollup, { RollupWatcher } from 'rollup'
-import { createOptions } from './options'
+import Watchpack from 'watchpack'
 import { build } from './index'
 import { watch } from '../../lib/logger'
 
-export class RollupWatchCompiler {
-  private watcher?: RollupWatcher
+export class WatchCompiler {
+  private watchpack?: Watchpack
 
   public async initialize(
     projectDir: string,
     { distFolder, typescript }: { distFolder: string; typescript: boolean },
     onSuccess: () => void,
   ) {
-    const { inputOptions, outputOptions } = await createOptions(
-      projectDir,
-      distFolder,
-      typescript,
-    )
-
     await build(projectDir, { distFolder, typescript })
 
-    this.watcher = rollup.watch({
-      ...inputOptions,
-      output: outputOptions,
+    this.watchpack = new Watchpack({
+      ignored: ['**/.git', '**/dist/**/*']
     })
 
-    this.watcher.on('change', async (_id, _event) => {
+    this.watchpack.on('aggregated', async () => {
       watch('Detected changes! Reloading...')
       await build(projectDir, { distFolder, typescript })
       onSuccess()
     })
+
+    this.watchpack.watch({
+      directories: [projectDir]
+    })
   }
 
   public close() {
-    this.watcher?.close()
+    this.watchpack?.close()
   }
 }

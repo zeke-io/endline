@@ -5,7 +5,7 @@ import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
-import { RollupWatchCompiler } from './build/rollup/watch'
+import { WatchCompiler } from './build/rollup/watch'
 
 interface EndlineAppOptions {
   config: EndlineRequiredConfig
@@ -25,7 +25,7 @@ class EndlineApp {
   private hostname: string
   private port: number
   private endlineServer: EndlineServer
-  private watchCompiler?: RollupWatchCompiler
+  private watchCompiler?: WatchCompiler
   private useRollup: boolean
 
   constructor({
@@ -70,11 +70,12 @@ class EndlineApp {
     const typescriptConfig = path.join(projectDir, 'tsconfig.json')
     const useTypescript = fs.existsSync(typescriptConfig)
 
-    this.watchCompiler = new RollupWatchCompiler()
+    this.watchCompiler = new WatchCompiler()
     await this.watchCompiler.initialize(
       projectDir,
       { distFolder: outputPath, typescript: useTypescript },
       () => {
+        // TODO: Load env configuration
         this.endlineServer.initialize()
       },
     )
