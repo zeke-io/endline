@@ -24,8 +24,7 @@ export class EndlineServer {
   private config: EndlineConfig
   private router: AppRouter
   private isDev?: boolean
-  // TODO: Refactor
-  private additionalParams: Record<string, unknown> = {}
+  private additionalContextItems?: Record<string, unknown>
 
   constructor({ projectDir, config, isDev }: EndlineServerOptions) {
     this.projectDir = projectDir
@@ -47,13 +46,16 @@ export class EndlineServer {
     req: IncomingMessage,
     res: ServerResponse,
   ): Promise<void> {
-    await this.router.run(req, res, this.additionalParams)
+    await this.router.run(req, res, this.additionalContextItems || {})
   }
 
   private async initializeMainFile() {
     const filePath = getMainFile(this.projectDir, false)
 
-    if (filePath == null) return
+    if (filePath == null) {
+      this.additionalContextItems = {}
+      return
+    }
 
     const file = require(filePath)
     delete require.cache[filePath]
@@ -64,7 +66,20 @@ export class EndlineServer {
       return
     }
 
-    this.additionalParams = (await module()) || {}
+    const additionalContextItems = (await module()) || {}
+
+    // It is only valid if the returned object type is null, undefined or a 'Record<string, unknown>' object
+    if (
+      additionalContextItems != null &&
+      typeof additionalContextItems !== 'object'
+    ) {
+      warn(
+        `The main function is returning a value of type "${typeof additionalContextItems}" when it should return an object, undefined or null.`,
+      )
+      return
+    }
+
+    this.additionalContextItems = additionalContextItems
   }
 
   async loadRoutes(cleanRouter = false) {
