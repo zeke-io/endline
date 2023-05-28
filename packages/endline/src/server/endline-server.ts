@@ -1,7 +1,7 @@
 import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
-import { EndlineConfig } from '../config'
+import { EndlineRequiredConfig } from '../config'
 import { getMainFile } from '../lib/project-files-resolver'
 import { warn } from '../lib/logger'
 
@@ -11,7 +11,7 @@ export type RequestListener = (
 ) => Promise<void>
 
 interface EndlineServerOptions {
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   httpServer?: Server
   projectDir: string
   hostname?: string
@@ -21,7 +21,7 @@ interface EndlineServerOptions {
 
 export class EndlineServer {
   private readonly projectDir: string
-  private config: EndlineConfig
+  private config: EndlineRequiredConfig
   private router: AppRouter
   private isDev?: boolean
   private additionalContextItems?: Record<string, unknown>
@@ -50,7 +50,7 @@ export class EndlineServer {
   }
 
   private async initializeMainFile() {
-    const filePath = getMainFile(this.projectDir, false)
+    const filePath = getMainFile(this.projectDir, this.config.distDir)
 
     if (filePath == null) {
       this.additionalContextItems = {}
@@ -87,6 +87,11 @@ export class EndlineServer {
       this.router = new AppRouter()
     }
 
-    await loadApiRoutes(this.projectDir, this.router, this.isDev)
+    await loadApiRoutes(
+      this.projectDir,
+      this.config.distDir,
+      this.router,
+      this.isDev,
+    )
   }
 }

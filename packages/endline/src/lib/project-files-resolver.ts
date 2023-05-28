@@ -2,12 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { warn } from './logger'
 
-export function getMainFile(projectDir: string, fromSrc: boolean) {
-  const mainFilePath = path.join(
-    projectDir,
-    fromSrc ? 'src' : 'dist',
-    'index.js',
-  )
+export function getMainFile(projectDir: string, distDir: string) {
+  const mainFilePath = path.join(projectDir, distDir, 'index.js')
   if (!fs.existsSync(mainFilePath)) return null
 
   const stat = fs.lstatSync(mainFilePath)
