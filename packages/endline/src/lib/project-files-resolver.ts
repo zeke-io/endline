@@ -2,14 +2,15 @@ import fs from 'fs'
 import path from 'path'
 import { warn } from './logger'
 
-export function getMainFile(projectDir: string, distDir: string) {
-  const mainFilePath = path.join(projectDir, distDir, 'index.js')
-  if (!fs.existsSync(mainFilePath)) return null
+export function findAppFile(projectDir: string, distDir: string) {
+  const appFilePath = path.join(projectDir, distDir, 'app.js')
 
-  const stat = fs.lstatSync(mainFilePath)
+  if (!fs.existsSync(appFilePath)) return null
+
+  const stat = fs.lstatSync(appFilePath)
   if (!stat.isFile()) return null
 
-  return mainFilePath
+  return appFilePath
 }
 
 export function getRouteFiles(routesDir: string, extensions = ['.js']) {

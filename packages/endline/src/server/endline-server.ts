@@ -2,7 +2,7 @@ import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
 import { EndlineRequiredConfig } from '../config'
-import { getMainFile } from '../lib/project-files-resolver'
+import { findAppFile } from '../lib/project-files-resolver'
 import { warn } from '../lib/logger'
 
 export type RequestListener = (
@@ -50,8 +50,9 @@ export class EndlineServer {
   }
 
   private async initializeMainFile() {
-    const filePath = getMainFile(this.projectDir, this.config.distDir)
+    const filePath = findAppFile(this.projectDir, this.config.distDir)
 
+    // Clear the additional context items if the app file is not valid
     if (filePath == null) {
       this.additionalContextItems = {}
       return
