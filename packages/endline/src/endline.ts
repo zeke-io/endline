@@ -6,6 +6,7 @@ import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
 import { WatchCompiler } from './build/rollup/watch'
+import { loadEnvFiles } from './config/env-loader'
 
 interface EndlineAppOptions {
   config: EndlineRequiredConfig
@@ -19,7 +20,7 @@ interface EndlineAppOptions {
 class EndlineApp {
   private config: EndlineRequiredConfig
   private httpServer: Server
-  private projectDir: string
+  private rootDir: string
   private readonly isDev: boolean
   private hostname: string
   private port: number
@@ -36,7 +37,7 @@ class EndlineApp {
   }: EndlineAppOptions) {
     this.config = config
     this.httpServer = httpServer
-    this.projectDir = projectDir
+    this.rootDir = projectDir
     this.hostname = hostname
     this.port = port
     this.isDev = !!isDev
@@ -59,21 +60,35 @@ class EndlineApp {
   }
 
   private async runWatchCompiler() {
-    const { projectDir, config } = this
+    const { rootDir, config } = this
 
-    const outputPath = path.join(projectDir, config.distDir)
+    const outputPath = path.join(rootDir, config.distDir)
 
-    const typescriptConfig = path.join(projectDir, 'tsconfig.json')
+    const typescriptConfig = path.join(rootDir, 'tsconfig.json')
     const useTypescript = fs.existsSync(typescriptConfig)
+
+    const envName = process.env.NODE_ENV
+    const envFiles = ['.env.local', '.env'].map((e) => path.join(rootDir, e))
+    if (envName) envFiles.unshift(`.env.${envName}.local`, `.env.${envName}`)
 
     this.watchCompiler = new WatchCompiler()
     await this.watchCompiler.initialize(
-      projectDir,
+      rootDir,
       { distFolder: outputPath, typescript: useTypescript },
-      (_files) => {
-        /*for (const [fileName] of files) {
-          // TODO: Load env files if they were changed
-        }*/
+      (files) => {
+        let envChanged = false
+
+        for (const [fileName] of files) {
+          if (envFiles.includes(fileName)) {
+            envChanged = true
+            // noinspection UnnecessaryContinueJS
+            continue
+          }
+        }
+
+        if (envChanged) {
+          loadEnvFiles(rootDir)
+        }
 
         // TODO: Refactor
         this.endlineServer.initialize()
