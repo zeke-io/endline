@@ -45,18 +45,6 @@ Open your `package.json`, and add a `dev` and `build` script:
 ```
 
 Create the directory `src/routes` at the root of your project, this is where Endline looks for routes.
-However, you can change this by creating a configuration file `endline.config.js`, and changing the path of the `routes` directory.
-
-```javascript
-/** @type {import('endline').EndlineConfig} */
-const config = {
-  router: {
-    routesDirectory: './src/api',
-  },
-}
-
-module.exports = config
-```
 
 ## Creating routes
 

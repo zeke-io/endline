@@ -1,7 +1,9 @@
+// noinspection JSUnusedGlobalSymbols / Until more configuration options are available
 export interface RouterConfig {
   /**
    * Routes directory
    * @default './src/routes'
+   * @deprecated
    */
   routesDirectory?: string
 }
@@ -15,9 +17,9 @@ export interface EndlineConfig {
   /**
    * Router configuration
    */
-  router?: RouterConfig
+  // router?: RouterConfig
 }
 
 export type EndlineRequiredConfig = Required<EndlineConfig> & {
-  router: Required<RouterConfig>
+  // router: Required<RouterConfig>
 }

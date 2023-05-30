@@ -10,9 +10,9 @@ export { EndlineConfig, EndlineRequiredConfig }
 
 export const defaultConfig: EndlineRequiredConfig = {
   distDir: './dist',
-  router: {
+  /*router: {
     routesDirectory: './src/routes',
-  },
+  },*/
 }
 
 export default async function loadConfig(
