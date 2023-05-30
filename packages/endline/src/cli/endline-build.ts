@@ -13,7 +13,7 @@ async function run(options: { directory?: string }) {
 
   const projectDir = getProjectDirectory(directory)
 
-  const config = await loadConfig({ projectDir })
+  const config = await loadConfig(projectDir)
   await build({ projectDir, config })
 }
 
