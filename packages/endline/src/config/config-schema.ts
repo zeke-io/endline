@@ -8,14 +8,14 @@ const configSchema = {
     distDir: {
       type: 'string',
     },
-    router: {
+    /*router: {
       type: 'object',
       properties: {
         routesDirectory: {
           type: 'string',
         },
       },
-    },
+    },*/
   },
 } as JSONSchemaType<EndlineConfig>
 
