@@ -9,4 +9,10 @@ program
   .version(require('../../package.json').version)
   .addCommand(EndlineDev.command, { isDefault: true })
   .addCommand(EndlineBuild.command)
+  .hook('preSubcommand', (_cmd, subCommand) => {
+    const defaultEnv =
+      subCommand.name() === 'dev' ? 'development' : 'production'
+
+    process.env.NODE_ENV = process.env.NODE_ENV || defaultEnv
+  })
   .parse()

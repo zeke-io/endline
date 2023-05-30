@@ -15,18 +15,14 @@ export const defaultConfig: EndlineRequiredConfig = {
   },
 }
 
-export default async function loadConfig({
-  projectDir,
-  environment,
-}: {
-  projectDir: string
-  environment?: string
-}): Promise<EndlineRequiredConfig> {
+export default async function loadConfig(
+  rootDir: string,
+): Promise<EndlineRequiredConfig> {
   const fileName = 'endline.config.js'
-  const filePath = path.resolve(projectDir, fileName)
+  const filePath = path.resolve(rootDir, fileName)
 
   /** Load env files first, so they are available in the config file */
-  await loadEnvFiles({ projectDir, environment })
+  await loadEnvFiles(rootDir)
 
   if (fs.existsSync(filePath)) {
     const userConfigFile = await import(pathToFileURL(filePath).href)

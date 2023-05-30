@@ -1,8 +1,8 @@
 import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
-import { EndlineConfig } from '../config'
-import { getMainFile } from '../lib/project-files-resolver'
+import { EndlineRequiredConfig } from '../config'
+import { findAppFile } from '../lib/project-files-resolver'
 import { warn } from '../lib/logger'
 
 export type RequestListener = (
@@ -11,7 +11,7 @@ export type RequestListener = (
 ) => Promise<void>
 
 interface EndlineServerOptions {
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   httpServer?: Server
   projectDir: string
   hostname?: string
@@ -21,11 +21,10 @@ interface EndlineServerOptions {
 
 export class EndlineServer {
   private readonly projectDir: string
-  private config: EndlineConfig
+  private config: EndlineRequiredConfig
   private router: AppRouter
   private isDev?: boolean
-  // TODO: Refactor
-  private additionalParams: Record<string, unknown> = {}
+  private additionalContextItems?: Record<string, unknown>
 
   constructor({ projectDir, config, isDev }: EndlineServerOptions) {
     this.projectDir = projectDir
@@ -47,13 +46,17 @@ export class EndlineServer {
     req: IncomingMessage,
     res: ServerResponse,
   ): Promise<void> {
-    await this.router.run(req, res, this.additionalParams)
+    await this.router.run(req, res, this.additionalContextItems || {})
   }
 
   private async initializeMainFile() {
-    const filePath = getMainFile(this.projectDir, false)
+    const filePath = findAppFile(this.projectDir, this.config.distDir)
 
-    if (filePath == null) return
+    // Clear the additional context items if the app file is not valid
+    if (filePath == null) {
+      this.additionalContextItems = {}
+      return
+    }
 
     const file = require(filePath)
     delete require.cache[filePath]
@@ -64,7 +67,20 @@ export class EndlineServer {
       return
     }
 
-    this.additionalParams = (await module()) || {}
+    const additionalContextItems = (await module()) || {}
+
+    // It is only valid if the returned object type is null, undefined or a 'Record<string, unknown>' object
+    if (
+      additionalContextItems != null &&
+      typeof additionalContextItems !== 'object'
+    ) {
+      warn(
+        `The main function is returning a value of type "${typeof additionalContextItems}" when it should return an object, undefined or null.`,
+      )
+      return
+    }
+
+    this.additionalContextItems = additionalContextItems
   }
 
   async loadRoutes(cleanRouter = false) {
@@ -72,6 +88,11 @@ export class EndlineServer {
       this.router = new AppRouter()
     }
 
-    await loadApiRoutes(this.projectDir, this.router, this.isDev)
+    await loadApiRoutes(
+      this.projectDir,
+      this.config.distDir,
+      this.router,
+      this.isDev,
+    )
   }
 }
