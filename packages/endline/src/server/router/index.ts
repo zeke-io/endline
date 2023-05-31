@@ -5,6 +5,7 @@ import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
 import { Router } from './impl'
 import { RouteHandler } from './handler-types'
+import { parseBody } from '../http/parse-body'
 
 export { HandlerContext, RouteHandler } from './handler-types'
 
@@ -70,8 +71,8 @@ export class AppRouter {
         ...parsedSearchParams,
         ...urlParams,
       }
-      // TODO: parse body
-      const body = undefined
+
+      const body = await parseBody(req)
 
       const response = await handler({
         params,
