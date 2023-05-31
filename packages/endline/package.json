@@ -26,6 +26,7 @@
     "dotenv": "^16.0.3",
     "dotenv-expand": "^10.0.0",
     "glob": "^10.2.6",
+    "raw-body": "^2.5.2",
     "rollup": "^3.21.7",
     "rollup-plugin-node-externals": "^6.0.1",
     "tslib": "^2.5.0",
