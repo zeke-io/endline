@@ -50,7 +50,7 @@ async function main(
       name: 'typescript',
       type: 'confirm',
       message: 'Do you want to use typescript?',
-      initial: false,
+      initial: true,
     })
 
     typescript = response.typescript
