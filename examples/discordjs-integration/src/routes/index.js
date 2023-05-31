@@ -3,7 +3,7 @@ export default function (router) {
 }
 
 /**
- * @param {import('discord.js').Client} discordBot provided from the main index.js
+ * @param {import('discord.js').Client} discordBot
  */
 async function getPing({ discordBot }) {
   const { user, ws } = discordBot
