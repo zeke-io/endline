@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import { Command } from 'commander'
 import prompts from 'prompts'
 import validateNpmName from 'validate-npm-package-name'
-import { createEndlineApp } from './create-endline-app'
+import { createEndlineApp } from './lib/create-endline-app'
 
 const program = new Command()
 
@@ -56,6 +56,9 @@ async function main(
     typescript = response.typescript
   }
 
+  // TODO: Prompt package manager selection (type: 'select' maybe?), default to npm
+  const packageManager = 'npm'
+
   /** Prepare for installation */
   const rootDirectory = path.resolve(projectName)
   const folderExists = fs.existsSync(rootDirectory)
@@ -69,5 +72,8 @@ async function main(
     process.exit(1)
   }
 
-  await createEndlineApp(projectName, typescript!)
+  await createEndlineApp(projectName, {
+    typescript: typescript!,
+    packageManager,
+  })
 }

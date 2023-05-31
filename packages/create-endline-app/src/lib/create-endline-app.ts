@@ -2,14 +2,19 @@ import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import cpy from 'cpy'
-import { installDependencies } from './lib/install-dependencies'
+import { installDependencies } from './install-dependencies'
 
 export async function createEndlineApp(
   projectPath: string,
-  typescript: boolean,
+  {
+    typescript,
+    packageManager,
+  }: {
+    typescript: boolean
+    packageManager: string
+  },
 ) {
   const projectRoot = path.resolve(projectPath)
-  const packageManager = 'npm'
 
   console.log(
     `Creating a new Endline project in ${chalk.blueBright(projectRoot)}\n`,
