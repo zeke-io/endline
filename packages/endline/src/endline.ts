@@ -1,14 +1,15 @@
+import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { IncomingMessage, Server, ServerResponse } from 'http'
-import { EndlineConfig } from './config'
+import { Server } from 'http'
+import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/endline-server'
-import { WatchCompiler } from './server/build/watch-compiler'
-import { findDirectory } from './lib/directory-resolver'
+import { WatchCompiler } from './build/rollup/watch'
+import { loadEnvFiles } from './config/env-loader'
 
 interface EndlineAppOptions {
-  config: EndlineConfig
+  config: EndlineRequiredConfig
   httpServer: Server
   projectDir: string
   hostname: string
@@ -17,9 +18,9 @@ interface EndlineAppOptions {
 }
 
 class EndlineApp {
-  private config: EndlineConfig
+  private config: EndlineRequiredConfig
   private httpServer: Server
-  private projectDir: string
+  private rootDir: string
   private readonly isDev: boolean
   private hostname: string
   private port: number
@@ -36,7 +37,7 @@ class EndlineApp {
   }: EndlineAppOptions) {
     this.config = config
     this.httpServer = httpServer
-    this.projectDir = projectDir
+    this.rootDir = projectDir
     this.hostname = hostname
     this.port = port
     this.isDev = !!isDev
@@ -52,29 +53,47 @@ class EndlineApp {
       await this.runWatchCompiler()
     }
 
-    httpServer.addListener('request', this.requestListener)
+    httpServer.addListener('request', this.endlineServer.getRequestHandler())
     await endlineServer.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
   }
 
   private async runWatchCompiler() {
-    const { projectDir, config } = this
+    const { rootDir, config } = this
 
-    const routesDirectory =
-      findDirectory(projectDir, config.router.routesDirectory, false) ||
-      path.join(projectDir, 'src/routes')
+    const outputPath = path.join(rootDir, config.distDir)
 
-    this.watchCompiler = new WatchCompiler({ projectDir, routesDirectory })
-    await this.watchCompiler.watch(() => {
-      this.endlineServer.loadRoutes(true)
-    })
-  }
+    const typescriptConfig = path.join(rootDir, 'tsconfig.json')
+    const useTypescript = fs.existsSync(typescriptConfig)
 
-  get requestListener() {
-    return async (req: IncomingMessage, res: ServerResponse) => {
-      await this.endlineServer.requestListener(req, res)
-    }
+    const envName = process.env.NODE_ENV
+    const envFiles = ['.env.local', '.env'].map((e) => path.join(rootDir, e))
+    if (envName) envFiles.unshift(`.env.${envName}.local`, `.env.${envName}`)
+
+    this.watchCompiler = new WatchCompiler()
+    await this.watchCompiler.initialize(
+      rootDir,
+      { distFolder: outputPath, typescript: useTypescript },
+      (files) => {
+        let envChanged = false
+
+        for (const [fileName] of files) {
+          if (envFiles.includes(fileName)) {
+            envChanged = true
+            // noinspection UnnecessaryContinueJS
+            continue
+          }
+        }
+
+        if (envChanged) {
+          loadEnvFiles(rootDir)
+        }
+
+        // TODO: Refactor
+        this.endlineServer.initialize()
+      },
+    )
   }
 
   public shutdown() {

@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 import { Command } from 'commander'
 import { EndlineDev, EndlineBuild } from '../cli'
-import { warn } from '../lib/logger'
 
 const program = new Command()
 
-program.name('endline')
-program.addCommand(EndlineDev.command, { isDefault: true })
-program.addCommand(EndlineBuild.command)
+program
+  .name('endline')
+  .version(require('../../package.json').version)
+  .addCommand(EndlineDev.command, { isDefault: true })
+  .addCommand(EndlineBuild.command)
+  .hook('preSubcommand', (_cmd, subCommand) => {
+    const defaultEnv =
+      subCommand.name() === 'dev' ? 'development' : 'production'
 
-warn(
-  `This project is still in its early stages and under active development. It is not yet ready to be used in a production environment.`,
-  `\nIf you'd like to contribute with code, report issues, or give suggestions, check out the project's repository: https://github.com/zeke-io/endline.`,
-)
-program.parse()
+    process.env.NODE_ENV = process.env.NODE_ENV || defaultEnv
+  })
+  .parse()

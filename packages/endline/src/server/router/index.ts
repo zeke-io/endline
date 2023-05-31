@@ -1,20 +1,13 @@
-import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
+import { IncomingMessage, ServerResponse } from 'http'
 import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
+import { HTTPMethod } from '../http'
+import { Router } from './impl'
+import { RouteHandler } from './handler-types'
+import { parseBody } from '../http/parse-body'
 
-export interface RouterConfig {
-  routesDirectory: string
-}
-
-// TODO: Add more options, and make a custom response class
-type RouteHandlerOptions = {
-  params: object
-  req: IncomingMessage
-  res: ServerResponse
-}
-type RouteHandler = (options?: RouteHandlerOptions) => Promise<object>
-type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
+export { HandlerContext, RouteHandler } from './handler-types'
 
 class RouteNode {
   public name: string
@@ -30,7 +23,7 @@ class RouteNode {
   }
 
   public getHandler(method: HTTPMethod): RouteHandler | undefined {
-    return this.methods?.[method]
+    return this.methods[method]
   }
 
   public addHandler(method: HTTPMethod, handler: RouteHandler): boolean {
@@ -61,9 +54,13 @@ export class AppRouter {
     this.rootNode = new RouteNode()
   }
 
-  public async run(req: IncomingMessage, res: ServerResponse) {
+  public async run(
+    req: IncomingMessage,
+    res: ServerResponse,
+    additionalParams: Record<string, unknown>,
+  ) {
     // Ignore if req.url and req.method are undefined
-    if (!req?.url || !req?.method) return
+    if (!req.url || !req.method) return
     const { url: reqUrl, method } = req
     const { url, parsedSearchParams } = parseUrl(reqUrl)
 
@@ -75,10 +72,14 @@ export class AppRouter {
         ...urlParams,
       }
 
+      const body = await parseBody(req)
+
       const response = await handler({
         params,
         req,
         res,
+        body,
+        ...additionalParams,
       })
 
       res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -94,7 +95,7 @@ export class AppRouter {
   ):
     | { params: { [param: string]: string }; handler: RouteHandler }
     | undefined {
-    const segments = url.split('/').filter((u) => u != '')
+    const segments = url.split('/').filter((u) => u !== '')
     let currentNode = this.rootNode
     const params: { [param: string]: string } = {}
 
@@ -136,7 +137,7 @@ export class AppRouter {
     method: HTTPMethod,
     handler: RouteHandler,
   ) {
-    const segments = url.split('/').filter((u) => u != '')
+    const segments = url.split('/').filter((u) => u !== '')
     let currentNode = this.rootNode
 
     for (const segment of segments) {
@@ -176,54 +177,5 @@ export class AppRouter {
   }
 }
 
-export class Router {
-  private _name: string
-  public readonly endpoints: {
-    route: string
-    method: HTTPMethod
-    handler: RouteHandler
-  }[]
-
-  constructor(name?: string) {
-    this._name = name || 'index'
-    this.endpoints = []
-  }
-
-  set name(name: string) {
-    this._name = name
-  }
-
-  get name() {
-    return this._name
-  }
-
-  public GET(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'GET', handler)
-  }
-
-  public POST(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'POST', handler)
-  }
-
-  public PUT(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'PUT', handler)
-  }
-
-  public DELETE(route: string, handler: RouteHandler): void {
-    this.addEndpoint(route, 'DELETE', handler)
-  }
-
-  private addEndpoint(
-    route: string,
-    method: HTTPMethod,
-    handler: RouteHandler,
-  ) {
-    this.endpoints.push({
-      method,
-      route,
-      handler,
-    })
-  }
-}
-
+export { Router }
 export default Router

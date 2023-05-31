@@ -1,5 +1,5 @@
 import http from 'http'
-import { EndlineConfig } from '../config'
+import { EndlineRequiredConfig } from '../config'
 import createEndlineApp from '../endline'
 import { warn } from '../lib/logger'
 
@@ -8,7 +8,7 @@ let serverShutdown: () => void
 function shutdownHandler() {
   console.log('')
   warn('Shutting down server...')
-  serverShutdown && serverShutdown()
+  serverShutdown()
   process.exit(0)
 }
 
@@ -24,7 +24,7 @@ export async function initializeDevServer({
   port: number
   hostname: string
   projectDir: string
-  config: EndlineConfig
+  config: EndlineRequiredConfig
 }) {
   const server = http.createServer()
   const app = createEndlineApp({

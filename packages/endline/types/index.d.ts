@@ -1,4 +1,3 @@
-/// <reference path="./router.d.ts" />
-import endline from '../../../dist/endline'
+export { EndlineConfig } from '../dist/config'
 
-export default endline
+export { Router, HandlerContext, RouteHandler } from '../dist/server/router'

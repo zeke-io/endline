@@ -3,33 +3,26 @@ import path from 'path'
 import { pathToFileURL } from 'url'
 import { error, warn } from '../lib/logger'
 import { validateConfig } from './config-schema'
-import { RouterConfig } from '../server/router'
 import { loadEnvFiles } from './env-loader'
+import { EndlineConfig, EndlineRequiredConfig } from './config-interfaces'
 
-export interface EndlineConfig {
-  distDir: string
-  router: RouterConfig
-}
+export { EndlineConfig, EndlineRequiredConfig }
 
-const defaultConfig: EndlineConfig = {
+export const defaultConfig: EndlineRequiredConfig = {
   distDir: './dist',
-  router: {
-    routesDirectory: 'src/routes',
-  },
+  /*router: {
+    routesDirectory: './src/routes',
+  },*/
 }
 
-export default async function loadConfig({
-  projectDir,
-  environment,
-}: {
-  projectDir: string
-  environment?: string
-}): Promise<EndlineConfig> {
+export default async function loadConfig(
+  rootDir: string,
+): Promise<EndlineRequiredConfig> {
   const fileName = 'endline.config.js'
-  const filePath = path.resolve(projectDir, fileName)
+  const filePath = path.resolve(rootDir, fileName)
 
   /** Load env files first, so they are available in the config file */
-  await loadEnvFiles({ projectDir, environment })
+  await loadEnvFiles(rootDir)
 
   if (fs.existsSync(filePath)) {
     const userConfigFile = await import(pathToFileURL(filePath).href)

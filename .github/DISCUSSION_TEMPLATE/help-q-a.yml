@@ -1,0 +1,14 @@
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: Tell us what you need help with
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Example Repository
+      description: Paste a link to an example repository, so we can debug it and know how to help you.
+    validations:
+      required: false

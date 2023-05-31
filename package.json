@@ -12,9 +12,11 @@
     "build": "lerna run build",
     "types": "lerna run types",
     "test": "jest",
+    "type:check": "tsc --noEmit",
     "lint:check": "eslint .",
     "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write ."
+    "prettier:fix": "prettier --write .",
+    "prerelease": "pnpm test && pnpm build && pnpm types"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
@@ -24,6 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "del": "^7.0.0",
+    "endline": "workspace:*",
     "eslint": "^8.38.0",
     "gulp": "^4.0.2",
     "gulp-sourcemaps": "^3.0.0",

@@ -1,9 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import process from 'process'
-import { AppRouter, Router, RouterConfig } from './index'
+import { AppRouter } from './index'
 import { findDirectory } from '../../lib/directory-resolver'
 import { error, info, warn } from '../../lib/logger'
+import { Router } from './impl'
 
 // TODO: Migrate this
 export async function findRouters(routesDir: string) {
@@ -29,6 +30,7 @@ export async function findRouters(routesDir: string) {
      */
     try {
       const file = require(filePath)
+      delete require.cache[filePath]
       const module = file.default || file
 
       if (!module) {
@@ -56,18 +58,18 @@ export async function findRouters(routesDir: string) {
 
 export async function loadApiRoutes(
   projectDir: string,
+  distDir: string,
   appRouter: AppRouter,
-  routerConfig: RouterConfig,
   isDev = true,
 ) {
-  const folderPath = isDev ? 'dist/routes' : 'routes'
+  const folderPath = isDev ? path.join(distDir, 'routes') : 'routes'
   const routesDir = findDirectory(projectDir, folderPath, false)
 
   if (routesDir == null) {
     error(
       `Could not find folder '${folderPath}' in directory '${path.join(
         projectDir,
-        routesDir || '.',
+        '.',
       )}'.`,
     )
     process.exit(1)

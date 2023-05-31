@@ -5,6 +5,15 @@ body:
   - type: markdown
     attributes:
       value: Thanks for taking the time to fill out this bug report!
+  - type: dropdown
+    attributes:
+      label: Which areas are effected by this? (Leave empty if unsure)
+      multiple: true
+      options:
+        - 'Create Endline App (create-endline-app)'
+        - 'Build (endline build)'
+        - 'Routing (Router, Route Mapping)'
+        - 'Typescript (Built-in Types)'
   - type: textarea
     id: bug-description
     attributes:

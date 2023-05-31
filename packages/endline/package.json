@@ -1,7 +1,7 @@
 {
   "name": "endline",
   "description": "A Backend Framework for Node.js",
-  "version": "0.2.7",
+  "version": "0.4.3",
   "license": "MIT",
   "author": "Zeke <ezequiel_io@pm.me>",
   "repository": "zeke-io/endline",
@@ -17,18 +17,23 @@
     "types": "tsc --declaration --emitDeclarationOnly --stripInternal --declarationDir dist"
   },
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.0.2",
+    "@rollup/plugin-typescript": "^11.1.1",
     "@segment/ajv-human-errors": "^2.7.0",
     "ajv": "^8.12.0",
-    "babel-loader": "^9.1.2",
     "chalk": "4.1.2",
     "commander": "^10.0.1",
     "dotenv": "^16.0.3",
     "dotenv-expand": "^10.0.0",
-    "watchpack": "^2.4.0",
-    "webpack": "^5.80.0"
+    "glob": "^10.2.6",
+    "raw-body": "^2.5.2",
+    "rollup": "^3.21.7",
+    "rollup-plugin-node-externals": "^6.0.1",
+    "tslib": "^2.5.0",
+    "watchpack": "^2.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.4",
+    "@types/glob": "^8.1.0",
     "@types/watchpack": "^2.4.1"
   },
   "files": [

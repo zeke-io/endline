@@ -34,7 +34,7 @@ describe('Router', function () {
 
     const handler = appRouter.getHandler(`/test/${testId}`, 'GET')
     expect(handler).not.toBe(undefined)
-    expect(handler?.params?.id).toBe(testId)
+    expect(handler?.params.id).toBe(testId)
   })
 
   it('should not allow to register two param routes', async function () {
@@ -46,6 +46,6 @@ describe('Router', function () {
     appRouter.addFromRouter(testRouter)
     const handler = appRouter.getHandler('/test/anotherId', 'GET')
     expect(handler?.handler).not.toThrow(Error)
-    expect(handler?.params?.another).not.toBeDefined()
+    expect(handler?.params.another).not.toBeDefined()
   })
 })

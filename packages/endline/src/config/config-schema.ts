@@ -8,14 +8,14 @@ const configSchema = {
     distDir: {
       type: 'string',
     },
-    router: {
+    /*router: {
       type: 'object',
       properties: {
         routesDirectory: {
           type: 'string',
         },
       },
-    },
+    },*/
   },
 } as JSONSchemaType<EndlineConfig>
 
@@ -27,6 +27,7 @@ const ajv = new Ajv({
 const validate = ajv.compile(configSchema)
 
 export function validateConfig(config: EndlineConfig): {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: Array<any> | null
 } {
   let errors
