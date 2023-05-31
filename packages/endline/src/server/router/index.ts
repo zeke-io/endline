@@ -70,11 +70,14 @@ export class AppRouter {
         ...parsedSearchParams,
         ...urlParams,
       }
+      // TODO: parse body
+      const body = undefined
 
       const response = await handler({
         params,
         req,
         res,
+        body,
         ...additionalParams,
       })
 
