@@ -1,7 +1,8 @@
 import { glob } from 'glob'
 import path from 'node:path'
 import { InputOptions, OutputOptions } from 'rollup'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 
 export function generateInputs(directory: string) {
@@ -40,7 +41,8 @@ export async function createOptions(
               }),
             ]
           : []),
-        nodeResolve(),
+        resolve(),
+        commonjs(),
         externals(),
       ],
     },
