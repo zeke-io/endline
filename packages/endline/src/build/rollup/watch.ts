@@ -12,7 +12,7 @@ export class WatchCompiler {
       timeInfoEntries: Map<string, { safeTime: number; timestamp: number }>,
     ) => void,
   ) {
-    await build(projectDir, { distFolder, typescript })
+    await build(projectDir, { distFolder, typescript, isDev: true })
 
     this.watchpack = new Watchpack({
       ignored: ['**/.git', '**/dist/**/*'],
@@ -20,7 +20,7 @@ export class WatchCompiler {
 
     this.watchpack.on('aggregated', async () => {
       watch('Detected changes! Reloading...')
-      await build(projectDir, { distFolder, typescript })
+      await build(projectDir, { distFolder, typescript, isDev: true })
       onSuccess(this.watchpack!.getTimeInfoEntries())
     })
 

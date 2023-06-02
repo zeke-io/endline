@@ -22,7 +22,13 @@ export async function generateInputs(directory: string) {
 export async function createOptions(
   directory: string,
   distFolder: string,
-  usingTypescript: boolean,
+  {
+    usingTypescript,
+    includeSourcemaps,
+  }: {
+    usingTypescript: boolean
+    includeSourcemaps: boolean
+  },
 ): Promise<{
   inputOptions: InputOptions
   outputOptions: OutputOptions
@@ -49,6 +55,7 @@ export async function createOptions(
     outputOptions: {
       format: 'cjs',
       dir: distFolder,
+      sourcemap: includeSourcemaps,
     },
   }
 }
