@@ -61,6 +61,7 @@ export class AppRouter {
   ) {
     // Ignore if req.url and req.method are undefined
     if (!req.url || !req.method) return
+
     const { url: reqUrl, method } = req
     const { url, parsedSearchParams } = parseUrl(reqUrl)
 
@@ -72,19 +73,40 @@ export class AppRouter {
         ...urlParams,
       }
 
-      const body = await parseBody(req)
+      const requestBody = await parseBody(req)
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: EndlineResponse | any = await handler({
+      const response: any = await handler({
         req,
         res,
         params,
-        body,
+        body: requestBody,
         ...additionalParams,
       })
 
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify(response))
+      let headers: Record<string, string> = {}
+      let statusCode = 200
+      let responseBody: unknown = undefined
+
+      if (response !== null) {
+        // If the returned response type is an object and has the body property,
+        // treat it as an endline response object
+        if (typeof response == 'object' && 'body' in response) {
+          const endlineResponse: EndlineResponse = response
+
+          responseBody = endlineResponse.body
+          statusCode = endlineResponse.status || statusCode
+          headers = {
+            ...headers,
+            ...endlineResponse.headers,
+          }
+        } else {
+          responseBody = response
+        }
+      }
+
+      res.writeHead(statusCode, headers)
+      res.end(responseBody)
     } else {
       res.writeHead(404).end('Not found')
     }
