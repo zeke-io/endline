@@ -76,7 +76,7 @@ export class AppRouter {
       const requestBody = await parseBody(req)
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: any = await handler({
+      const handlerRes: any = await handler({
         req,
         res,
         params,
@@ -88,21 +88,41 @@ export class AppRouter {
       let statusCode = 200
       let responseBody: unknown = undefined
 
-      if (response !== null) {
-        // If the returned response type is an object and has the body property,
-        // treat it as an endline response object
-        if (typeof response == 'object' && 'body' in response) {
-          const endlineResponse: EndlineResponse = response
+      if (handlerRes !== null) {
+        responseBody = handlerRes
 
-          responseBody = endlineResponse.body
-          statusCode = endlineResponse.status || statusCode
-          headers = {
-            ...headers,
-            ...endlineResponse.headers,
+        if (typeof handlerRes == 'object') {
+          // If the returned response type is an object and has the body property,
+          // treat it as an endline response object
+          if ('body' in handlerRes) {
+            const endlineRes: EndlineResponse = handlerRes
+
+            headers = {
+              ...headers,
+              ...endlineRes.headers,
+            }
+            responseBody = endlineRes.body
+            statusCode = endlineRes.status || statusCode
+
+            // Set content type header if not present
+            if (!('Content-Type' in headers)) {
+              if (typeof responseBody === 'object') {
+                headers['Content-Type'] = 'application/json'
+              } else {
+                headers['Content-Type'] = 'text/plain'
+              }
+            }
+          } else {
+            // If the response does not have a body property, just use the response object as the body
+            headers['Content-Type'] = 'application/json'
           }
         } else {
-          responseBody = response
+          headers['Content-Type'] = 'text/plain'
         }
+      }
+
+      if (headers['Content-Type'] === 'application/json') {
+        responseBody = JSON.stringify(responseBody)
       }
 
       res.writeHead(statusCode, headers)
