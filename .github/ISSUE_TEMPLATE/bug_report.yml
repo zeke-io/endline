@@ -11,7 +11,8 @@ body:
       multiple: true
       options:
         - 'Create Endline App (create-endline-app)'
-        - 'Build (endline build)'
+        - 'Development Server (endline dev)'
+        - 'Production / Build (endline build)'
         - 'Routing (Router, Route Mapping)'
         - 'Typescript (Built-in Types)'
   - type: textarea
@@ -40,7 +41,7 @@ body:
     attributes:
       label: Crash/Log output
       description: Please copy and paste any error messages or logs relevant to this bug.
-      render: shell
+      render: bash
   - type: markdown
     attributes:
       value: |
