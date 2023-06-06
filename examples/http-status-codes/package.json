@@ -1,0 +1,16 @@
+{
+  "name": "http-status-codes",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "endline dev",
+    "build": "endline build"
+  },
+  "dependencies": {
+    "endline": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "typescript": "^5.1.3"
+  }
+}
