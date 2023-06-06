@@ -1,7 +1,10 @@
 # Dependencies
 node_modules/
 
-# .env*.local files
+# Production
+dist/
+
+# Local .env files
 .env*.local
 
 # Logs
