@@ -4,7 +4,7 @@ import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
 import { Router } from './impl'
-import { RouteHandler } from './handler-types'
+import { EndlineResponse, RouteHandler } from './handler-types'
 import { parseBody } from '../http/parse-body'
 
 export { HandlerContext, RouteHandler } from './handler-types'
@@ -74,10 +74,11 @@ export class AppRouter {
 
       const body = await parseBody(req)
 
-      const response = await handler({
-        params,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: EndlineResponse | any = await handler({
         req,
         res,
+        params,
         body,
         ...additionalParams,
       })
@@ -146,7 +147,7 @@ export class AppRouter {
       if (child) {
         currentNode = child
       } else {
-        /** Create node if path does not exist */
+        /** Create node if the path does not exist */
         const node = new RouteNode({
           name: segment,
         })
