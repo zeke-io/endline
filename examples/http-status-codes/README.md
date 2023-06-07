@@ -1,7 +1,7 @@
 # "HTTP Status Codes" Example
 
 Endline will use the returned object as the body of the response,
-set the status code to `200`, 
+set the status code to `200`,
 and apply the appropriate `Content-Type` header.
 
 ```js
@@ -10,7 +10,7 @@ return 'string'
 
 // Content-Type: 'application/json'
 return {
-  message: 'Hello'
+  message: 'Hello',
 }
 ```
 
@@ -29,8 +29,8 @@ return {
   body: JSON.stringify({ message: 'Hello' }),
   status: 418,
   headers: {
-    'Content-Type': 'text/plain'
-  }
+    'Content-Type': 'text/plain',
+  },
 }
 ```
 
