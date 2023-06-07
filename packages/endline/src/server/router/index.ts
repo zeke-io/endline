@@ -4,7 +4,7 @@ import { parseUrl } from '../../lib/url-utils'
 import { warn } from '../../lib/logger'
 import { HTTPMethod } from '../http'
 import { Router } from './impl'
-import { RouteHandler } from './handler-types'
+import { EndlineResponse, RouteHandler } from './handler-types'
 import { parseBody } from '../http/parse-body'
 
 export { HandlerContext, RouteHandler } from './handler-types'
@@ -61,6 +61,7 @@ export class AppRouter {
   ) {
     // Ignore if req.url and req.method are undefined
     if (!req.url || !req.method) return
+
     const { url: reqUrl, method } = req
     const { url, parsedSearchParams } = parseUrl(reqUrl)
 
@@ -72,18 +73,60 @@ export class AppRouter {
         ...urlParams,
       }
 
-      const body = await parseBody(req)
+      const requestBody = await parseBody(req)
 
-      const response = await handler({
-        params,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const handlerRes: any = await handler({
         req,
         res,
-        body,
+        params,
+        body: requestBody,
         ...additionalParams,
       })
 
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify(response))
+      let headers: Record<string, string> = {}
+      let statusCode = 200
+      let responseBody: unknown = undefined
+
+      if (handlerRes !== null) {
+        responseBody = handlerRes
+
+        if (typeof handlerRes == 'object') {
+          // If the returned response type is an object and has the body property,
+          // treat it as an endline response object
+          if ('body' in handlerRes) {
+            const endlineRes: EndlineResponse = handlerRes
+
+            headers = {
+              ...headers,
+              ...endlineRes.headers,
+            }
+            responseBody = endlineRes.body
+            statusCode = endlineRes.status || statusCode
+
+            // Set content type header if not present
+            if (!('Content-Type' in headers)) {
+              if (typeof responseBody === 'object') {
+                headers['Content-Type'] = 'application/json'
+              } else {
+                headers['Content-Type'] = 'text/plain'
+              }
+            }
+          } else {
+            // If the response does not have a body property, just use the response object as the body
+            headers['Content-Type'] = 'application/json'
+          }
+        } else {
+          headers['Content-Type'] = 'text/plain'
+        }
+      }
+
+      if (headers['Content-Type'] === 'application/json') {
+        responseBody = JSON.stringify(responseBody)
+      }
+
+      res.writeHead(statusCode, headers)
+      res.end(responseBody)
     } else {
       res.writeHead(404).end('Not found')
     }
@@ -146,7 +189,7 @@ export class AppRouter {
       if (child) {
         currentNode = child
       } else {
-        /** Create node if path does not exist */
+        /** Create node if the path does not exist */
         const node = new RouteNode({
           name: segment,
         })
