@@ -26,10 +26,10 @@ Endline will treat the object as an [`EndlineResponse`](https://github.com/zeke-
 return {
   // Endline will set the appropriate 'Content-Type' header
   // unless it is already specified in the 'headers' property
-  body: 'Hello',
+  body: JSON.stringify({ message: 'Hello' }),
   status: 418,
   headers: {
-    'Content-Type': ''
+    'Content-Type': 'text/plain'
   }
 }
 ```
