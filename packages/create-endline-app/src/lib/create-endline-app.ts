@@ -59,6 +59,7 @@ async function createProjectFiles({
     cwd: path.join(
       __dirname,
       '..',
+      '..',
       'template',
       typescript ? 'typescript' : 'javascript',
     ),
