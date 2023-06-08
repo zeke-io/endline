@@ -4,9 +4,11 @@ export default function (router) {
     return 'Pong!'
   })
 
-  router.GET('/hello', ({ params }) => {
+  router.GET('/greeting', ({ params }) => {
+    const { name } = params
+
     return {
-      message: `Hello${params.name ? ` ${params.name}` : ', World!'}`,
+      message: `Hello, ${name || 'World'}!`,
     }
   })
 }
