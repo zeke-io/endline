@@ -9,6 +9,8 @@
 
 Check out the [Getting Started Guide](/docs/getting-started.md) to know how to start using Endline.
 
+You can quickly create an Endline project using [`create-endline-app`](https://github.com/zeke-io/endline/tree/master/packages/create-endline-app).
+
 ## Contributing
 
 If you'd like to contribute, you can do so by reporting issues, giving suggestions, or making changes to the code and submitting a PR!
