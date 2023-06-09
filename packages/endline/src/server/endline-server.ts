@@ -50,7 +50,7 @@ export class EndlineServer {
       await this.router.run(req, res, this.additionalContextItems || {})
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      error(`An error has occurred on request [${req.url}]:`, e.message)
+      error(`An error has occurred on request [${req.method} ${req.url}]:`)
       console.error(e)
 
       res.writeHead(500, { 'Content-Type': 'application/json' })
