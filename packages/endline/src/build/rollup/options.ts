@@ -40,6 +40,9 @@ export async function createOptions(
     inputOptions: {
       input: await generateInputs(directory),
       plugins: [
+        resolve({
+          rootDir: directory,
+        }),
         ...(usingTypescript
           ? [
               typescript({
@@ -47,7 +50,6 @@ export async function createOptions(
               }),
             ]
           : []),
-        resolve(),
         commonjs(),
         externals(),
       ],
