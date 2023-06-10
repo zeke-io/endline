@@ -1,8 +1,9 @@
 import { IncomingMessage, Server, ServerResponse } from 'http'
 import { EndlineRequiredConfig } from '../config'
-import { error } from '../lib/logger'
+import { error, warn } from '../lib/logger'
 import { AppRouter } from './router'
 import { loadApiRoutes } from './router/router-loader'
+import { findAppFile } from '../lib/project-files-resolver'
 
 export type RequestListener = (
   req: IncomingMessage,
@@ -36,6 +37,40 @@ export abstract class EndlineServer {
   public abstract initialize(): void
 
   public abstract shutdown(): void
+
+  protected async initializeMainFile() {
+    const filePath = findAppFile(this.projectDir, this.config.distDir)
+
+    // Clear the additional context items if the app file is not valid
+    if (filePath == null) {
+      this.additionalContextItems = {}
+      return
+    }
+
+    const file = require(filePath)
+    delete require.cache[filePath]
+    const module = file.default || file
+
+    if (!module || typeof module !== 'function') {
+      warn(`The main file does not export a default function, ignoring...`)
+      return
+    }
+
+    const additionalContextItems = (await module()) || {}
+
+    // It is only valid if the returned object type is null, undefined or a 'Record<string, unknown>' object
+    if (
+      additionalContextItems != null &&
+      typeof additionalContextItems !== 'object'
+    ) {
+      warn(
+        `The main function is returning a value of type "${typeof additionalContextItems}" when it should return an object, undefined or null.`,
+      )
+      return
+    }
+
+    this.additionalContextItems = additionalContextItems
+  }
 
   async loadRoutes(cleanRouter = false) {
     if (cleanRouter) {
