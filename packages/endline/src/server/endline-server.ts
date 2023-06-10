@@ -1,35 +1,21 @@
+import { IncomingMessage, ServerResponse } from 'http'
+import {
+  EndlineServer,
+  RequestListener,
+  EndlineServerOptions,
+} from './base-server'
 import { AppRouter } from './router'
-import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
-import { EndlineRequiredConfig } from '../config'
 import { findAppFile } from '../lib/project-files-resolver'
 import { error, warn } from '../lib/logger'
 
-export type RequestListener = (
-  req: IncomingMessage,
-  res: ServerResponse,
-) => Promise<void>
-
-interface EndlineServerOptions {
-  config: EndlineRequiredConfig
-  httpServer?: Server
-  projectDir: string
-  hostname?: string
-  port?: number
-  isDev?: boolean
-}
-
-export class EndlineServer {
-  private readonly projectDir: string
-  private config: EndlineRequiredConfig
+export class DevServer extends EndlineServer {
   private router: AppRouter
-  private isDev?: boolean
   private additionalContextItems?: Record<string, unknown>
 
-  constructor({ projectDir, config, isDev }: EndlineServerOptions) {
-    this.projectDir = projectDir
-    this.config = config
-    this.isDev = isDev
+  constructor(options: EndlineServerOptions) {
+    super(options)
+
     this.router = new AppRouter()
   }
 

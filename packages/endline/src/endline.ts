@@ -4,7 +4,8 @@ import process from 'process'
 import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
-import { EndlineServer } from './server/endline-server'
+import { EndlineServer } from './server/base-server'
+import { DevServer } from './server/endline-server'
 import { WatchCompiler } from './build/rollup/watch'
 import { loadEnvFiles } from './config/env-loader'
 
@@ -42,7 +43,8 @@ class EndlineApp {
     this.port = port
     this.isDev = !!isDev
 
-    this.endlineServer = new EndlineServer({ config, projectDir, isDev })
+    // TODO: Only get dev server if running endline from dev command
+    this.endlineServer = new DevServer({ config, projectDir, isDev })
   }
 
   public async initialize() {
