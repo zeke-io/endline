@@ -3,7 +3,7 @@ import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
 import { error, info, ready } from './lib/logger'
 import { EndlineServer } from './server/base-server'
-import { DevServer } from './server/endline-server'
+import { DevServer } from './server/dev-server'
 
 interface EndlineAppOptions {
   config: EndlineRequiredConfig
