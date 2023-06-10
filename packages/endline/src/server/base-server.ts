@@ -28,5 +28,7 @@ export abstract class EndlineServer {
 
   public abstract initialize(): void
 
+  public abstract shutdown(): void
+
   public abstract getRequestHandler(): RequestListener
 }
