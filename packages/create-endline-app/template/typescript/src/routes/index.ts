@@ -1,13 +1,15 @@
-import { Router } from 'endline'
+import { Router, HandlerContext } from 'endline'
 
 export default function (router: Router) {
   router.GET('/ping', () => {
     return 'Pong!'
   })
 
-  router.GET('/hello', ({ params }: any) => {
+  router.GET('/greeting', ({ params }: HandlerContext) => {
+    const { name } = params
+
     return {
-      message: `Hello${params.name ? ` ${params.name}` : ', World!'}`,
+      message: `Hello, ${name || 'World'}!`,
     }
   })
 }

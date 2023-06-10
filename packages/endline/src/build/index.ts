@@ -29,6 +29,7 @@ export default async function build({
   await rollupBuild(projectDir, {
     distFolder: outputPath,
     typescript: useTypescript,
+    isDev: false,
   })
 
   /** Write the main.js server file to run the built app */

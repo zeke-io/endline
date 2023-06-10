@@ -50,7 +50,7 @@ class EndlineApp {
     info(`Initializing server on ${hostname}:${port}`)
 
     if (this.isDev) {
-      await this.runWatchCompiler()
+      await this.runFileWatcher()
     }
 
     httpServer.addListener('request', this.endlineServer.getRequestHandler())
@@ -59,29 +59,37 @@ class EndlineApp {
     ready(`Server is ready and listening on ${hostname}:${port}`)
   }
 
-  private async runWatchCompiler() {
+  private async runFileWatcher() {
     const { rootDir, config } = this
-
     const outputPath = path.join(rootDir, config.distDir)
 
     const typescriptConfig = path.join(rootDir, 'tsconfig.json')
-    const useTypescript = fs.existsSync(typescriptConfig)
+    const usingTypescript = fs.existsSync(typescriptConfig)
 
-    const envName = process.env.NODE_ENV
-    const envFiles = ['.env.local', '.env'].map((e) => path.join(rootDir, e))
-    if (envName) envFiles.unshift(`.env.${envName}.local`, `.env.${envName}`)
+    const envFiles = [
+      '.env.development.local',
+      '.env.development',
+      '.env.local',
+      '.env',
+    ].map((e) => path.join(rootDir, e))
+
+    const watchTimes = new Map<string, number>()
 
     this.watchCompiler = new WatchCompiler()
     await this.watchCompiler.initialize(
       rootDir,
-      { distFolder: outputPath, typescript: useTypescript },
-      (files) => {
+      { distFolder: outputPath, typescript: usingTypescript },
+      (entries) => {
         let envChanged = false
 
-        for (const [fileName] of files) {
-          if (envFiles.includes(fileName)) {
+        for (const [fileName, entry] of entries) {
+          const watchTimeEntry = watchTimes.get(fileName)
+          const fileChanged: boolean =
+            !!watchTimeEntry && watchTimeEntry !== entry.timestamp
+          watchTimes.set(fileName, entry.timestamp)
+
+          if (envFiles.includes(fileName) && fileChanged) {
             envChanged = true
-            // noinspection UnnecessaryContinueJS
             continue
           }
         }

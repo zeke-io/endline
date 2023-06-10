@@ -10,6 +10,9 @@ async function generateOutputs(
 
   for (const chunk of output) {
     if (chunk.type === 'asset') {
+      // If the file is a source map, ignore it
+      if (/\.js\.map$/.test(chunk.fileName)) continue
+
       warn(
         `Found chunk of type 'asset', support for this is not implemented yet and will be ignored by the compiler: ${chunk.fileName}`,
       )
@@ -22,13 +25,21 @@ async function generateOutputs(
 
 export async function build(
   projectDir: string,
-  { distFolder, typescript }: { distFolder: string; typescript: boolean },
+  {
+    distFolder,
+    typescript,
+    isDev,
+  }: { distFolder: string; typescript: boolean; isDev: boolean },
 ) {
   const { inputOptions, outputOptions } = await createOptions(
     projectDir,
     distFolder,
-    typescript,
+    {
+      usingTypescript: typescript,
+      includeSourcemaps: isDev,
+    },
   )
+
   let bundle
   try {
     bundle = await rollup({

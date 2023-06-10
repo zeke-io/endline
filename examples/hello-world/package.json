@@ -1,9 +1,10 @@
 {
   "name": "endline-example-hello-world",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "endline dev"
+    "dev": "endline dev",
+    "build": "endline build"
   },
   "dependencies": {
     "endline": "latest"

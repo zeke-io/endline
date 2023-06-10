@@ -1,7 +1,5 @@
 # Endline
 
-A **Backend Framework** for **Node.js**
-
 [![NPM Version][npm-version-badge]][npm-package-url]
 [![License][npm-license-badge]](/LICENSE)
 
@@ -9,25 +7,15 @@ A **Backend Framework** for **Node.js**
 
 ## Getting Started
 
-Check the [Getting Started Guide](/docs/getting-started.md) to get started.
+Check out the [Getting Started Guide](/docs/getting-started.md) to know how to start using Endline.
 
-## Features
-
-- Automatic route mapping based on file names
-- Hot reloader
-- Support for .env files
-- ES6 & Typescript support
-
-### 🏗️ Work In Progress
-
-- Directory based route mapping
-- Middleware Support
+You can quickly create an Endline project using [`create-endline-app`](https://github.com/zeke-io/endline/tree/master/packages/create-endline-app).
 
 ## Contributing
 
 If you'd like to contribute, you can do so by reporting issues, giving suggestions, or making changes to the code and submitting a PR!
 
-Please see [CONTRIBUTING.md](/CONTRIBUTING.md) for more information on helping with development.
+Please see our [CONTRIBUTING.md](/CONTRIBUTING.md) to know how to start and things you should know.
 
 ## License
 

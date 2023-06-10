@@ -3,7 +3,7 @@ import { IncomingMessage, Server, ServerResponse } from 'http'
 import { loadApiRoutes } from './router/router-loader'
 import { EndlineRequiredConfig } from '../config'
 import { findAppFile } from '../lib/project-files-resolver'
-import { warn } from '../lib/logger'
+import { error, warn } from '../lib/logger'
 
 export type RequestListener = (
   req: IncomingMessage,
@@ -46,7 +46,16 @@ export class EndlineServer {
     req: IncomingMessage,
     res: ServerResponse,
   ): Promise<void> {
-    await this.router.run(req, res, this.additionalContextItems || {})
+    try {
+      await this.router.run(req, res, this.additionalContextItems || {})
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      error(`An error has occurred on request [${req.method} ${req.url}]:`)
+      console.error(e)
+
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ status: 500, message: e.message }))
+    }
   }
 
   private async initializeMainFile() {

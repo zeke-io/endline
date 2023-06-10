@@ -1,27 +1,34 @@
-import { glob } from 'glob'
-import path from 'node:path'
+import path from 'path'
 import { InputOptions, OutputOptions } from 'rollup'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 
-export function generateInputs(directory: string) {
-  return Object.fromEntries(
-    glob
-      .sync('src/**/*.{js,ts}')
-      .map((file) => [
-        path.relative(
-          'src',
-          file.slice(0, file.length - path.extname(file).length),
-        ),
-        path.join(directory, file),
-      ]),
-  )
+export async function generateInputs(directory: string) {
+  const { globby } = await import('globby')
+
+  const filePaths = await globby(['src/**/*.{js,ts}'])
+  const entries = filePaths.map((file) => [
+    path.relative(
+      'src',
+      file.slice(0, file.length - path.extname(file).length),
+    ),
+    path.join(directory, file),
+  ])
+
+  return Object.fromEntries(entries)
 }
 
 export async function createOptions(
   directory: string,
   distFolder: string,
-  usingTypescript: boolean,
+  {
+    usingTypescript,
+    includeSourcemaps,
+  }: {
+    usingTypescript: boolean
+    includeSourcemaps: boolean
+  },
 ): Promise<{
   inputOptions: InputOptions
   outputOptions: OutputOptions
@@ -31,8 +38,11 @@ export async function createOptions(
 
   return {
     inputOptions: {
-      input: generateInputs(directory),
+      input: await generateInputs(directory),
       plugins: [
+        resolve({
+          rootDir: directory,
+        }),
         ...(usingTypescript
           ? [
               typescript({
@@ -40,13 +50,14 @@ export async function createOptions(
               }),
             ]
           : []),
-        nodeResolve(),
+        commonjs(),
         externals(),
       ],
     },
     outputOptions: {
       format: 'cjs',
       dir: distFolder,
+      sourcemap: includeSourcemaps,
     },
   }
 }

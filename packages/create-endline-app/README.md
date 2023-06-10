@@ -1,11 +1,11 @@
 # Create Endline App
 
-Create Endline projects the easy way.
+> Create Endline projects the easy way.
 
 [![NPM Version][npm-version-badge]][npm-package-url]
 [![License][npm-license-badge]](/LICENSE)
 
-## Usage
+## Create a new project
 
 ```bash
 # NPX
@@ -15,6 +15,19 @@ yarn create endline-app
 # PNPM
 pnpm create endline-app
 ```
+
+When running the command without arguments,
+you will be prompted with some questions on how you want to set up your new project.
+
+## Usage
+
+```bash
+create-endline-app [options] [project-directory]
+```
+
+### `--typescript, -t`
+
+Create a project using typescript
 
 ## License
 
