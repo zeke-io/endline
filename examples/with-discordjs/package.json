@@ -1,6 +1,6 @@
 {
-  "name": "discordjs-integration",
-  "version": "0.1.0",
+  "name": "with-discordjs",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "endline dev",

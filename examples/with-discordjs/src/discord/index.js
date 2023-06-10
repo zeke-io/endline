@@ -2,6 +2,7 @@ import { Client, Events } from 'discord.js'
 
 let client
 
+/** Initialize discord bot */
 export async function initialize() {
   client = new Client({ intents: [] })
 
