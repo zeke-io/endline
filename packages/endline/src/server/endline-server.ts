@@ -1,52 +1,21 @@
 import fs from 'fs'
 import path from 'path'
-import { IncomingMessage, ServerResponse } from 'http'
-import {
-  EndlineServer,
-  RequestListener,
-  EndlineServerOptions,
-} from './base-server'
-import { AppRouter } from './router'
-import { loadApiRoutes } from './router/router-loader'
+import { EndlineServer, EndlineServerOptions } from './base-server'
 import { findAppFile } from '../lib/project-files-resolver'
-import { error, warn } from '../lib/logger'
+import { warn } from '../lib/logger'
 import { WatchCompiler } from '../build/rollup/watch'
 import { loadEnvFiles } from '../config/env-loader'
 
 export class DevServer extends EndlineServer {
   private watchCompiler?: WatchCompiler
-  private router: AppRouter
-  private additionalContextItems?: Record<string, unknown>
 
   constructor(options: EndlineServerOptions) {
     super(options)
-
-    this.router = new AppRouter()
   }
 
   public async initialize() {
     await this.initializeMainFile()
     await this.loadRoutes(true)
-  }
-
-  public getRequestHandler(): RequestListener {
-    return this.handleRequest.bind(this)
-  }
-
-  public async handleRequest(
-    req: IncomingMessage,
-    res: ServerResponse,
-  ): Promise<void> {
-    try {
-      await this.router.run(req, res, this.additionalContextItems || {})
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      error(`An error has occurred on request [${req.method} ${req.url}]:`)
-      console.error(e)
-
-      res.writeHead(500, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ status: 500, message: e.message }))
-    }
   }
 
   private async initializeMainFile() {
@@ -81,19 +50,6 @@ export class DevServer extends EndlineServer {
     }
 
     this.additionalContextItems = additionalContextItems
-  }
-
-  async loadRoutes(cleanRouter = false) {
-    if (cleanRouter) {
-      this.router = new AppRouter()
-    }
-
-    await loadApiRoutes(
-      this.projectDir,
-      this.config.distDir,
-      this.router,
-      this.isDev,
-    )
   }
 
   private async runFileWatcher() {
