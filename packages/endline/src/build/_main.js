@@ -13,8 +13,9 @@ const config = {
 }
 
 const server = http.createServer()
-const app = endline({
-  httpServer: server,
+server.listen(port, hostname)
+
+const app = endline(server, {
   projectDir: __dirname,
   port,
   hostname,
@@ -22,4 +23,4 @@ const app = endline({
   config,
 })
 
-server.listen(port, hostname, async () => await app.initialize())
+app.initialize(server).then()
