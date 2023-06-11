@@ -34,7 +34,10 @@ export abstract class EndlineServer {
     this.router = new AppRouter()
   }
 
-  public abstract initialize(): void
+  public async initialize() {
+    await this.initializeMainFile()
+    await this.loadRoutes(true)
+  }
 
   public abstract shutdown(): void
 

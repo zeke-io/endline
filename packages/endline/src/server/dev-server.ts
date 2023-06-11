@@ -12,8 +12,8 @@ export class DevServer extends EndlineServer {
   }
 
   public async initialize() {
-    await this.initializeMainFile()
-    await this.loadRoutes(true)
+    await super.initialize()
+    await this.runFileWatcher()
   }
 
   private async runFileWatcher() {
