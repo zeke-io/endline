@@ -1,5 +1,5 @@
-import path from 'path'
 import fs from 'fs'
+import path from 'path'
 import dotenv, { DotenvConfigOutput } from 'dotenv'
 import { expand as dotenvExpand } from 'dotenv-expand'
 import { error } from '../lib/logger'
@@ -9,7 +9,7 @@ export async function loadEnvFiles(rootDir: string) {
   const foundEnvs = []
   const envFiles = ['.env.local', '.env']
 
-  // Make sure `.env.{environment}*` files load first if environment is set
+  // Make sure `.env.{environment}*` files load first
   if (envName) envFiles.unshift(`.env.${envName}.local`, `.env.${envName}`)
 
   for (const fileName of envFiles) {
@@ -26,8 +26,9 @@ export async function loadEnvFiles(rootDir: string) {
         path: filePath,
         contents,
       })
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      // Ignore ENOENT error code to ignore .env files that do not exists
       if (e.code !== 'ENOENT') {
         error(`Could not load env file '${fileName}'.`)
         console.error(e)
