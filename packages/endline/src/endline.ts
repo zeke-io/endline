@@ -5,7 +5,7 @@ import {
   EndlineServer,
   EndlineServerOptions,
   RequestListener,
-} from './server/base-server'
+} from './server/endline-server'
 import { DevServer } from './server/dev-server'
 
 interface EndlineAppOptions {
@@ -25,7 +25,13 @@ class EndlineApp {
   }
 
   public createServer(options: EndlineServerOptions) {
-    const server = new DevServer(options)
+    let server
+    if (options.isDev) {
+      server = new DevServer(options)
+    } else {
+      server = new EndlineServer(options)
+    }
+
     this.endlineServer = server
 
     return server

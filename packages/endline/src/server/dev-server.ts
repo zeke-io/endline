@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { EndlineServer, EndlineServerOptions } from './base-server'
+import { EndlineServer, EndlineServerOptions } from './endline-server'
 import { WatchCompiler } from '../build/rollup/watch'
 import { loadEnvFiles } from '../config/env-loader'
 

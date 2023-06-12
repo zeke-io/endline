@@ -19,14 +19,14 @@ export interface EndlineServerOptions {
   isDev?: boolean
 }
 
-export abstract class EndlineServer {
+export class EndlineServer {
   protected readonly projectDir: string
   protected config: EndlineRequiredConfig
   protected isDev: boolean
   protected router: AppRouter
   protected additionalContextItems?: Record<string, unknown>
 
-  protected constructor({ projectDir, config, isDev }: EndlineServerOptions) {
+  public constructor({ projectDir, config, isDev }: EndlineServerOptions) {
     this.projectDir = projectDir
     this.config = config
     this.isDev = !!isDev
@@ -39,7 +39,9 @@ export abstract class EndlineServer {
     await this.loadRoutes(true)
   }
 
-  public abstract shutdown(): void
+  public shutdown() {
+    // Leaving this empty for now
+  }
 
   protected async initializeMainFile() {
     const filePath = findAppFile(this.projectDir, this.config.distDir)
