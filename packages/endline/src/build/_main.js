@@ -1,5 +1,5 @@
 const http = require('http')
-const endline = require('endline/dist/endline')
+const { initializeApp } = require('endline/dist/lib/initialize-app')
 
 process.env.NODE_ENV = 'production'
 process.on('SIGTERM', () => process.exit(0))
@@ -12,15 +12,9 @@ const config = {
   distDir: '.',
 }
 
-const server = http.createServer()
-server.listen(port, hostname)
-
-const app = endline(server, {
-  projectDir: __dirname,
-  port,
+initializeApp({
   hostname,
-  isDev: false,
+  port,
   config,
-})
-
-app.initialize(server).then()
+  projectDir: __dirname,
+}).then()

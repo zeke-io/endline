@@ -6,13 +6,13 @@ import createEndlineApp from '../endline'
 export async function initializeApp({
   hostname,
   port,
-  isDev,
+  isDev = false,
   projectDir,
   config,
 }: {
   hostname: string
   port: number
-  isDev: boolean
+  isDev?: boolean
   projectDir: string
   config: EndlineRequiredConfig
 }) {
