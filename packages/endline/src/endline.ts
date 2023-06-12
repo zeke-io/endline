@@ -1,8 +1,11 @@
-import process from 'process'
 import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
-import { error, info, ready } from './lib/logger'
-import { EndlineServer, EndlineServerOptions } from './server/base-server'
+import { info, ready } from './lib/logger'
+import {
+  EndlineServer,
+  EndlineServerOptions,
+  RequestListener,
+} from './server/base-server'
 import { DevServer } from './server/dev-server'
 
 interface EndlineAppOptions {
@@ -28,15 +31,13 @@ class EndlineApp {
     return server
   }
 
-  public async initialize(httpServer: Server) {
+  public async initialize() {
     const { options } = this
     const { hostname, port } = options
 
     info(`Initializing server on ${hostname}:${port}`)
 
     this.createServer(options)
-
-    httpServer.addListener('request', this.endlineServer!.getRequestHandler())
     await this.endlineServer!.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
@@ -45,15 +46,19 @@ class EndlineApp {
   public shutdown() {
     this.endlineServer?.shutdown()
   }
+
+  public getRequestListener(): RequestListener {
+    return this.endlineServer!.getRequestHandler()
+  }
 }
 
 export function createEndlineApp(
-  httpServer: Server,
+  _httpServer: Server,
   options: EndlineAppOptions,
 ) {
-  const { hostname, port } = options
+  // const { hostname, port } = options
 
-  httpServer.on('error', (err: NodeJS.ErrnoException) => {
+  /*httpServer.on('error', (err: NodeJS.ErrnoException) => {
     let message
 
     switch (err.code) {
@@ -71,7 +76,7 @@ export function createEndlineApp(
     }
 
     throw err
-  })
+  })*/
 
   return new EndlineApp(options)
 }
