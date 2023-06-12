@@ -1,14 +1,10 @@
-import http from 'http'
 import { EndlineRequiredConfig } from '../config'
-import createEndlineApp from '../endline'
-import { warn } from '../lib/logger'
+import { initializeApp } from '../lib/initialize-app'
 
 // Gracefully shutdown server
-let serverShutdown: () => void
+let shutdownServer: () => void
 function shutdownHandler() {
-  console.log('')
-  warn('Shutting down server...')
-  serverShutdown()
+  shutdownServer()
   process.exit(0)
 }
 
@@ -26,20 +22,11 @@ export async function initializeDevServer({
   projectDir: string
   config: EndlineRequiredConfig
 }) {
-  const server = http.createServer()
-  const app = createEndlineApp({
-    httpServer: server,
+  shutdownServer = await initializeApp({
     hostname,
     port,
-    projectDir,
     config,
+    projectDir,
     isDev: true,
   })
-
-  serverShutdown = () => {
-    server.close()
-    app.shutdown()
-  }
-
-  server.listen(port, hostname, async () => await app.initialize())
 }

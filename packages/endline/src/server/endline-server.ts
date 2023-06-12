@@ -1,16 +1,16 @@
-import { AppRouter } from './router'
 import { IncomingMessage, Server, ServerResponse } from 'http'
-import { loadApiRoutes } from './router/router-loader'
 import { EndlineRequiredConfig } from '../config'
-import { findAppFile } from '../lib/project-files-resolver'
 import { error, warn } from '../lib/logger'
+import { AppRouter } from './router'
+import { loadApiRoutes } from './router/router-loader'
+import { findAppFile } from '../lib/project-files-resolver'
 
 export type RequestListener = (
   req: IncomingMessage,
   res: ServerResponse,
 ) => Promise<void>
 
-interface EndlineServerOptions {
+export interface EndlineServerOptions {
   config: EndlineRequiredConfig
   httpServer?: Server
   projectDir: string
@@ -20,16 +20,17 @@ interface EndlineServerOptions {
 }
 
 export class EndlineServer {
-  private readonly projectDir: string
-  private config: EndlineRequiredConfig
-  private router: AppRouter
-  private isDev?: boolean
-  private additionalContextItems?: Record<string, unknown>
+  protected readonly projectDir: string
+  protected config: EndlineRequiredConfig
+  protected isDev: boolean
+  protected router: AppRouter
+  protected additionalContextItems?: Record<string, unknown>
 
-  constructor({ projectDir, config, isDev }: EndlineServerOptions) {
+  public constructor({ projectDir, config, isDev }: EndlineServerOptions) {
     this.projectDir = projectDir
     this.config = config
-    this.isDev = isDev
+    this.isDev = !!isDev
+
     this.router = new AppRouter()
   }
 
@@ -38,27 +39,11 @@ export class EndlineServer {
     await this.loadRoutes(true)
   }
 
-  public getRequestHandler(): RequestListener {
-    return this.handleRequest.bind(this)
+  public shutdown() {
+    // Leaving this empty for now
   }
 
-  public async handleRequest(
-    req: IncomingMessage,
-    res: ServerResponse,
-  ): Promise<void> {
-    try {
-      await this.router.run(req, res, this.additionalContextItems || {})
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      error(`An error has occurred on request [${req.method} ${req.url}]:`)
-      console.error(e)
-
-      res.writeHead(500, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ status: 500, message: e.message }))
-    }
-  }
-
-  private async initializeMainFile() {
+  protected async initializeMainFile() {
     const filePath = findAppFile(this.projectDir, this.config.distDir)
 
     // Clear the additional context items if the app file is not valid
@@ -103,5 +88,25 @@ export class EndlineServer {
       this.router,
       this.isDev,
     )
+  }
+
+  public getRequestHandler(): RequestListener {
+    return this.handleRequest.bind(this)
+  }
+
+  public async handleRequest(
+    req: IncomingMessage,
+    res: ServerResponse,
+  ): Promise<void> {
+    try {
+      await this.router.run(req, res, this.additionalContextItems || {})
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      error(`An error has occurred on request [${req.method} ${req.url}]:`)
+      console.error(e)
+
+      res.writeHead(500, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ status: 500, message: e.message }))
+    }
   }
 }

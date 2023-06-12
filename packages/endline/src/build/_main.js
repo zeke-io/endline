@@ -1,9 +1,15 @@
-const http = require('http')
-const endline = require('endline/dist/endline')
+const { initializeApp } = require('endline/dist/lib/initialize-app')
 
 process.env.NODE_ENV = 'production'
-process.on('SIGTERM', () => process.exit(0))
-process.on('SIGINT', () => process.exit(0))
+
+let shutdownServer
+let shutdownHandler = () => {
+  shutdownServer()
+  process.exit(0)
+}
+
+process.on('SIGTERM', shutdownHandler)
+process.on('SIGINT', shutdownHandler)
 
 const hostname = process.env.HOSTNAME || 'localhost'
 const port = parseInt(process.env.PORT, 10) || 3000
@@ -12,14 +18,9 @@ const config = {
   distDir: '.',
 }
 
-const server = http.createServer()
-const app = endline({
-  httpServer: server,
-  projectDir: __dirname,
-  port,
+initializeApp({
   hostname,
-  isDev: false,
+  port,
   config,
-})
-
-server.listen(port, hostname, async () => await app.initialize())
+  projectDir: __dirname,
+}).then((serverTeardown) => (shutdownServer = serverTeardown))

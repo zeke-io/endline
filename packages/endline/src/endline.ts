@@ -1,16 +1,15 @@
-import fs from 'fs'
-import path from 'path'
-import process from 'process'
 import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
-import { error, info, ready } from './lib/logger'
-import { EndlineServer } from './server/endline-server'
-import { WatchCompiler } from './build/rollup/watch'
-import { loadEnvFiles } from './config/env-loader'
+import { info, ready } from './lib/logger'
+import {
+  EndlineServer,
+  EndlineServerOptions,
+  RequestListener,
+} from './server/endline-server'
+import { DevServer } from './server/dev-server'
 
 interface EndlineAppOptions {
   config: EndlineRequiredConfig
-  httpServer: Server
   projectDir: string
   hostname: string
   port: number
@@ -18,104 +17,54 @@ interface EndlineAppOptions {
 }
 
 class EndlineApp {
-  private config: EndlineRequiredConfig
-  private httpServer: Server
-  private rootDir: string
-  private readonly isDev: boolean
-  private hostname: string
-  private port: number
-  private endlineServer: EndlineServer
-  private watchCompiler?: WatchCompiler
+  private options: EndlineAppOptions
+  private endlineServer?: EndlineServer
 
-  constructor({
-    config,
-    httpServer,
-    projectDir,
-    hostname,
-    port,
-    isDev,
-  }: EndlineAppOptions) {
-    this.config = config
-    this.httpServer = httpServer
-    this.rootDir = projectDir
-    this.hostname = hostname
-    this.port = port
-    this.isDev = !!isDev
+  constructor(options: EndlineAppOptions) {
+    this.options = options
+  }
 
-    this.endlineServer = new EndlineServer({ config, projectDir, isDev })
+  public createServer(options: EndlineServerOptions) {
+    let server
+    if (options.isDev) {
+      server = new DevServer(options)
+    } else {
+      server = new EndlineServer(options)
+    }
+
+    this.endlineServer = server
+
+    return server
   }
 
   public async initialize() {
-    const { hostname, port, httpServer, endlineServer } = this
+    const { options } = this
+    const { hostname, port } = options
+
     info(`Initializing server on ${hostname}:${port}`)
 
-    if (this.isDev) {
-      await this.runFileWatcher()
-    }
-
-    httpServer.addListener('request', this.endlineServer.getRequestHandler())
-    await endlineServer.initialize()
+    this.createServer(options)
+    await this.endlineServer!.initialize()
 
     ready(`Server is ready and listening on ${hostname}:${port}`)
   }
 
-  private async runFileWatcher() {
-    const { rootDir, config } = this
-    const outputPath = path.join(rootDir, config.distDir)
-
-    const typescriptConfig = path.join(rootDir, 'tsconfig.json')
-    const usingTypescript = fs.existsSync(typescriptConfig)
-
-    const envFiles = [
-      '.env.development.local',
-      '.env.development',
-      '.env.local',
-      '.env',
-    ].map((e) => path.join(rootDir, e))
-
-    const watchTimes = new Map<string, number>()
-
-    this.watchCompiler = new WatchCompiler()
-    await this.watchCompiler.initialize(
-      rootDir,
-      { distFolder: outputPath, typescript: usingTypescript },
-      (entries) => {
-        let envChanged = false
-
-        for (const [fileName, entry] of entries) {
-          const watchTimeEntry = watchTimes.get(fileName)
-          const fileChanged: boolean =
-            !!watchTimeEntry && watchTimeEntry !== entry.timestamp
-          watchTimes.set(fileName, entry.timestamp)
-
-          if (envFiles.includes(fileName) && fileChanged) {
-            envChanged = true
-            continue
-          }
-        }
-
-        if (envChanged) {
-          loadEnvFiles(rootDir)
-        }
-
-        // TODO: Refactor
-        this.endlineServer.initialize()
-      },
-    )
+  public shutdown() {
+    this.endlineServer?.shutdown()
   }
 
-  public shutdown() {
-    this.watchCompiler?.close()
+  public getRequestListener(): RequestListener {
+    return this.endlineServer!.getRequestHandler()
   }
 }
 
-export function createEndlineApp({
-  httpServer,
-  hostname,
-  port,
-  ...options
-}: EndlineAppOptions) {
-  httpServer.on('error', (err: NodeJS.ErrnoException) => {
+export function createEndlineApp(
+  _httpServer: Server,
+  options: EndlineAppOptions,
+) {
+  // const { hostname, port } = options
+
+  /*httpServer.on('error', (err: NodeJS.ErrnoException) => {
     let message
 
     switch (err.code) {
@@ -133,9 +82,9 @@ export function createEndlineApp({
     }
 
     throw err
-  })
+  })*/
 
-  return new EndlineApp({ httpServer, hostname, port, ...options })
+  return new EndlineApp(options)
 }
 
 export default createEndlineApp

@@ -4,25 +4,19 @@ import { pathToFileURL } from 'url'
 import { error, warn } from '../lib/logger'
 import { validateConfig } from './config-schema'
 import { loadEnvFiles } from './env-loader'
-import { EndlineConfig, EndlineRequiredConfig } from './config-interfaces'
+import {
+  defaultConfig,
+  EndlineConfig,
+  EndlineRequiredConfig,
+} from './config-shared'
 
 export { EndlineConfig, EndlineRequiredConfig }
 
-export const defaultConfig: EndlineRequiredConfig = {
-  distDir: './dist',
-  /*router: {
-    routesDirectory: './src/routes',
-  },*/
-}
-
-export default async function loadConfig(
+export async function loadConfigurationFile(
   rootDir: string,
 ): Promise<EndlineRequiredConfig> {
   const fileName = 'endline.config.js'
   const filePath = path.resolve(rootDir, fileName)
-
-  /** Load env files first, so they are available in the config file */
-  await loadEnvFiles(rootDir)
 
   if (fs.existsSync(filePath)) {
     const userConfigFile = await import(pathToFileURL(filePath).href)
@@ -42,19 +36,21 @@ export default async function loadConfig(
       process.exit(1)
     }
 
-    /**
-     * TODO: Find a better way to populate missing configuration
-     * if the user configuration makes one object property undefined: { router: undefined }
-     * then it should add missing required properties to that object: { router: { ... } }
-     */
     return {
       ...defaultConfig,
       ...userConfig,
     }
   }
 
-  /**
-   * Silently use default config if no configuration file has been found.
-   */
+  // Silently use default config if no configuration file was found.
   return defaultConfig
+}
+
+export default async function loadConfig(
+  rootDir: string,
+): Promise<EndlineRequiredConfig> {
+  // Load env files first, so they are available in the config file
+  await loadEnvFiles(rootDir)
+
+  return await loadConfigurationFile(rootDir)
 }
