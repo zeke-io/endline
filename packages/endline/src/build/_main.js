@@ -8,8 +8,8 @@ let shutdownHandler = () => {
   process.exit(0)
 }
 
-process.on('SIGTERM', () => shutdownHandler)
-process.on('SIGINT', () => shutdownHandler)
+process.on('SIGTERM', shutdownHandler)
+process.on('SIGINT', shutdownHandler)
 
 const hostname = process.env.HOSTNAME || 'localhost'
 const port = parseInt(process.env.PORT, 10) || 3000
