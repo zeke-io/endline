@@ -1,12 +1,9 @@
 import { EndlineRequiredConfig } from '../config'
-import { warn } from '../lib/logger'
 import { initializeApp } from '../lib/initialize-app'
 
 // Gracefully shutdown server
 let shutdownServer: () => void
 function shutdownHandler() {
-  console.log('')
-  warn('Shutting down server...')
   shutdownServer()
   process.exit(0)
 }

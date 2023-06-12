@@ -1,5 +1,5 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
-import { error } from './logger'
+import { error, warn } from './logger'
 import { EndlineRequiredConfig } from '../config'
 import createEndlineApp from '../endline'
 
@@ -67,6 +67,9 @@ export async function initializeApp({
   requestListener = app.getRequestListener()
 
   return () => {
+    console.log('')
+    warn('Shutting down server...')
+
     app.shutdown()
     server.close()
   }
