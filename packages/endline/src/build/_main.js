@@ -1,4 +1,3 @@
-const http = require('http')
 const { initializeApp } = require('endline/dist/lib/initialize-app')
 
 process.env.NODE_ENV = 'production'
