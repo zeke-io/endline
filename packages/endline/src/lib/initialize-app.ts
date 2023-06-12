@@ -1,7 +1,7 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
 import { error, warn } from './logger'
 import { EndlineRequiredConfig } from '../config'
-import createEndlineApp from '../endline'
+import EndlineApp from '../endline'
 
 export async function initializeApp({
   hostname,
@@ -56,15 +56,15 @@ export async function initializeApp({
 
   server.listen(port, hostname)
 
-  const app = createEndlineApp(server, {
+  const app = new EndlineApp({
     hostname,
     port,
     projectDir,
     isDev,
     config,
   })
-  await app.initialize()
   requestListener = app.getRequestListener()
+  await app.initialize()
 
   return () => {
     console.log('')

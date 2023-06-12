@@ -1,4 +1,3 @@
-import { Server } from 'http'
 import { EndlineRequiredConfig } from './config'
 import { info, ready } from './lib/logger'
 import {
@@ -58,36 +57,4 @@ class EndlineApp {
   }
 }
 
-export function createEndlineApp(
-  _httpServer: Server,
-  options: EndlineAppOptions,
-) {
-  // const { hostname, port } = options
-
-  /*httpServer.on('error', (err: NodeJS.ErrnoException) => {
-    let message
-
-    switch (err.code) {
-      case 'EADDRINUSE':
-        message = `Could not start server on ${hostname}:${port} because the port is already in use!`
-        break
-      case 'EACCES':
-        message = `Could not start server on ${hostname}:${port} because you don't have access to the port!`
-        break
-    }
-
-    if (message) {
-      error(message)
-      process.exit(1)
-    }
-
-    throw err
-  })*/
-
-  return new EndlineApp(options)
-}
-
-export default createEndlineApp
-
-module.exports = createEndlineApp
-exports = module.exports
+export default EndlineApp
