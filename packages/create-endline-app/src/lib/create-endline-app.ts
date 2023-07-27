@@ -95,7 +95,7 @@ async function createProjectFiles({
   const dependencies = ['endline']
   await installDependencies(packageManager, dependencies)
 
-  if (typescript){
+  if (typescript) {
     const devDependencies = ['typescript', '@types/node']
     await installDependencies(packageManager, devDependencies, true)
   }
