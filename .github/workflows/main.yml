@@ -14,20 +14,18 @@ jobs:
       - uses: pnpm/action-setup@v2.2.4
         with:
           version: 8.5.0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 16
-          cache: 'pnpm'
-          check-latest: true
+          bun-version: latest
       - uses: actions/cache@v3
         id: build-cache
         with:
           path: ./*
           key: build-${{ github.run_number }}-${{ github.sha }}
 
-      - run: pnpm install
-      - run: pnpm build
+      - run: bun install
+      - run: bun run build
 
   lint:
     runs-on: ubuntu-latest
@@ -37,21 +35,19 @@ jobs:
       - uses: pnpm/action-setup@v2.2.4
         with:
           version: 8.5.0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 16
-          cache: 'pnpm'
-          check-latest: true
+          bun-version: latest
       - uses: actions/cache@v3
         id: restore-build-cache
         with:
           path: ./*
           key: build-${{ github.run_number }}-${{ github.sha }}
 
-      - run: pnpm prettier:check
-      - run: pnpm type:check
-      - run: pnpm lint:check
+      - run: bun run prettier:check
+      - run: bun run type:check
+      - run: bun run lint:check
 
   test:
     runs-on: ubuntu-latest
@@ -61,16 +57,14 @@ jobs:
       - uses: pnpm/action-setup@v2.2.4
         with:
           version: 8.5.0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 16
-          cache: 'pnpm'
-          check-latest: true
+          bun-version: latest
       - uses: actions/cache@v3
         id: restore-build-cache
         with:
           path: ./*
           key: build-${{ github.run_number }}-${{ github.sha }}
 
-      - run: pnpm test
+      - run: bun run test
