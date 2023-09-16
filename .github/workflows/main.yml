@@ -24,7 +24,7 @@ jobs:
           path: ./*
           key: build-${{ github.run_number }}-${{ github.sha }}
 
-      - run: bun run install
+      - run: bun install
       - run: bun run build
 
   lint:
