@@ -25,6 +25,7 @@
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
+    "bun-types": "^1.0.2",
     "del": "^7.0.0",
     "endline": "workspace:*",
     "eslint": "^8.38.0",
