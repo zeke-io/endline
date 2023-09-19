@@ -1,9 +1,12 @@
-/** @type {import('@swc/core').Options} */
-const swcOptions = {
+import { Plugin, PluginPipe } from 'endtask'
+import { Options } from '@swc/core'
+
+const swcOptions: Options = {
   jsc: {
     parser: {
       syntax: 'typescript',
       dynamicImport: true,
+      // @ts-ignore
       importAssertions: true,
     },
     loose: true,
@@ -23,10 +26,14 @@ const swcOptions = {
   inlineSourcesContent: false,
 }
 
-export const plugin = {
+const plugin: Plugin = {
   name: 'swc',
+  type: 'source',
+  entry: swcPlugin,
 }
 
-export default async function SwcPlugin() {
+async function swcPlugin({ config: _config }: PluginPipe) {
   console.log('SWC')
 }
+
+export default plugin

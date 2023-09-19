@@ -1,7 +1,8 @@
 import { Pipeline } from 'endtask'
+import swc from './swc-plugin'
 
 export const endtaskConfig = {
-  plugins: ['./swc-plugin.ts'],
+  plugins: [swc],
 }
 
 export default async function (pipeline: Pipeline) {
